@@ -1,4 +1,4 @@
-# Create two AWS profiles
+# Create an AWS profile if you don't have one
 aws configure
 
 # Create the vault-account IAM user
@@ -73,3 +73,6 @@ vault write aws/roles/ec2-admin\
 
 vault kv put secret/appkey mykey=1234567890
 
+terraform init
+
+terraform apply -auto-approve
