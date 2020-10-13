@@ -30,3 +30,4 @@ override.tf.json
 
 *.key
 *.crt
+*credentials

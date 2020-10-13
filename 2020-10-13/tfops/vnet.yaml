@@ -1,0 +1,46 @@
+---
+apiVersion: app.terraform.io/v1alpha1
+kind: Workspace
+metadata:
+  name: vnet-new
+spec:
+  organization: ned-in-the-cloud
+  secretsMountPath: "/tmp/secrets"
+  module:
+    source: "git::https://github.com/ned1313/vnet-module.git"
+  outputs:
+    - key: vnet_id
+      moduleOutputName: vnet_id
+  variables:
+    - key: resource_group_name
+      value: tfops-vnet-new
+      sensitive: false
+      environmentVariable: false
+    - key: ARM_CLIENT_ID
+      valueFrom:
+        configMapKeyRef:
+          name: azure-configuration
+          key: arm_client_id
+      sensitive: false
+      environmentVariable: true
+    - key: ARM_SUBSCRIPTION_ID
+      valueFrom:
+        configMapKeyRef:
+          name: azure-configuration
+          key: arm_subscription_id
+      sensitive: false
+      environmentVariable: true
+    - key: ARM_TENANT_ID
+      valueFrom:
+        configMapKeyRef:
+          name: azure-configuration
+          key: arm_tenant_id
+      sensitive: false
+      environmentVariable: true
+    - key: ARM_CLIENT_SECRET
+      sensitive: true
+      environmentVariable: true
+#    - key: CONFIRM_DESTROY
+#      value: "1"
+#      sensitive: false
+#      environmentVariable: true
