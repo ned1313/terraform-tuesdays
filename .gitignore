@@ -31,3 +31,5 @@ override.tf.json
 *.key
 *.crt
 *credentials
+*.pem
+*.tfplan

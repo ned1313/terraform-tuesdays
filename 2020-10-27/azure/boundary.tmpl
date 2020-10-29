@@ -33,7 +33,7 @@ controller {
   description = "A controller for a demo!"
 
   database {
-    url = "postgresql://${db_endpoint}:5432/postgres?user=${db_username}&password=${db_password}&sslmode=require"
+    url = "postgresql://${db_endpoint}:5432/postgres?user=${db_username}@${db_name}&password=${db_password}&sslmode=require"
   }
 }
 
