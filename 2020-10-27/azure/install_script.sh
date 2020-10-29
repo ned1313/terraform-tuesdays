@@ -2,7 +2,7 @@
 
 # Install Azure CLI
 sudo apt-get update
-sudo apt-get install ca-certificates curl -y
+sudo apt-get install ca-certificates curl apt-transport-https lsb-release gnupg -y
 curl -sL https://packages.microsoft.com/keys/microsoft.asc |
     gpg --dearmor |
     sudo tee /etc/apt/trusted.gpg.d/microsoft.gpg > /dev/null
