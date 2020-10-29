@@ -1,7 +1,7 @@
-output "controller_template" {
-    value = data.template_file.controller.rendered
+output "vault_name" {
+    value = local.vault_name
 }
 
-output "worker_template" {
-    value = data.template_file.worker.rendered
+output "tenant_id" {
+    value = data.azurerm_client_config.current.tenant_id
 }

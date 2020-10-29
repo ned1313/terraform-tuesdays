@@ -1,8 +1,3 @@
-variable "prefix" {
-  type    = string
-  default = "taco"
-}
-
 variable "location" {
   type    = string
   default = "East US"
@@ -76,30 +71,30 @@ resource "random_id" "id" {
 }
 
 locals {
-  resource_group_name = "${var.prefix}-boundary-${random_id.id.hex}"
+  resource_group_name = "boundary-${random_id.id.hex}"
 
-  controller_net_nsg = "${var.prefix}-controller-net-${random_id.id.hex}"
-  worker_net_nsg     = "${var.prefix}-worker-net-${random_id.id.hex}"
-  backend_net_nsg    = "${var.prefix}-backend-net-${random_id.id.hex}"
+  controller_net_nsg = "controller-net-${random_id.id.hex}"
+  worker_net_nsg     = "worker-net-${random_id.id.hex}"
+  backend_net_nsg    = "backend-net-${random_id.id.hex}"
 
-  controller_nic_nsg = "${var.prefix}-controller-nic-${random_id.id.hex}"
-  worker_nic_nsg     = "${var.prefix}-worker-nic-${random_id.id.hex}"
-  backend_nic_nsg    = "${var.prefix}-backend-nic-${random_id.id.hex}"
+  controller_nic_nsg = "controller-nic-${random_id.id.hex}"
+  worker_nic_nsg     = "worker-nic-${random_id.id.hex}"
+  backend_nic_nsg    = "backend-nic-${random_id.id.hex}"
 
-  controller_asg = "${var.prefix}-controller-asg-${random_id.id.hex}"
-  worker_asg     = "${var.prefix}-worker-asg-${random_id.id.hex}"
+  controller_asg = "controller-asg-${random_id.id.hex}"
+  worker_asg     = "worker-asg-${random_id.id.hex}"
 
-  controller_vm = "${var.prefix}-controller-${random_id.id.hex}"
-  worker_vm     = "${var.prefix}-worker-${random_id.id.hex}"
+  controller_vm = "controller-${random_id.id.hex}"
+  worker_vm     = "worker-${random_id.id.hex}"
 
-  controller_user_id = "${var.prefix}-controller-userid-${random_id.id.hex}"
-  worker_user_id     = "${var.prefix}-worker-userid-${random_id.id.hex}"
+  controller_user_id = "controller-userid-${random_id.id.hex}"
+  worker_user_id     = "worker-userid-${random_id.id.hex}"
 
-  pip_name = "${var.prefix}-boundary-${random_id.id.hex}"
-  lb_name  = "${var.prefix}-boundary-${random_id.id.hex}"
+  pip_name = "boundary-${random_id.id.hex}"
+  lb_name  = "boundary-${random_id.id.hex}"
 
-  vault_name = "${var.prefix}-boundary-${random_id.id.hex}"
+  vault_name = "boundary-${random_id.id.hex}"
 
-  pg_name = "${var.prefix}-boundary-${random_id.id.hex}"
+  pg_name = "boundary-${random_id.id.hex}"
 
 }

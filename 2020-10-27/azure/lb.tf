@@ -2,13 +2,15 @@ resource "azurerm_public_ip" "boundary" {
   name                = local.pip_name
   resource_group_name = azurerm_resource_group.boundary.name
   location            = azurerm_resource_group.boundary.location
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
+  sku = "Standard"
 }
 
 resource "azurerm_lb" "boundary" {
   name                = local.lb_name
   location            = azurerm_resource_group.boundary.location
   resource_group_name = azurerm_resource_group.boundary.name
+  sku = "Standard"
 
   frontend_ip_configuration {
     name                 = "PublicIPAddress"
