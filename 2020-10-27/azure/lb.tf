@@ -3,6 +3,7 @@ resource "azurerm_public_ip" "boundary" {
   resource_group_name = azurerm_resource_group.boundary.name
   location            = azurerm_resource_group.boundary.location
   allocation_method   = "Static"
+  domain_name_label = lower(azurerm_resource_group.boundary.name)
   sku = "Standard"
 }
 

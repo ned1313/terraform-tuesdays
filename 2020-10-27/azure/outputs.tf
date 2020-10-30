@@ -7,5 +7,9 @@ output "tenant_id" {
 }
 
 output "controller_url" {
-    value = "https://${azurerm_public_ip.boundary.ip_address}:9200"
+    value = "https://${azurerm_public_ip.boundary.fqdn}:9200"
+}
+
+output "target_ips" {
+    value = ""
 }
