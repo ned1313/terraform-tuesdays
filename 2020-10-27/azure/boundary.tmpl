@@ -1,16 +1,29 @@
 #!/bin/bash
 
-# Install Azure CLI
+# Terraform variables used: 
+# vault_name - the name of the key vault being used for KMS and certificate storage
+# type - which type of deployment, either "controller" or "worker"
+# tenant_id - the tenant ID of the key vault being used for KMS
+# db_username - Username for the database and database server
+# db_password - Password for the username (might want to add this to Key Vault at some point)
+# db_endpoint - FQDN of the database server
+# db_name - The short name of the database server
+# public_ip - The public IP address of the load balancer or controller DNS A record
+# controller_ips - The internal IP address of all controller servers
+
+# Install curl if it's not already there
 sudo apt-get update
 sudo apt-get install curl -y
 
 # Get certificates from Key Vault
+# Note the certificate info added as a secret in the Azure VM config
 sudo mkdir -p /etc/pki/tls/boundary
 secretsname=$(find /var/lib/waagent/ -name "*.prv" | cut -c -57)
 sudo cp $secretsname.prv /etc/pki/tls/boundary/cert.key
 sudo cp $secretsname.crt /etc/pki/tls/boundary/cert.crt
 
-# Get boundary binary
+# Get latest boundary binary
+# TODO: pass boundary version through a variable
 curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
 sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
 sudo apt-get update && sudo apt-get install boundary -y
@@ -18,7 +31,13 @@ sudo apt-get update && sudo apt-get install boundary -y
 # Get private ip address
 private_ip=$(hostname -i | awk '{print $1}')
 
-# Create controller config
+# Create controller config if type is "controller"
+# This config assumes you are using postgresql as the database and 
+# Azure Key Vault for the KMS
+# This config also assumes that you have are using a certificate created by Azure Key Vault
+# or you could source it another way
+#
+# TODO: should mlock be disabled?
 %{ if type == "controller"}
 cat <<EOF > ~/boundary-controller.hcl
 disable_mlock = true
@@ -83,9 +102,17 @@ EOF
 
 sudo mv ~/boundary-controller.hcl /etc/boundary-controller.hcl
 
-# Installs the boundary as a service for systemd on linux
-
 %{endif}
+
+# Generates config is type is "worker"
+# This config assumes that you are using the certificate from Azure Key Vault
+# and you are using Key Vault for the KMS
+#
+# Controller IPs is a comma separated list of controller internal IP addresses
+# Adding a new controller will require updating this configuration manually
+#
+# TODO: investigate using internal load balancer for worker to controller comms and remove
+# need to define all controller IP addresses statically
 
 %{ if type == "worker"}
 
@@ -121,9 +148,9 @@ EOF
 
 sudo mv ~/boundary-worker.hcl /etc/boundary-worker.hcl
 
-# Installs the boundary as a service for systemd on linux
-
 %{endif} 
+
+# Install the boundary as a service for systemd on linux
 
 sudo cat << EOF > ~/${name}-${type}.service
 [Unit]
@@ -159,6 +186,7 @@ if [ "${type}" = "controller" ]; then
   sudo /usr/bin/boundary database init -skip-auth-method-creation -skip-host-resources-creation -skip-scopes-creation -skip-target-creation -config /etc/${name}-${type}.hcl || true
 fi
 
+# Finish service configuration for boundary and start the service
 sudo chmod 664 /etc/systemd/system/${name}-${type}.service
 sudo systemctl daemon-reload
 sudo systemctl enable ${name}-${type}
