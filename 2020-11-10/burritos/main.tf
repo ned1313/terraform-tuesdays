@@ -48,7 +48,7 @@ locals {
 # RESOURCES
 ###########################
 
-resource "azurerm_resource_group" "burritos" {
+resource "azurerm_resource_group" "burrito" {
   name     = local.burritos
   location = var.region
 }
