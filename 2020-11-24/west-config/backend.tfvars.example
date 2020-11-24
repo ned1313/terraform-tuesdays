@@ -1,0 +1,7 @@
+bucket = "BUCKET_NAME"
+
+region = "REGION_NAME"
+
+kms_key_id = "KMS_KEY_ID"
+
+dynamodb_table = "TABLE_NAME"
