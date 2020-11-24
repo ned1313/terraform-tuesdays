@@ -1,4 +1,5 @@
 # Go into remotestate-setup
+
 terraform init
 
 terraform validate
@@ -36,7 +37,7 @@ terraform apply "state1.tfplan"
 
 # Show resources
 
-terraform output list
+terraform state list
 
 # Perform a terraform mv
 
