@@ -3,6 +3,7 @@
 variable "meat" {
   type = string
   default = "chicken"
+  description = "Type of meat to put on the taco."
   
   validation {
     condition = contains(["chicken","beef","fish","sofritas"], var.meat)
@@ -13,6 +14,7 @@ variable "meat" {
 variable "cheese" {
   type = string
   default = "jack"
+  description = "Type of cheese to put on the taco."
   
   validation {
     condition = contains(["cheddar","jack","blanco","fresco"], var.cheese)
@@ -23,6 +25,7 @@ variable "cheese" {
 variable "shell" {
   type = string
   default = "crunchy"
+  description = "Type of shell to use for the taco."
   
   validation {
     condition = contains(["corn","flour","crunchy"], var.shell)
