@@ -38,6 +38,7 @@ echo $resp | jq .download_url -r
 # Hey guess, what? You don't need to do any of this, b/c Terraform now has a command
 # To do it for you `terraform providers mirror`
 # Let's use that instead shall we?
+cd setup_mirror
 
 mkdir ~/terraform-file-mirror
 terraform providers mirror ~/terraform-file-mirror/
@@ -73,9 +74,50 @@ terraform init
 # Bonus points... let's try and set up a network mirror
 # Basically, we need to get a web server running and mount
 # the directoy we created for the file system mirror as the 
-# root of the server. I'm going to use docker to do this
+# root of the server. I'm going to use an azure storage account
 
-docker run --name network_mirror -d -p 8080:80 -v $HOME/terraform-file-mirror:/usr/share/nginx/html nginx
+# Let's try use an Azure static site
+storage_account=networkmirror777
+location=eastus
+
+# Log into the Azure CLI
+az login
+az account set -s SUBSCRIPTION_NAME
+az group create --location $location --name network-mirror
+
+# Create the storage account
+az storage account create --name $storage_account \
+  --resource-group network-mirror \
+  --location $location \
+  --sku Standard_LRS \
+  --kind StorageV2
+
+# Enable static website hosting on the storage account
+az storage blob service-properties update --account-name $storage_account \
+  --static-website --404-document 404.html --index-document index.html
+
+# Create index and 404 files
+cat <<EOF > $HOME/terraform-file-mirror/index.html
+<html>
+<head>network mirror</head>
+<body><h1>Network Mirror</h1></body>
+</html>
+EOF
+
+cat <<EOF > $HOME/terraform-file-mirror/404.html
+<html>
+<head>network mirror</head>
+<body><h1>404 Taco not found</h1></body>
+</html>
+EOF
+
+# Upload the registry files
+az storage blob upload-batch -s $HOME/terraform-file-mirror/ -d '$web' \
+  --account-name $storage_account
+
+# Get the address of the website for our config file
+az storage account show -n $storage_account -g network-mirror \
+  --query "primaryEndpoints.web" --output tsv
 
 # Let's recreate our CLI config file
 rm $TF_CLI_CONFIG_FILE
@@ -83,7 +125,7 @@ rm $TF_CLI_CONFIG_FILE
 cat <<EOF > $TF_CLI_CONFIG_FILE
 provider_installation {
   network_mirror {
-    url    = "http://localhost:8080"
+    url    = "https://networkmirror777.z13.web.core.windows.net/"
     include = ["hashicorp/azurerm"]
   }
   direct {
@@ -91,3 +133,7 @@ provider_installation {
   }
 }
 EOF
+
+# Try init again
+terraform init
+
