@@ -1,0 +1,37 @@
+{
+    "Key": "Value",
+    "List1": [
+        "List1",
+        "List2",
+        "List3"
+    ],
+    "Map1": {
+        "MapKey1": "MapValue1",
+        "MapKey2": "MapValue2",
+        "MapKey3": "MapValue3"
+    },
+    "Map2": {
+        "SubMap1": {
+            "SubList1": [
+                "SubListValue1",
+                "SubListValue2",
+                "SubListValue3"
+            ],
+            "SubKey1": "SubValue1"
+        }
+    },
+    "List3": [
+        {
+            "List3SubKey1": "List3SubValue1",
+            "Food": "Taco"
+        },
+        {
+            "List3SubKey2": "List3SubValue2",
+            "Food": "Taco"
+        },
+        {
+            "List3SubKey3": "List3SubValue3",
+            "Food": "Pizza"
+        }
+    ]
+}

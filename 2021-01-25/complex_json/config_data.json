@@ -1,0 +1,172 @@
+{
+    "StorageAccounts": {
+        "diagnostics": {
+            "SKU": "LRS",
+            "Type": "StorageV2",
+            "Shares": [],
+            "ResourceGroup": "k8s"
+        }
+    },
+    "VirtualMachines": {
+        "k8s-master": {
+            "Count": 1,
+            "Network": "k8s",
+            "Subnet": "master",
+            "ResourceGroup":"k8s",
+            "Type": "Linux",
+            "Suffix": "1234",
+            "vm_size": "Standard_DS2_v2",
+            "Username": "azureuser",
+            "storage_image_reference": {
+                "publisher": "Canonical",
+                "offer": "UbuntuServer",
+                "sku": "18.04-LTS",
+                "version": "latest"
+            },
+            "IP_Configuration": [
+                {
+                    "name": "nic1",
+                    "allocation": "static",
+                    "public": false
+                }
+            ],
+            "GenerateKey": true,
+            "OS_Disk": {
+                "Caching": "ReadWrite",
+                "StorageAccountType": "StandardSSD_LRS",
+                "Size": 40
+            },
+            "Disks": [
+                {
+                    "Name": "Disk1",
+                    "Size": 32,
+                    "StorageAccountType":"StandardSSD_LRS",
+                    "Cache": "None"
+                }
+            ]
+        },
+        "k8s-worker": {
+            "Count": 3,
+            "Network": "k8s",
+            "Subnet": "worker",
+            "ResourceGroup":"k8s",
+            "Type": "Linux",
+            "Suffix": "1234",
+            "vm_size": "Standard_DS2_v2",
+            "Username": "azureuser",
+            "storage_image_reference": {
+                "publisher": "Canonical",
+                "offer": "UbuntuServer",
+                "sku": "18.04-LTS",
+                "version": "latest"
+            },
+            "IP_Configuration": [
+                {
+                    "name": "nic1",
+                    "allocation": "static",
+                    "public": false
+                }
+            ],
+            "GenerateKey": true,
+            "OS_Disk": {
+                "Caching": "ReadWrite",
+                "StorageAccountType": "StandardSSD_LRS",
+                "Size": 40
+            },
+            "Disks": [
+                {
+                    "Name": "Disk1",
+                    "Size": 32,
+                    "StorageAccountType":"StandardSSD_LRS",
+                    "Cache": "None"
+                },
+                {
+                    "Name": "Disk2",
+                    "Size": 32,
+                    "StorageAccountType":"Premium_LRS",
+                    "Cache": "None"
+                }
+            ]
+        },
+        "bastion": {
+            "Count": 1,
+            "Network": "k8s",
+            "Subnet": "bastion",
+            "ResourceGroup":"k8s",
+            "Type": "Linux",
+            "Suffix": "1234",
+            "vm_size": "Standard_DS2_v2",
+            "Username": "azureuser",
+            "storage_image_reference": {
+                "publisher": "Canonical",
+                "offer": "UbuntuServer",
+                "sku": "18.04-LTS",
+                "version": "latest"
+            },
+            "IP_Configuration": [
+                {
+                    "name": "nic1",
+                    "allocation": "static",
+                    "public": true
+                }
+            ],
+            "GenerateKey": true,
+            "OS_Disk": {
+                "Caching": "ReadWrite",
+                "StorageAccountType": "StandardSSD_LRS",
+                "Size": 40
+            },
+            "Disks": [ ]
+        }
+
+    },
+    "VirtualNetworks": {
+        "k8s-vnet": {
+            "AddressSpace": "10.12.0.0/16",
+            "Subnets": [
+                {
+                    "Name": "master",
+                    "Priority": 2
+                },
+                {
+                    "Name": "worker",
+                    "Priority": 3
+                },
+                {
+                    "Name": "bastion",
+                    "Priority": 1
+                }
+            ]
+        },
+        "wk8s-vnet": {
+            "AddressSpace": "10.13.0.0/16",
+            "Subnets": [
+                {
+                    "Name": "master",
+                    "Priority": 2
+                },
+                {
+                    "Name": "worker",
+                    "Priority": 3
+                },
+                {
+                    "Name": "bastion",
+                    "Priority": 1
+                }
+            ]
+        },
+        "hub-vnet": {
+            "Name": "eastus-hub-1234"
+        }
+    },
+    "ResourceGroups": {
+        "k8s": {
+            "name": "eastus-k8s-1234",
+            "location": "eastus"
+        },
+        "hub": {
+            "name": "eastus-hub-1234",
+            "location": "eastus"
+        }
+    }
+}
