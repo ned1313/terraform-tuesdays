@@ -1,0 +1,1 @@
+# We have to get the resource IDs of each object created by the template
