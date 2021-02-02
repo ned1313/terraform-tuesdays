@@ -63,10 +63,10 @@ Head back to the terraform directory and delete the current `terraform.tfstate` 
 
 ```bash
 terraform init
-rg_id="/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacos"
-vnet_id="/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacos/providers/Microsoft.Network/virtualNetworks/taconet"
-subnet1_id="/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacos/providers/Microsoft.Network/virtualNetworks/taconet/subnets/subnet1"
-subnet2_id="/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacos/providers/Microsoft.Network/virtualNetworks/taconet/subnets/subnet2"
+rg_id=
+vnet_id=
+subnet1_id=
+subnet2_id=
 
 terraform import azurerm_resource_group.vnet $rg_id
 
