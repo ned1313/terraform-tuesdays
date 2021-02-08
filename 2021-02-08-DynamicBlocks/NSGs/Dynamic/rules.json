@@ -1,0 +1,48 @@
+{
+    "Rules": [
+        {
+            "name": "Allow RDP",
+            "priority": "100",
+            "direction": "Inbound",
+            "access": "Allow",
+            "protocol": "Tcp",
+            "source_port_range": "*",
+            "destination_port_range": "3389",
+            "source_address_prefix": "private",
+            "destination_address_prefix": "vnet"
+        },
+        {
+            "name": "Allow SSH",
+            "priority": "110",
+            "direction": "Inbound",
+            "access": "Allow",
+            "protocol": "Tcp",
+            "source_port_range": "*",
+            "destination_port_range": "22",
+            "source_address_prefix": "private",
+            "destination_address_prefix": "subnet"
+        },
+        {
+            "name": "Allow HTTP",
+            "priority": "120",
+            "direction": "Inbound",
+            "access": "Allow",
+            "protocol": "Tcp",
+            "source_port_range": "*",
+            "destination_port_range": "80",
+            "source_address_prefix": "all",
+            "destination_address_prefix": "vnet"
+        },
+        {
+            "name": "Allow HTTPS",
+            "priority": "120",
+            "direction": "Inbound",
+            "access": "Allow",
+            "protocol": "Tcp",
+            "source_port_range": "*",
+            "destination_port_range": "443",
+            "source_address_prefix": "all",
+            "destination_address_prefix": "vnet"
+        }
+    ]
+}
