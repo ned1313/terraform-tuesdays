@@ -78,11 +78,6 @@ data "http" "my_ip" {
   url = "http://ifconfig.me"
 }
 
-output "my_ip" {
-    value = data.http.my_ip.body
-}
-
-
 ###########################
 # PROVIDERS
 ###########################
@@ -105,14 +100,14 @@ resource "azurerm_virtual_network" "vnet" {
   resource_group_name = azurerm_resource_group.vnet.name
   location            = azurerm_resource_group.vnet.location
   address_space       = [var.address_space]
-}
 
-resource "azurerm_subnet" "subnets" {
-    count = length(var.subnet_names)
-    name = var.subnet_names[count.index]
-    resource_group_name = azurerm_resource_group.vnet.name
-    address_prefixes = [ var.subnet_prefixes[count.index] ]
-    virtual_network_name = azurerm_virtual_network.vnet.name
+  dynamic "subnet" {
+    for_each = zipmap(var.subnet_names,var.subnet_prefixes)
+      content {
+          name = subnet.key
+          address_prefix = subnet.value
+      }
+  }
 }
 
 resource "azurerm_network_security_group" "public" {
