@@ -1,0 +1,16 @@
+# We are going to try and make use of a string, list, and map
+Here's the string value you passed: ${mystring}
+
+%{ for i in mylist ~}
+Here's a value: ${i}
+%{ endfor }
+
+Now let's try to use a map
+%{ for k, v in mymap ~}
+My key ${k} is value ${v}
+%{ endfor }
+
+What about a set?
+%{ for s in myset ~}
+Set element: ${s}
+%{ endfor }

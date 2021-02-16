@@ -1,0 +1,23 @@
+# Of course you don't have to actually use a template if you want
+# to do things in line, that's fine too
+
+output "inline" {
+  value = <<EOT
+# We are going to try and make use of a string, list, and map
+Here's the string value you passed: ${local.mystring}
+
+%{ for i in local.mylist ~}
+Here's a value: ${i}
+%{ endfor }
+
+Now let's try to use a map
+%{ for k, v in local.mymap ~}
+My key ${k} is value ${v}
+%{ endfor }
+
+What about a set?
+%{ for s in local.myset ~}
+Set element: ${s}
+%{ endfor }
+EOT
+}
