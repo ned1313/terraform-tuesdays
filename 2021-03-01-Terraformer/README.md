@@ -65,7 +65,7 @@ ARE YOU ENTERTAINED? (insert plea for Patreon support here)
 
 ## Let's GO!
 
-Indeed. Let us go.
+Indeed. Let us **go**.
 
 ### Deployment #1
 
@@ -139,14 +139,14 @@ Flags:
 My guess is that I would use `--output hcl` to get a `.tf` file, `--resource-group taconet` to select the proper resource group with my resources, `--resources="*"` to select the resources to import, and I'll add in `--verbose` to get a better idea of what's happening.
 
 ```bash
-terraformer plan azure --output hcl --resource-group taconet --verbose
+terraformer plan azure --output hcl --resource-group taconet --resources="*" --verbose
 ```
 
 ```bash
 2021/03/01 18:53:43 open /home/ned/.terraform.d/plugins/linux_amd64: no such file or directory
 ```
 
-Ouch, fail. Seems like I missed something there. Was there an init command I had to run? Ah yes, I missed step 4 of installation. See here's where documentation order matters. They included the step to get Terraform plugins under the install from source option, but not for the package managers or release download. Since I am not installing from source, I skipped all the steps in that section.
+Ouch, fail. Seems like I missed something there. Was there an init command I had to run? Ah yes, I missed step 4 of installation. See here's where documentation order matters. They included the step to get Terraform plugins under the *install from source* option, but not for the *package managers* or *release download* option. Since I am not installing from source, I skipped all the steps in that section.
 
 So what to do? Create a `versions.tf` in the destination directory and add a stanza to get the Azure provider plugin.
 
@@ -288,4 +288,221 @@ Now my updated tree looks like this:
 └── versions.tf
 ```
 
-Yup. Every single resource type got it's own subdirectory, including a separate state file. Um, ok? I'd rather have one state file for the whole thing. Let's see if that's an option.
+Yup. Every single resource type got it's own subdirectory, including a separate state file. Um, ok? I'd rather have one state file for the whole thing. First, why don't we see what's in that `virtual_network` directory.
+
+We've got five files. The `variables.tf` file helps to define the linkage between the Vnet and the resource group. There is a single line data source defined using Terraform state located in the resource_group directory.
+
+```terraform
+data "terraform_remote_state" "resource_group" {
+  backend = "local"
+
+  config = {
+    path = "../../../generated/azurerm/resource_group/terraform.tfstate"
+  }
+}
+```
+
+I have to assume any other related resources would also have a reference data source in the `variables.tf` file. The `provider.tf` file has a weird format. It defines the provider version in both a `provider` block and in a `required_providers` block. That's not really going to fly in newer versions of Terraform, but I guess it's fine for now.
+
+```terraform
+provider "azurerm" {
+  version = "~> 2.49.0"
+}
+
+terraform {
+  required_providers {
+    azurerm = {
+      version = "~> 2.49.0"
+    }
+  }
+}
+```
+
+The `virtual_network.tf` file has the single virtual network resource. The `resource_group_name` references the data source defined in the `variables.tf`. What's weird is the `id` property in the subnet block. I don't see that as an official argument. Maybe it will work. I'd also like the subnets to be broken out into their own resources using `azurerm_subnet`. 
+
+```terraform
+resource "azurerm_virtual_network" "tfer--taconet" {
+  address_space       = ["10.0.0.0/16"]
+  location            = "eastus"
+  name                = "taconet"
+  resource_group_name = "${data.terraform_remote_state.resource_group.outputs.azurerm_resource_group_tfer--taconet_name}"
+
+  subnet {
+    address_prefix = "10.0.1.0/24"
+    id             = "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/taconet/providers/Microsoft.Network/virtualNetworks/taconet/subnets/Subnet2"
+    name           = "Subnet2"
+  }
+
+  subnet {
+    address_prefix = "10.0.0.0/24"
+    id             = "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/taconet/providers/Microsoft.Network/virtualNetworks/taconet/subnets/Subnet1"
+    name           = "Subnet1"
+  }
+
+  vm_protection_enabled = "false"
+}
+```
+
+The `outputs.tf` file includes only the `id` of the Vnet. That's probably going to be useful if we've got other resources that need to reference it.
+
+```terraform
+output "azurerm_virtual_network_tfer--taconet_id" {
+  value = "azurerm_virtual_network.tfer--taconet.id"
+}
+```
+
+Like I said, this is a bit much in terms of folders and files. Let's see if we can shrink things down a bit.
+
+There's a `--compact` option in the list for `plan` and `import`. I'm going to delete the contents of the `generated` folder and try this again.
+
+```bash
+rm -rf generated
+
+terraformer plan azure --output hcl --resource-group taconet --resources="*" --compact
+terraformer import plan generated/azurerm/terraformer/plan.json
+```
+
+Nope, it's exactly the same. What was that `--compact` switch for then? Turns out that switch will group all of the same resource type into the same `resources.tf` file. Since we only have a single instance of the Vnet, `--compact` doesn't do anything. Turns out what I am actually looking for is the `--path-pattern` argument, and I can set it to "{output}/{provider}/" to group all the resources together. Let's try that:
+
+```bash
+rm -rf generated
+
+terraformer plan azure --output hcl --resource-group taconet --resources="*" --compact --path-pattern "{output}/{provider}/"
+terraformer import plan generated/azurerm/plan.json
+```
+
+Note that the path to the plan file has changed a bit.
+
+```bash
+.
+├── generated
+│   └── azurerm
+│       ├── outputs.tf
+│       ├── plan.json
+│       ├── provider.tf
+│       ├── resources.tf
+│       ├── terraform.tfstate
+│       └── variables.tf
+└── versions.tf
+```
+
+Wow, that's a lot simpler to take in. We've got a single directory and a single state file. Now let's try going into the `generated/azurerm` folder and try initializing Terraform and running a plan.
+
+```bash
+cd generated/azurerm
+
+terraform init
+```
+
+
+```bash
+Initializing the backend...
+
+Warning: Version constraints inside provider configuration blocks are deprecated
+
+  on provider.tf line 2, in provider "azurerm":
+   2:   version = "~> 2.49.0"
+
+Terraform 0.13 and earlier allowed provider version constraints inside the
+provider configuration block, but that is now deprecated and will be removed
+in a future version of Terraform. To silence this warning, move the provider
+version constraint into the required_providers block.
+
+
+Warning: Interpolation-only expressions are deprecated
+
+  on resources.tf line 10, in resource "azurerm_virtual_network" "tfer--taconet":
+  10:   resource_group_name = "${data.terraform_remote_state.local.outputs.azurerm_resource_group_tfer--taconet_name}"
+
+Terraform 0.11 and earlier required all non-constant expressions to be
+provided via interpolation syntax, but this pattern is now deprecated. To
+silence this warning, remove the "${ sequence from the start and the }"
+sequence from the end of this expression, leaving just the inner expression.
+
+Template interpolation syntax is still used to construct strings from
+expressions when the template includes multiple interpolation sequences or a
+mixture of literal strings and interpolations. This deprecation applies only
+to templates that consist entirely of a single interpolation sequence.
+
+
+Error: Invalid legacy provider address
+
+This configuration or its associated state refers to the unqualified provider
+"azurerm".
+
+You must complete the Terraform 0.13 upgrade process before upgrading to later
+versions.
+```
+
+**Ooof!**, immediate fail on that one. Turns out it doesn't like the version in a provider block, or the old-school style interpolation. Can we tell Terraformer to knock it off? But what about that second error? That's a weird one too.
+
+Looks like the state file is set to version `0.12.29`:
+
+```json
+{
+    "version": 3,
+    "terraform_version": "0.12.29",
+    "serial": 1,
+    "lineage": "25ad3ca6-b3d5-0bfb-e22f-00c535ce065b",
+    "modules": [
+```
+
+I'm using Terraform `0.14.4` from the command line, so I need to get Terraformer to respect that in the state file too. How do I go about that? Not sure. Why don't I just fix the provider problem and the interpolation thing while I'm at it.
+
+And nope, that doesn't work at all.
+
+```bash
+Initializing the backend...
+
+Error: Invalid legacy provider address
+
+This configuration or its associated state refers to the unqualified provider
+"azurerm".
+
+You must complete the Terraform 0.13 upgrade process before upgrading to later
+versions.
+```
+
+Well, it turns out there is a version 0.8.11 of Terraformer that hasn't hit the release pipeline. I guess I'll build it from source... (2 hours later)... and now I have the latest version based off commits to main. Let's go ahead and try this whole process again...
+
+NOPE. Same weird issue with Terraformer setting the state file Terraform version to `0.12.29`.
+
+What if I delete the state file and just try and validate the config?
+
+```bash
+Warning: Interpolation-only expressions are deprecated
+
+  on resources.tf line 10, in resource "azurerm_virtual_network" "tfer--taconet":
+  10:   resource_group_name = "${data.terraform_remote_state.local.outputs.azurerm_resource_group_tfer--taconet_name}"
+
+Terraform 0.11 and earlier required all non-constant expressions to be
+provided via interpolation syntax, but this pattern is now deprecated. To
+silence this warning, remove the "${ sequence from the start and the }"
+sequence from the end of this expression, leaving just the inner expression.
+
+Template interpolation syntax is still used to construct strings from
+expressions when the template includes multiple interpolation sequences or a
+mixture of literal strings and interpolations. This deprecation applies only
+to templates that consist entirely of a single interpolation sequence.
+
+
+Error: "subnet.0.id": this field cannot be set
+
+  on resources.tf line 6, in resource "azurerm_virtual_network" "tfer--taconet":
+   6: resource "azurerm_virtual_network" "tfer--taconet" {
+
+
+
+Error: "subnet.1.id": this field cannot be set
+
+  on resources.tf line 6, in resource "azurerm_virtual_network" "tfer--taconet":
+   6: resource "azurerm_virtual_network" "tfer--taconet" {
+```
+
+NOPE. That subnet `id` argument isn't valid, which I was pretty certain of anyway.
+
+At this point, I have to give Terraformer a fail when it comes to working on Azure. It didn't create a valid configuration or a valid state file from a very simple deployment. If that doesn't work right out of the box, then I can't really recommend it.
+
+Now I know some people are going to come at me and say, but it works if you tweak X, Y, and Z. That's fine. But it's not in the docs, and the software doesn't work as advertised. I'm sure part of the problem is all the changes in Terraform since version 11. And I get that it's hard to maintain an open source project. Maybe this works better on AWS or GCP. However, if you list Azure as supported and it doesn't work out of the box, then it isn't really supported.
+
+I hate to say it, but this is where my adventure ends for the moment.
