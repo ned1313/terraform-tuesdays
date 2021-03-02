@@ -503,6 +503,6 @@ NOPE. That subnet `id` argument isn't valid, which I was pretty certain of anywa
 
 At this point, I have to give Terraformer a fail when it comes to working on Azure. It didn't create a valid configuration or a valid state file from a very simple deployment. If that doesn't work right out of the box, then I can't really recommend it.
 
-Now I know some people are going to come at me and say, but it works if you tweak X, Y, and Z. That's fine. But it's not in the docs, and the software doesn't work as advertised. I'm sure part of the problem is all the changes in Terraform since version 11. And I get that it's hard to maintain an open source project. Maybe this works better on AWS or GCP. However, if you list Azure as supported and it doesn't work out of the box, then it isn't really supported.
+Now I know some people are going to come at me and say, "it works if you tweak X, Y, and Z". OK, great. But it's not in the docs, and the software doesn't work as advertised. I'm sure part of the problem is all the changes in Terraform since version 11. And I get that it's hard to maintain an open source project. Maybe this works better on AWS or GCP. However, if you list Azure as supported and it doesn't work out of the box, then it isn't really supported.
 
 I hate to say it, but this is where my adventure ends for the moment.
