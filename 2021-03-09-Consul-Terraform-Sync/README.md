@@ -15,3 +15,6 @@ Step 2 - Deploy the test environment from the environment directory
 Step 3 - Check config of F5
 Step 4 - Register application with Consul
 Step 5 - Check config of F5
+
+Install AS3 on F5
+https://github.com/F5Networks/f5-appsvcs-extension/releases/download/v3.26.0/f5-appsvcs-3.26.0-5.noarch.rpm
