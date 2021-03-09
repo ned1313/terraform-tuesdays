@@ -60,8 +60,10 @@ sudo mv ~/consul.service /usr/lib/systemd/system/consul.service
 sudo systemctl enable consul
 sudo systemctl start consul
 
-consul acl bootstrap -format=json > ~/bootstrap.token
-SECRET_ID=$(cat ~/bootstrap.token | jq .SecretID -r)
+sleep 10
+
+consul acl bootstrap -format=json > /opt/consul/bootstrap.token
+SECRET_ID=$(cat /opt/consul/bootstrap.token | jq .SecretID -r)
 
 export CONSUL_HTTP_TOKEN=$SECRET_ID
 export CONSUL_MGMT_TOKEN=$SECRET_ID
@@ -76,12 +78,12 @@ local_ip=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
 consul services register -address=$local_ip -name=web -port=80 -meta=VSIP=10.0.0.4 -meta=VSPORT=80 -meta=AS3TMPL=http
 
 # Now generate a token for CTS
-consul acl token create -policy-name=global-management -format=json > ~/cts.token
-CTS_TOKEN=$(cat ~/cts.token | jq .SecretID -r)
+consul acl token create -policy-name=global-management -format=json > /opt/consul/cts.token
+CTS_TOKEN=$(cat /opt/consul/cts.token | jq .SecretID -r)
 
 # Next we will create our CTS config file using the token just generated
 
-cat <<EOF > ~/cts_config.hcl
+cat <<EOF > /opt/consul/cts_config.hcl
 log_level = "INFO"
 port = 8558
 
