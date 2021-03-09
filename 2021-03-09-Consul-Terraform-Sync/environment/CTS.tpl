@@ -75,7 +75,7 @@ export CONSUL_MGMT_TOKEN=$SECRET_ID
 # Get the local ip address
 local_ip=$(ip addr show eth0 | grep "inet\b" | awk '{print $2}' | cut -d/ -f1)
 
-consul services register -address=$local_ip -name=web -port=80 -meta=VSIP=10.0.0.4 -meta=VSPORT=80 -meta=AS3TMPL=http
+consul services register -address=$local_ip -name=web -port=80 -meta=VSIP=${big_ip_address} -meta=VSPORT=80 -meta=AS3TMPL=http
 
 # Now generate a token for CTS
 consul acl token create -policy-name=global-management -format=json > /opt/consul/cts.token
