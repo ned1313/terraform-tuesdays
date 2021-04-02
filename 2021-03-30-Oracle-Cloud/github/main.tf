@@ -47,7 +47,7 @@ module "vcn" {
   compartment_id = oci_identity_compartment.testing.id
   drg_display_name = "${var.prefix}-testing-drg"
   region = var.region
-  vcn_dns_label = "${var.prefix}-testing"
+  vcn_dns_label = "${var.prefix}testing"
   vcn_name = "${var.prefix}-testing"
   internet_gateway_enabled = true
   vcn_cidr = "10.1.0.0/16"
