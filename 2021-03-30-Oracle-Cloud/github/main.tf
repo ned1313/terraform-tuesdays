@@ -13,7 +13,9 @@ terraform {
   }
 }
 
-provider "oci" {}
+provider "oci" {
+    region = var.region
+}
 
 variable "parent_compartment_id" {
   type = string
