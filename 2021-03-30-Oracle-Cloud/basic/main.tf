@@ -13,7 +13,9 @@ terraform {
   }
 }
 
-provider "oci" {}
+provider "oci" {
+    region = var.region
+}
 
 variable "parent_compartment_id" {
   type = string
@@ -24,10 +26,15 @@ variable "region" {
   default = "us-ashburn-1"
 }
 
+variable "prefix" {
+  type = string
+  default = "taco"
+}
+
 resource "oci_identity_compartment" "testing" {
   compartment_id = var.parent_compartment_id
   description = "Testing compartment"
-  name = "testing"
+  name = "${var.prefix}-testing"
   enable_delete = true
 }
 
@@ -38,12 +45,11 @@ module "vcn" {
   version = "~>2.0"
   
   compartment_id = oci_identity_compartment.testing.id
-  drg_display_name = "testing-drg"
+  drg_display_name = "${var.prefix}-testing-drg"
   region = var.region
-  vcn_dns_label = "testing"
-  vcn_name = "testing"
+  vcn_dns_label = "${var.prefix}testing"
+  vcn_name = "${var.prefix}-testing"
   internet_gateway_enabled = true
-  nat_gateway_enabled = true
   vcn_cidr = "10.1.0.0/16"
 
 }
@@ -57,10 +63,3 @@ resource "oci_core_subnet" "subnet1" {
 }
 
 
-
-module "compute-instance" {
-  source  = "oracle-terraform-modules/compute-instance/oci"
-  version = "2.1.0"
-  
-  
-}
