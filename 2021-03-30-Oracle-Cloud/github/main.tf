@@ -56,10 +56,10 @@ module "vcn" {
 
 # In the VCN we'll create a subnet for the VM
 
-resource "oci_core_subnet" "subnet1" {
+/*resource "oci_core_subnet" "subnet1" {
   cidr_block = "10.1.0.0/24"
   compartment_id = oci_identity_compartment.testing.id
   vcn_id = module.vcn.vcn_id
-}
+}*/
 
 
