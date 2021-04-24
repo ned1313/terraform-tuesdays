@@ -18,3 +18,10 @@ resource "aws_vpc_peering_connection_accepter" "peer" {
   vpc_peering_connection_id = hcp_aws_network_peering.peer.provider_peering_id
   auto_accept               = true
 }
+
+resource "aws_route" "peer" {
+  for_each = toset(var.route_table_ids)
+  route_table_id = each.value
+  destination_cidr_block = var.hvn_cidr_block
+  vpc_peering_connection_id = hcp_aws_network_peering.peer.provider_peering_id
+}

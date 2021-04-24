@@ -24,6 +24,8 @@ module "peering" {
   count = length(var.vpcs)
   source = "./hvn_aws_peering"
   peer_vpc_id = module.vpc[count.index].vpc_id
+  route_table_ids = module.vpc[count.index].public_route_table_ids
+  hvn_cidr_block = module.hvn.hvn_cidr_block
   hvn_id = module.hvn.hvn_id
 }
 
@@ -61,10 +63,6 @@ data "aws_ami" "amazon_linux" {
   }
 }
 
-data "http" "my_ip" {
-  url = "http://ifconfig.me"
-}
-
 resource "aws_security_group" "ec2" {
   count = length(var.vpcs)
   name = "allow_ssh"
@@ -72,7 +70,7 @@ resource "aws_security_group" "ec2" {
   vpc_id = module.vpc[count.index].vpc_id
 
   ingress  {
-    cidr_blocks = [ "${data.http.my_ip.body}/32" ]
+    cidr_blocks = [ "0.0.0.0/0" ]
     description = "Allow SSH"
     from_port = 22
     protocol = "tcp"
@@ -95,5 +93,8 @@ resource "aws_instance" "ec2" {
   key_name = var.keyname
   subnet_id   = module.vpc[count.index].public_subnets[0]
   vpc_security_group_ids = [ aws_security_group.ec2[count.index].id ]
-  user_data = templatefile("${path.module}/ec2.tmpl",{})
+  user_data = templatefile("${path.module}/ec2.tmpl",{
+    vault_token = nonsensitive(module.vault.vault_admin_token)
+    vault_address = module.vault.vault_private_endpoint_url
+  })
 }

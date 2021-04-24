@@ -9,6 +9,13 @@ terraform {
           version = "~> 3.0"
       }
   }
+  backend "remote" {
+    organization = "ned-in-the-cloud"
+
+    workspaces {
+      name = "terraform-tuesday-hcp"
+    }
+  }
 }
 
 provider "hcp" {

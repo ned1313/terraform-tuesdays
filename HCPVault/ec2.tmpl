@@ -1,10 +1,17 @@
 #!/bin/bash
 
+# Terraform variables
+# vault_token - Admin token for Vault instance
+# vault_address - Private address for Vault instance
+
 # Install all the hashicorp tools
 sudo yum install -y yum-utils
-sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/AmazonLinux/hashicorp.repo
 sudo yum -y install vault consul jq curl
 
 # TO DO
 # Bootstrap consul and vault connections
+echo "${vault_token}" > /home/ec2-user/vault_token
+echo "https://${vault_address}:8200" > /home/ec2-user/vault_address
+
 
