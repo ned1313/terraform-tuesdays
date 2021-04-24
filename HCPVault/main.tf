@@ -95,5 +95,5 @@ resource "aws_instance" "ec2" {
   key_name = var.keyname
   subnet_id   = module.vpc[count.index].public_subnets[0]
   vpc_security_group_ids = [ aws_security_group.ec2[count.index].id ]
-
+  user_data = templatefile("${path.module}/ec2.tmpl",{})
 }
