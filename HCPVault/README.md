@@ -72,11 +72,15 @@ To get connected to the Vault instance once you are logged into an EC2 instance,
 ```
 export VAULT_ADDR=$(cat vault_address)
 export VAULT_TOKEN=$(cat vault_token)
+
+vault status
 ```
 
 To use Consul, you can get the Consul agent on the EC2 instance started by running the following:
 
 ```
 sudo consul agent -config-dir=/opt/consul -data-dir=/opt/consul &
+
+consul members -token $(cat consul_token)
 ```
 
