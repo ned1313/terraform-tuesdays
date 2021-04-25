@@ -11,6 +11,6 @@ variable "public_endpoint" {
 }
 
 variable "hvn_id" {
-  description = "ID of the HVN to be paired with the VPC"
+  description = "ID of the HVN to used with Vault"
   type = string
 }

@@ -3,6 +3,10 @@
 # Terraform variables
 # vault_token - Admin token for Vault instance
 # vault_address - Private address for Vault instance
+# consul_token - Admin token for Consul instance
+# consul_address - Private address for Consul instance
+# consul_ca_file - CA file for consul
+# consul_config_file - Config file for consul
 
 # Install all the hashicorp tools
 sudo yum install -y yum-utils
@@ -14,4 +18,28 @@ sudo yum -y install vault consul jq curl
 echo "${vault_token}" > /home/ec2-user/vault_token
 echo "https://${vault_address}:8200" > /home/ec2-user/vault_address
 
+echo "${consul_token}" > /home/ec2-user/consul_token
+
+sudo mkdir -p /opt/consul
+cat << EOF > ca.pem
+${consul_ca_file}
+EOF
+
+cat << EOF > client_config.json
+${consul_config_file}
+EOF
+
+sudo sed -i 's#./ca.pem#/opt/consul/ca.pem#' client_config.json
+
+cat << EOF > client_acl.json
+{
+  "acl": {
+    "tokens": {
+      "agent": "${consul_token}"
+    }
+  }
+}
+EOF
+
+sudo mv ca.pem client_config.json client_acl.json /opt/consul
 

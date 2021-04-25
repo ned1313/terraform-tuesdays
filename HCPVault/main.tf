@@ -39,6 +39,12 @@ module "vault" {
 
 # Create Consul instance
 
+module "consul" {
+  source = "./hcp_consul"
+  hvn_id = module.hvn.hvn_id
+  
+}
+
 # Create EC2 instance to access Vault and Consul
 
 data "aws_ami" "amazon_linux" {
@@ -96,5 +102,9 @@ resource "aws_instance" "ec2" {
   user_data = templatefile("${path.module}/ec2.tmpl",{
     vault_token = nonsensitive(module.vault.vault_admin_token)
     vault_address = module.vault.vault_private_endpoint_url
+    consul_token = nonsensitive(module.consul.consul_admin_token)
+    consul_address = module.consul.consul_private_endpoint_url
+    consul_ca_file = base64decode(module.consul.consul_ca_file)
+    consul_config_file = base64decode(module.consul.consul_config_file)
   })
 }
