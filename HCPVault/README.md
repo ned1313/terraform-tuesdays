@@ -59,9 +59,11 @@ I marked both environment variables as *sensitive* as well.
 
 There are other variable values you may wish to change, like the region used in AWS or the CIDR block for the HVN. You could also take the modules and use them with your own VPCs.
 
-### Outputs
+### Outputs and Timing
 
 The output of the `terraform apply` will include the admin tokens for both services and the public IP addresses for all EC2 instances created. You should be able to SSH into each EC2 instance with the key pair specified in the config.
+
+A full deployment is going to take at least 10-15 minutes due to the time it takes to provision Vault and Consul clusters. Don't worry! Nothing is wrong, it just takes a bit.
 
 ### Commands once logged into EC2 instance
 
