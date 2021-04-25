@@ -16,6 +16,10 @@ module "vpc" {
 
 module "hvn" {
   source = "./hcp_network"
+  cloud_region = var.region
+  hvn_cidr_block = var.hvn_cidr_block
+  prefix = var.prefix
+
 }
 
 # Create peering relationships
@@ -34,6 +38,8 @@ module "peering" {
 module "vault" {
   source = "./hcp_vault"
   hvn_id = module.hvn.hvn_id
+  public_endpoint = var.vault_public_endpoint
+  prefix = var.prefix
   
 }
 
@@ -42,6 +48,8 @@ module "vault" {
 module "consul" {
   source = "./hcp_consul"
   hvn_id = module.hvn.hvn_id
+  public_endpoint = var.consul_public_endpoint
+  prefix = var.prefix
   
 }
 
