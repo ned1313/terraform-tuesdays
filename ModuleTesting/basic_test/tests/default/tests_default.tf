@@ -10,8 +10,14 @@ terraform {
   }
 }
 
+variable "api_url" {
+  type = string
+  default = "http://msn.com"
+}
+
 module "main" {
     source = "../.."
+    api_url = var.api_url
     
 }
 
