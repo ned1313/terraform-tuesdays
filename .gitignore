@@ -33,3 +33,5 @@ override.tf.json
 *credentials
 *.pem
 *.tfplan
+
+backend-config.txt
