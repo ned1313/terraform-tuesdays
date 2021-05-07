@@ -1,0 +1,33 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+- task: TerraformInstaller@0
+  inputs:
+    terraformVersion: 'latest'
+
+# Init
+- task: TerraformCLI@0
+  env:
+    ARM_SAS_TOKEN: $(sas_token)
+  inputs:
+    command: 'init'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+    commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container_name) -backend-config=key=$(key)'
+    backendType: 'selfConfigured'
+
+# Validate
+- task: TerraformCLI@0
+  inputs:
+    command: 'validate'
+    workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+
+
