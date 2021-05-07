@@ -61,6 +61,7 @@ stages:
     - task: TerraformCLI@0
       displayName: Plan Terraform Deployment
       env:
+        ARM_SAS_TOKEN: $(sas_token)
         ARM_CLIENT_ID: $(az_client_id)
         ARM_CLIENT_SECRET: $(az_client_secret)
         ARM_SUBSCRIPTION_ID: $(az_subscription)
@@ -68,7 +69,7 @@ stages:
       inputs:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
-        
+
 
 
 
