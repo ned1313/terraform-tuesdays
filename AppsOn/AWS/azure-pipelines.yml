@@ -1,7 +1,13 @@
 # Azure DevOps pipeline for Azure deployment
 
 trigger:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - AppsOn/AWS
+
 
 stages:
 - stage: Validate
