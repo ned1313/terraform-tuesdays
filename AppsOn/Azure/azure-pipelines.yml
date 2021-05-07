@@ -70,6 +70,17 @@ stages:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
 
+- stage: Approve
+  displayName: Approve
+  jobs:
+  - job: approve
+    steps: 
+- task: ManualValidation@0
+  timeoutInMinutes: 60
+  inputs:
+    notifyUsers: 'ned@nedinthecloud.com'
+    instructions: 'Review the plan in the next hour'
+
 
 
 
