@@ -23,7 +23,7 @@ stages:
         ARM_SAS_TOKEN: $(sas_token)
       inputs:
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/AWS'
         commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container_name) -backend-config=key=$(key)'
         backendType: 'selfConfigured'
 
@@ -32,7 +32,7 @@ stages:
       displayName: Validate Config
       inputs:
         command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/AWS'
     
 - stage: Plan
   displayName: Plan
@@ -53,7 +53,7 @@ stages:
         ARM_SAS_TOKEN: $(sas_token)
       inputs:
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/AWS'
         commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container_name) -backend-config=key=$(key)'
         backendType: 'selfConfigured'
 
@@ -62,13 +62,11 @@ stages:
       displayName: Plan Terraform Deployment
       env:
         ARM_SAS_TOKEN: $(sas_token)
-        ARM_CLIENT_ID: $(az_client_id)
-        ARM_CLIENT_SECRET: $(az_client_secret)
-        ARM_SUBSCRIPTION_ID: $(az_subscription)
-        ARM_TENANT_ID: $(az_tenant)
+        AWS_ACCESS_KEY_ID: $(aws_access_key_id)
+        AWS_SECRET_ACCESS_KEY: $(aws_secret_access_key)
       inputs:
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/AWS'
 
 # Approve
 - stage: Approve
@@ -103,7 +101,7 @@ stages:
         ARM_SAS_TOKEN: $(sas_token)
       inputs:
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/AWS'
         commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container_name) -backend-config=key=$(key)'
         backendType: 'selfConfigured'
 
@@ -112,13 +110,11 @@ stages:
       displayName: Apply Terraform Deployment
       env:
         ARM_SAS_TOKEN: $(sas_token)
-        ARM_CLIENT_ID: $(az_client_id)
-        ARM_CLIENT_SECRET: $(az_client_secret)
-        ARM_SUBSCRIPTION_ID: $(az_subscription)
-        ARM_TENANT_ID: $(az_tenant)
+        AWS_ACCESS_KEY_ID: $(aws_access_key_id)
+        AWS_SECRET_ACCESS_KEY: $(aws_secret_access_key)
       inputs:
         command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/AWS'
         commandOptions: '-auto-approve'
 
 
