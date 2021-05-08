@@ -1,7 +1,12 @@
-# Azure DevOps pipeline for Azure deployment
+# GCP DevOps pipeline for GCP deployment
 
 trigger:
-- master
+  branches:
+    include:
+    - master
+  paths:
+    include:
+    - AppsOn/AWS
 
 stages:
 - stage: Validate
@@ -23,7 +28,7 @@ stages:
         ARM_SAS_TOKEN: $(sas_token)
       inputs:
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/GCP'
         commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container_name) -backend-config=key=$(key)'
         backendType: 'selfConfigured'
 
@@ -32,7 +37,7 @@ stages:
       displayName: Validate Config
       inputs:
         command: 'validate'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/GCP'
     
 - stage: Plan
   displayName: Plan
@@ -53,22 +58,26 @@ stages:
         ARM_SAS_TOKEN: $(sas_token)
       inputs:
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/GCP'
         commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container_name) -backend-config=key=$(key)'
         backendType: 'selfConfigured'
+
+  # GCP credentials
+    - task: DownloadSecureFile@1
+    name: gcp-credentials # The name with which to reference the secure file's path on the agent, like $(mySecureFile.secureFilePath)
+    inputs:
+      secureFile: appson-gcp.json
 
   # Plan
     - task: TerraformCLI@0
       displayName: Plan Terraform Deployment
       env:
         ARM_SAS_TOKEN: $(sas_token)
-        ARM_CLIENT_ID: $(az_client_id)
-        ARM_CLIENT_SECRET: $(az_client_secret)
-        ARM_SUBSCRIPTION_ID: $(az_subscription)
-        ARM_TENANT_ID: $(az_tenant)
+        GOOGLE_APPLICATION_CREDENTIALS: $(gcp-credentials.secureFilePath)
+        TF_VAR_project_id: $(project_id)
       inputs:
         command: 'plan'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/GCP'
 
 # Approve
 - stage: Approve
@@ -103,7 +112,7 @@ stages:
         ARM_SAS_TOKEN: $(sas_token)
       inputs:
         command: 'init'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/GCP'
         commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container_name) -backend-config=key=$(key)'
         backendType: 'selfConfigured'
 
@@ -112,13 +121,11 @@ stages:
       displayName: Apply Terraform Deployment
       env:
         ARM_SAS_TOKEN: $(sas_token)
-        ARM_CLIENT_ID: $(az_client_id)
-        ARM_CLIENT_SECRET: $(az_client_secret)
-        ARM_SUBSCRIPTION_ID: $(az_subscription)
-        ARM_TENANT_ID: $(az_tenant)
+        GOOGLE_APPLICATION_CREDENTIALS: $(gcp-credentials.secureFilePath)
+        TF_VAR_project_id: $(project_id)
       inputs:
         command: 'apply'
-        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/Azure'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/GCP'
         commandOptions: '-auto-approve'
 
 

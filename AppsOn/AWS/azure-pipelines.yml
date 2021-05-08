@@ -1,4 +1,4 @@
-# Azure DevOps pipeline for Azure deployment
+# AWS DevOps pipeline for AWS deployment
 
 trigger:
   branches:

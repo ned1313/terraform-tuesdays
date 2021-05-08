@@ -62,34 +62,25 @@ resource "random_id" "seed" {
   byte_length = 4
 }
 
-module "vpc" {
-    source  = "terraform-google-modules/network/google"
-    version = "~> 3.0"
+resource "google_compute_network" "gcp" {
+  name = local.name
+  auto_create_subnetworks = false
+  routing_mode = "GLOBAL"
+}
 
-    project_id   = var.project_id
-    network_name = local.name
-    routing_mode = "GLOBAL"
+resource "google_compute_subnetwork" "gcp" {
+  count = 2
+  name = "${local.name}-${count.index}"
+  ip_cidr_range = cidrsubnet("10.0.0.0/16", 8, count.index)
+  region = var.region
+  network = google_compute_network.gcp.id
+}
 
-    subnets = [
-        {
-            subnet_name           = "${local.name}-01"
-            subnet_ip             = "10.0.0.0/24"
-            subnet_region         = var.region
-        },
-        {
-            subnet_name           = "${local.name}-02"
-            subnet_ip             = "10.0.1.0/24"
-            subnet_region         = var.region
-        }
-    ]
-
-    routes = [
-        {
-            name                   = "egress-internet"
-            description            = "route through IGW to access internet"
-            destination_range      = "0.0.0.0/0"
-            tags                   = "egress-inet"
-            next_hop_internet      = "true"
-        }
-    ]
+resource "google_compute_route" "egress" {
+  name = "egress-internet"
+  description = "route through IGW to access internet"
+  dest_range = "0.0.0.0/0"
+  tags = [ "egress-inet" ]
+  network = google_compute_network.gcp.id
+  next_hop_gateway = "default-internet-gateway"
 }
