@@ -64,9 +64,9 @@ stages:
 
   # GCP credentials
     - task: DownloadSecureFile@1
-    name: gcp-credentials # The name with which to reference the secure file's path on the agent, like $(mySecureFile.secureFilePath)
-    inputs:
-      secureFile: appson-gcp.json
+      name: gcp-credentials
+      inputs:
+        secureFile: appson-gcp.json
 
   # Plan
     - task: TerraformCLI@0
