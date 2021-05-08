@@ -115,6 +115,12 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/AppsOn/GCP'
         commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container_name) -backend-config=key=$(key)'
         backendType: 'selfConfigured'
+  
+  # GCP credentials
+    - task: DownloadSecureFile@1
+    name: gcp-credentials # The name with which to reference the secure file's path on the agent, like $(mySecureFile.secureFilePath)
+    inputs:
+      secureFile: appson-gcp.json
 
   # Apply
     - task: TerraformCLI@0
