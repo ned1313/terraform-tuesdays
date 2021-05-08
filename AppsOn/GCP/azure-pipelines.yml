@@ -64,7 +64,7 @@ stages:
 
   # GCP credentials
     - task: DownloadSecureFile@1
-      name: gcp-credentials
+      name: gcp_credentials
       inputs:
         secureFile: appson-gcp.json
 
@@ -73,7 +73,7 @@ stages:
       displayName: Plan Terraform Deployment
       env:
         ARM_SAS_TOKEN: $(sas_token)
-        GOOGLE_APPLICATION_CREDENTIALS: $(gcp-credentials.secureFilePath)
+        GOOGLE_APPLICATION_CREDENTIALS: $(gcp_credentials.secureFilePath)
         TF_VAR_project_id: $(project_id)
       inputs:
         command: 'plan'
@@ -118,7 +118,7 @@ stages:
   
   # GCP credentials
     - task: DownloadSecureFile@1
-      name: gcp-credentials # The name with which to reference the secure file's path on the agent, like $(mySecureFile.secureFilePath)
+      name: gcp_credentials
       inputs:
         secureFile: appson-gcp.json
 
@@ -127,7 +127,7 @@ stages:
       displayName: Apply Terraform Deployment
       env:
         ARM_SAS_TOKEN: $(sas_token)
-        GOOGLE_APPLICATION_CREDENTIALS: $(gcp-credentials.secureFilePath)
+        GOOGLE_APPLICATION_CREDENTIALS: $(gcp_credentials.secureFilePath)
         TF_VAR_project_id: $(project_id)
       inputs:
         command: 'apply'
