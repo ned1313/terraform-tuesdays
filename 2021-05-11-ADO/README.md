@@ -20,9 +20,9 @@ Admittedly, that's a lot of stuff for a pipeline, but we don't have to do everyt
 
 Before I set up the pipeline, I'm going to need an Azure Storage Account and Azure Key Vault. I'm also going to need to configure the pipeline with access to the Key Vault. Not sure if I can do that through Terraform or if I'll need to do it after the fact. Within ADO, I'm going to need a project for the pipeline to live in, and that project will need to be wired to a GitHub repo where my code is stored. Not sure if I can do any of that with Terraform, but I'll check it out. The results will be in the setup folder in this directory.
 
-Turns out that the ADO provider is pretty limited in what it can do. I was able to create a new project, but I can't wire it up to GitHub and create pipelines. The problem is that I need to create a `service endpoint`, but you can't create one with the `azuredevops_serviceendpoint_github` resource as far as I can tell. Without a service endpoint, I can't create a pipeline wired to the repo. That part is going to be manual. *SIGH*
+*An indeterminate amount of time later*
 
-What I can do is create variable groups using Terraform, which will be useful for the pipelines to leverage. 
+Okay, it looks like I can create a project, GitHub service connection, and pipeline all through Terraform. Excellent! If you're following along, you'll notice I'm using the Terraform Cloud backend. You're going to need to set some variables and environment variables for your workspace to make it all hum. I'll list those out below.
 
 ## Phase One
 
