@@ -113,3 +113,10 @@ resource "azuredevops_build_definition" "pipeline_1" {
   }
 
 }
+
+# Key Vault setup
+## There needs to be a service connection to an Azure sub with the key vault
+## https://registry.terraform.io/providers/microsoft/azuredevops/latest/docs/resources/serviceendpoint_azurerm
+
+# Key Vault task is here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-key-vault?view=azure-devops
+
