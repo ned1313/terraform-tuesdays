@@ -48,6 +48,9 @@ resource "azurerm_key_vault_access_policy" "pipeline" {
 
 # Populate with secrets to be used by the pipeline
 resource "azurerm_key_vault_secret" "pipeline" {
+  depends_on = [
+    azurerm_key_vault_access_policy.you
+  ]
   for_each = local.pipeline_variables
   name         = each.key
   value        = each.value
