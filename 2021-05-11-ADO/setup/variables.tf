@@ -77,4 +77,19 @@ locals {
 
   az_resource_group_name  = "${var.prefix}${random_integer.suffix.result}"
   az_storage_account_name = "${lower(var.prefix)}${random_integer.suffix.result}"
+  az_key_vault_name = "${var.prefix}${random_integer.suffix.result}"
+
+  pipeline_variables = {
+    storageaccount = azurerm_storage_account.sa.name
+    container-name = var.az_container_name
+    key = var.az_state_key
+    sas-token = data.azurerm_storage_account_sas.state.sas
+    az-client-id = azuread_service_principal.resource_creation.object_id
+    az-client-secret = random_password.resource_creation.result
+    az-subscription = data.azurerm_client_config.current.subscription_id
+    az-tenant = data.azurerm_client_config.current.tenant_id
+  }
+
+  azad_service_connection_sp_name = "${var.prefix}-service-connection-${random_integer.suffix.result}"
+  azad_resource_creation_sp_name = "${var.prefix}-resource-creation-${random_integer.suffix.result}"
 }

@@ -5,10 +5,6 @@ provider "azuredevops" {
   # Authentication through PAT defined with AZDO_PERSONAL_ACCESS_TOKEN 
 }
 
-provider "github" {
-  # Auth through PAT defined by GITHUB_TOKEN
-}
-
 resource "azuredevops_project" "project" {
   name               = local.ado_project_name
   description        = local.ado_project_description
@@ -117,6 +113,21 @@ resource "azuredevops_build_definition" "pipeline_1" {
 # Key Vault setup
 ## There needs to be a service connection to an Azure sub with the key vault
 ## https://registry.terraform.io/providers/microsoft/azuredevops/latest/docs/resources/serviceendpoint_azurerm
+
+resource "azuredevops_serviceendpoint_azurerm" "key_vault" {
+  project_id = azuredevops_project.project.id
+  service_endpoint_name = "key_vault"
+  description = "Azure Service Endpoint for Key Vault Access"
+
+  credentials {
+    serviceprincipalid = azuread_application.service_connection.application_id
+    serviceprincipalkey = random_password.service_connection.result
+  }
+
+  azurerm_spn_tenantid = data.azurerm_client_config.current.tenant_id
+  azurerm_subscription_id = data.azurerm_client_config.current.subscription_id
+  azurerm_subscription_name = data.azurerm_subscription.current.display_name
+}
 
 # Key Vault task is here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-key-vault?view=azure-devops
 

@@ -11,9 +11,9 @@ terraform {
 
     }
 
-    github = {
-      source  = "integrations/github"
-      version = "~> 4.0"
+    azuread = {
+      source = "hashicorp/azuread"
+      version = "~> 1.0"
     }
 
   }
