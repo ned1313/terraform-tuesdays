@@ -95,5 +95,11 @@ resource "azuredevops_serviceendpoint_azurerm" "key_vault" {
   azurerm_subscription_name = data.azurerm_subscription.current.display_name
 }
 
+resource "azuredevops_resource_authorization" "kv_auth" {
+  project_id  = azuredevops_project.project.id
+  resource_id = azuredevops_serviceendpoint_azurerm.key_vault.id
+  authorized  = true
+}
+
 # Key Vault task is here: https://docs.microsoft.com/en-us/azure/devops/pipelines/tasks/deploy/azure-key-vault?view=azure-devops
 
