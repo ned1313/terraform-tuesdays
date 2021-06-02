@@ -24,5 +24,40 @@ Before I set up the pipeline, I'm going to need an Azure Storage Account and Azu
 
 Okay, it looks like I can create a project, GitHub service connection, and pipeline all through Terraform. Excellent! If you're following along, you'll notice I'm using the Terraform Cloud backend. You're going to need to set some variables and environment variables for your workspace to make it all hum. I'll list those out below.
 
+### Terraform Cloud Variables
+
+Here is a list of variables and values you'll need to specify for the config to work:
+
+**Terraform Variables**
+
+* `ado_org_service_url` - Org service url for Azure DevOps
+* `ado_github_repo` - Name of the repository in the format `<GitHub Org>/<RepoName>`. You'll need to fork my repo and use your own.
+* `ado_github_pat` (**sensitive**) - Personal authentication token for GitHub repo.
+
+
+**Environment Variables**
+
+* `AZDO_PERSONAL_ACCESS_TOKEN` (**sensitive**) - Personal authentication token for Azure DevOps. 
+* `ARM_SUBSCRIPTION_ID` - Subscription ID where you will create the Azure Storage Account.
+* `ARM_CLIENT_ID` (**sensitive**) - Client ID of service principal with the necessary rights in the referenced subscription.
+* `ARM_CLIENT_SECRET` (**sensitive**) - Secret associated with the Client ID.
+* `ARM_TENANT_ID` - Azure AD tenant where the Client ID is located.
+* `TF_VAR_az_client_id` (**sensitive**) - Client ID of service principal that will be used in the Azure DevOps pipeline.
+* `TF_VAR_az_client_secret` (**sensitive**) - Client secret of service principal that will be used in the Azure DevOps pipeline.
+* `TF_VAR_az_subscription` - Subscription ID where resources will be created by the ADO pipeline.
+* `TF_VAR_az_tenant` - Tenant ID for the `az_client_id` value.
+
+You can decide if you want to mark anything else as **sensitive**. The client id might not really need to be sensitive, but that's what I decided to do. I went with environment variables for a bunch of these, but the long term plan is to dynamically create the necessary service principals and store the information in Key Vault.
+
 ## Phase One
 
+The whole purpose behind phase one is to get the basic framework in place for an Azure DevOps pipeline. You might look at this setup and think that it is too simple or is missing out on using a bunch of features. You're right! It is intentionally simple for phase one, and I plan to add complexity as we go. Right now the set up script is creating the following:
+
+* Azure storage account for remote state
+* SAS token for storage account access
+* Azure DevOps project
+* Service endpoint to GitHub repo for ADO
+* Variable group for pipeline to use
+* Build pipeline
+
+The pipeline itself is deploying a simple Azure virtual network with two subnets. Nothing fancy. The stages validate the Terraform code, run a plan, wait for approval, and run an apply. That's it. The trigger is a commit to the 2021-05-11-ADO/vnet directory. That will change eventually.
