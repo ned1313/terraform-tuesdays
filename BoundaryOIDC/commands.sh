@@ -7,6 +7,8 @@
 # Start up Boundary in dev mode - don't worry we'll do this in Azure at some point
 boundary dev
 
+export BOUNDARY_TOKEN=password
+
 # Get the OIDC auth method id
 auth_method_id=$(boundary auth-methods list -format=json | jq '.items[] | select(.type == "oidc") | .id' -r)
 
@@ -32,19 +34,19 @@ export AD_BOUNDARY_APP_ID=$(az ad app create \
    jq -r '.appId')
 
 # Get the Microsoft Graph API ID
-export AD_MICROSOFT_GRAPH_API_ID=$(az ad sp list \
-   --filter "displayName eq 'Microsoft Graph'" \
-   --query '[].appId' -o tsv)
+AD_MICROSOFT_GRAPH_API_ID=$(az ad sp list \
+  --filter "displayName eq 'Microsoft Graph'" \
+  --query '[].objectId' -o tsv)
 
 # Get the READ ALL group member ID
-export AD_PERMISSION_GROUP_MEMBER_READ_ALL_ID=$(az ad sp show \
-   --id ${AD_MICROSOFT_GRAPH_API_ID} \
-   --query "oauth2Permissions[?value=='GroupMember.Read.All'].id" -o tsv)
+AD_PERMISSION_GROUP_MEMBER_READ_ALL_ID=$(az ad sp show \
+  --id ${OBJ_ID} \
+  --query "oauth2Permissions[?value=='GroupMember.Read.All'].id" -o tsv)
 
 # Add the proper permissions to the web app we created
 az ad app permission add \
    --id ${AD_BOUNDARY_APP_ID} \
-   --api ${AD_MICROSOFT_GRAPH_API_ID} \
+   --api ${OBJ_ID} \
    --api-permissions ${AD_PERMISSION_GROUP_MEMBER_READ_ALL_ID}=Scope
 
 # Create a service principal for our web app so it can access the graph API
@@ -53,7 +55,7 @@ az ad sp create --id ${AD_BOUNDARY_APP_ID}
 # Grant ye olde permission with new command!
 az ad app permission grant \
   --id ${AD_BOUNDARY_APP_ID} \
-  --api ${AD_MICROSOFT_GRAPH_API_ID}
+  --api ${OBJ_ID}
 
 # Now we need our Azure AD tenant id, let's grab that
 export AD_TENANT_ID=$(az ad sp show --id ${AD_BOUNDARY_APP_ID} \
@@ -68,13 +70,15 @@ export AD_CLIENT_SECRET=$(az ad app credential reset \
 boundary auth-methods create oidc \
   -issuer "https://login.microsoftonline.com/${AD_TENANT_ID}/v2.0" \
   -client-id ${AD_BOUNDARY_APP_ID} \
-  -client-secret ${AD_CLIENT_SECRET} \
+  -client-secret "${AD_CLIENT_SECRET}" \
   -signing-algorithm RS256 \
   -api-url-prefix "http://localhost:9200" \
   -name "azuread"
 
 # Now we need to update our web app with the callback url from our new auth method
 callback_url=$(boundary auth-methods list -format=json | jq '.items[] | select(.name == "azuread") | .attributes.callback_url' -r)
+
+# Callback URL should now be: http://localhost:9200/v1/auth-methods/oidc:authenticate:callback
 
 az ad app update --id ${AD_BOUNDARY_APP_ID} --reply-urls $callback_url
 
