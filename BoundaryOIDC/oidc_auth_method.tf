@@ -22,7 +22,7 @@ resource "boundary_auth_method_oidc" "azuread" {
   issuer = "https://login.microsoftonline.com/${module.azuread_oidc.tenant_id}/v2.0"
   client_id = module.azuread_oidc.client_id
   client_secret = module.azuread_oidc.client_secret
-  callback_url = "http://localhost:9200/v1/auth-methods/oidc:authenticate:callback"
+  callback_url = "${var.boundary_server}/v1/auth-methods/oidc:authenticate:callback"
   signing_algorithms = ["RS256"]
   api_url_prefix = var.boundary_server
   name = "azuread"
