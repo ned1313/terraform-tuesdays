@@ -95,6 +95,10 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+    # Install Checkov
+    - bash: pip3 install checkov
+      displayName: 'Install checkov'
+      name: 'install_checkov'
 
     # Azure Key Vault
     # Download Azure Key Vault secrets
@@ -128,7 +132,28 @@ stages:
       inputs:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet'
+        commandOptions: '-out=$(System.DefaultWorkingDirectory)/main.tfplan'
         publishPlanResults: 'Terraform Plan'
+
+  # Verify plan with Checkov
+    - bash: |
+        terraform show -json $(System.DefaultWorkingDirectory)/main.tfplan > $(System.DefaultWorkingDirectory)/main.json
+        checkov -f $(System.DefaultWorkingDirectory)/main.json -o junitxml > $(System.DefaultWorkingDirectory)/Checkov-Plan-Report.xml
+      displayName: 'Verify plan with Checkov'
+      name: 'checkov_plan_check'
+
+  # Publish test results for plan
+    - task: PublishTestResults@2
+      displayName: Publish Checkov Plan Test Results
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/*Checkov-Plan-Report.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+        mergeTestResults: false
+        testRunTitle: Checkov Plan Scan
+        failTaskOnFailedTests: false
+        publishRunAttachments: true
 
 # Approve
 - stage: Approve
