@@ -132,12 +132,12 @@ stages:
       inputs:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet'
-        commandOptions: '-out=$(System.DefaultWorkingDirectory)/main.tfplan'
+        commandOptions: '-out=$(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet/main.tfplan'
         publishPlanResults: 'Terraform Plan'
 
   # Verify plan with Checkov
     - bash: |
-        terraform show -json $(System.DefaultWorkingDirectory)/main.tfplan > $(System.DefaultWorkingDirectory)/main.json
+        terraform show -json $(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet/main.tfplan > $(System.DefaultWorkingDirectory)/main.json
         checkov -f $(System.DefaultWorkingDirectory)/main.json -o junitxml > $(System.DefaultWorkingDirectory)/Checkov-Plan-Report.xml
       displayName: 'Verify plan with Checkov'
       name: 'checkov_plan_check'
@@ -176,10 +176,6 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - task: TerraformInstaller@0
-      displayName: Install Terraform
-      inputs:
-        terraformVersion: 'latest'
 
     # Azure Key Vault
     # Download Azure Key Vault secrets
