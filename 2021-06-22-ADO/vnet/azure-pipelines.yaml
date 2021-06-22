@@ -52,14 +52,41 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet'
 
   # Verify module files with Checkov
-    - bash: checkov --directory $(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet/.terraform --skip-check CKV_DOCKER_*
+    - bash: checkov --directory $(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet/.terraform --skip-check CKV_DOCKER_* -o junitxml > $(System.DefaultWorkingDirectory)/Checkov-Module-Report.xml
       displayName: 'Verify modules with Checkov'
       name: 'checkov_module_check'
 
+  # Publish test results for modules
+  # Shout out to Adin Ermie for this one! https://adinermie.com/publishing-checkov-terraform-quality-checks-to-azure-devops-pipelines/
+    - task: PublishTestResults@2
+      displayName: Publish Checkov Module Test Results
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/*Checkov-Module-Report.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+        mergeTestResults: false
+        testRunTitle: Checkov Module Scan
+        failTaskOnFailedTests: false
+        publishRunAttachments: true
+
   # Verify main files with Checkov
-    - bash: checkov --directory $(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet
+    - bash: checkov --directory $(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet -o junitxml > $(System.DefaultWorkingDirectory)/Checkov-Root-Report.xml
       displayName: 'Verify root module with Checkov'
       name: 'checkov_root_check'
+
+  # Publish test results for root module
+    - task: PublishTestResults@2
+      displayName: Publish Checkov Root Test Results
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/*Checkov-Root-Report.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+        mergeTestResults: false
+        testRunTitle: Checkov Root Scan
+        failTaskOnFailedTests: false
+        publishRunAttachments: true
     
 - stage: Plan
   displayName: Plan
