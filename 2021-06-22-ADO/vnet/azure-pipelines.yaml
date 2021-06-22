@@ -137,7 +137,9 @@ stages:
 
   # Verify plan with Checkov
     - bash: |
-        terraform show -json $(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet/main.tfplan > $(System.DefaultWorkingDirectory)/main.json
+        cd $(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet
+        ls
+        terraform show -json main.tfplan > $(System.DefaultWorkingDirectory)/main.json
         checkov -f $(System.DefaultWorkingDirectory)/main.json -o junitxml > $(System.DefaultWorkingDirectory)/Checkov-Plan-Report.xml
       displayName: 'Verify plan with Checkov'
       name: 'checkov_plan_check'
