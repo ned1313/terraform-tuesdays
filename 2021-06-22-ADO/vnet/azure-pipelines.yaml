@@ -52,7 +52,7 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet'
 
   # Verify module files with Checkov
-    - bash: checkov --directory $(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet/.terraform
+    - bash: checkov --directory $(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet/.terraform --skip-check CKV_DOCKER_*
       displayName: 'Verify modules with Checkov'
       name: 'checkov_module_check'
 
