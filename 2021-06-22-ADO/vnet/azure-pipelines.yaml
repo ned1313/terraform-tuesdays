@@ -51,10 +51,15 @@ stages:
         command: 'validate'
         workingDirectory: '$(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet'
 
-  # Verify with Checkov
+  # Verify module files with Checkov
+    - bash: checkov --directory $(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet/.terraform
+      displayName: 'Verify modules with Checkov'
+      name: 'checkov_module_check'
+
+  # Verify main files with Checkov
     - bash: checkov --directory $(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet
-      displayName: 'Verify with Checkov'
-      name: 'checkov_directory_check'
+      displayName: 'Verify root module with Checkov'
+      name: 'checkov_root_check'
     
 - stage: Plan
   displayName: Plan
