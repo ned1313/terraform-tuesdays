@@ -19,10 +19,10 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - task: TerraformInstaller@0
-      displayName: Install Terraform
-      inputs:
-        terraformVersion: 'latest'
+    # Install Checkov
+    - bash: pip3 install checkov
+      displayName: 'Install checkov'
+      name: 'install_checkov'
 
     # Azure Key Vault
     # Download Azure Key Vault secrets
@@ -50,6 +50,11 @@ stages:
       inputs:
         command: 'validate'
         workingDirectory: '$(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet'
+
+  # Verify with Checkov
+    - bash: checkov --directory $(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet
+      displayName: 'Verify with Checkov'
+      name: 'checkov_directory_check'
     
 - stage: Plan
   displayName: Plan
