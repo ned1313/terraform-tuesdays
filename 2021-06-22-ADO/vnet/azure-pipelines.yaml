@@ -95,10 +95,6 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    - task: TerraformInstaller@0
-      displayName: Install Terraform
-      inputs:
-        terraformVersion: 'latest'
 
     # Azure Key Vault
     # Download Azure Key Vault secrets
@@ -132,6 +128,7 @@ stages:
       inputs:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/2021-06-22-ADO/vnet'
+        publishPlanResults: 'Terraform Plan'
 
 # Approve
 - stage: Approve
