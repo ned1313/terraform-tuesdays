@@ -1,0 +1,11 @@
+# Linux/Mac
+export TF_VAR_cheese=jack
+export TF_VAR_protein=tofu
+
+# Windows
+$env:TF_VAR_cheese="jack"
+$env:TF_VAR_protein="tofu"
+
+terraform apply
+
+terraform apply -var protein=tofu  

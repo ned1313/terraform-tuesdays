@@ -1,0 +1,1 @@
+protein = "beef"
