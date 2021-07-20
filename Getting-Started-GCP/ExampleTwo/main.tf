@@ -14,6 +14,12 @@ variable "region" {
   default     = "us-central1"
 }
 
+variable "prefix" {
+  type = string
+  description = "Prefix for naming the project and other resources"
+  default = "taconet"
+}
+
 provider "google" {
   region = var.region
 }
@@ -21,12 +27,12 @@ provider "google" {
 # Random id for naming
 resource "random_id" "id" {
   byte_length = 4
-  prefix      = terraform.workspace
+  prefix      = var.prefix
 }
 
 # Create a Google project for Compute Engine
 resource "google_project" "project" {
-  name            = terraform.workspace
+  name            = random_id.id.hex
   project_id      = random_id.id.hex
   billing_account = var.billing_account
   org_id          = var.org_id

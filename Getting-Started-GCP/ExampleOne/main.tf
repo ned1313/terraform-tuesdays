@@ -26,11 +26,11 @@ provider "google" {
 data "google_compute_zones" "available_zones" {}
 
 resource "google_compute_address" "static" {
-  name = "nginx"
+  name = "apache"
 }
 
-resource "google_compute_instance" "nginx" {
-  name = "nginx"
+resource "google_compute_instance" "apache" {
+  name = "apache"
   zone = data.google_compute_zones.available_zones.names[0]
   tags = ["allow-http"]
 
@@ -50,14 +50,7 @@ resource "google_compute_instance" "nginx" {
     }
   }
 
-  metadata_startup_script = <<EOF
-
-sudo apt-get update -y
-sudo apt-get install nginx -y
-sudo systemctl restart nginx
-sudo systemctl enable nginx
-
-EOF
+  metadata_startup_script = file("startup_script.sh")
 }
 
 resource "google_compute_firewall" "allow_http" {
@@ -73,4 +66,8 @@ resource "google_compute_firewall" "allow_http" {
 
     priority = 1000
   
+}
+
+output "public_ip_address" {
+  value = google_compute_address.static.address
 }
