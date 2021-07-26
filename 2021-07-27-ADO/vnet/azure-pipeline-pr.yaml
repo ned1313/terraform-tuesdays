@@ -5,8 +5,10 @@ variables:
 
 pr:
   branches:
-    exclude:
+    include:
     - main
+    exclude:
+    - ci-test-2
   paths:
     include:
     - 2021-07-27-ADO/vnet
