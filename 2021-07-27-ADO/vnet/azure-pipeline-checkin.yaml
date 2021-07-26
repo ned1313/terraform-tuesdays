@@ -13,7 +13,7 @@ trigger:
 
 # We want to check the formatting of the code
 stages:
-- stage: Check-In
+- stage: CheckIn
   displayName: Check-In Testing
   jobs:
   # Check Formatting only
