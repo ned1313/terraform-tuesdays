@@ -175,8 +175,8 @@ stages:
     - task: PublishPipelineArtifact@1
       displayName: Publish Plan File as an artifact
       inputs:
-      targetPath: $(System.DefaultWorkingDirectory)/2021-07-27-ADO/vnet/main.tfplan'
-      artifactName: PlanFile
+        targetPath: '$(System.DefaultWorkingDirectory)/2021-07-27-ADO/vnet/main.tfplan'
+        artifactName: PlanFile
 
 
 

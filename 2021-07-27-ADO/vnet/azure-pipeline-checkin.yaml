@@ -27,20 +27,31 @@ stages:
       inputs:
         command: 'fmt'
         workingDirectory: '$(System.DefaultWorkingDirectory)/2021-07-27-ADO/vnet'
-        commandOptions: '-check'
   
   # Validate code
   - job: validate
     pool:
       vmImage: ubuntu-latest
     steps:
+    # Azure Key Vault
+    # Download Azure Key Vault secrets
+    - task: AzureKeyVault@1
+      inputs:
+        ConnectedServiceName: $(service_name)
+        keyVaultName: $(key_vault_name)
+        secretsFilter: '*'
+        runAsPreJob: false # Azure DevOps Services only
+    
     # Init
     - task: TerraformCLI@0
-      displayName: Initialize
+      displayName: Initialize Terraform
+      env:
+        ARM_SAS_TOKEN: $(sas-token)
       inputs:
         command: 'init'
         workingDirectory: '$(System.DefaultWorkingDirectory)/2021-07-27-ADO/vnet'
-        backendType: 'local'
+        commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container-name) -backend-config=key=$(key)'
+        backendType: 'selfConfigured'
     
     # Validate
     - task: TerraformCLI@0
