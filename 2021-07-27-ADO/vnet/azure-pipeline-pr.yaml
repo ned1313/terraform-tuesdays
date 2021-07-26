@@ -5,7 +5,7 @@ variables:
 
 pr:
   branches:
-    include:
+    exclude:
     - main
   paths:
     include:
