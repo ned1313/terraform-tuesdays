@@ -1,0 +1,50 @@
+# Azure DevOps pipeline for CI of Terraform code
+
+variables:
+- group: terraform-tuesdays
+
+trigger:
+  branches:
+    exclude:
+    - main
+  paths:
+    include:
+    - 2021-07-27-ADO/vnet
+
+# We want to check the formatting of the code
+stages:
+- stage: Check-In
+  displayName: Check-In Testing
+  jobs:
+  # Check Formatting only
+  - job: formatting
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    # Format check
+    - task: TerraformCLI@0
+      displayName: Check Formatting
+      inputs:
+        command: 'fmt'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/2021-07-27-ADO/vnet'
+        commandOptions: '-check'
+  
+  # Validate code
+  - job: validate
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    # Init
+    - task: TerraformCLI@0
+      displayName: Initialize
+      inputs:
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/2021-07-27-ADO/vnet'
+        backendType: 'local'
+    
+    # Validate
+    - task: TerraformCLI@0
+      displayName: Validate Config
+      inputs:
+        command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/2021-07-27-ADO/vnet'
