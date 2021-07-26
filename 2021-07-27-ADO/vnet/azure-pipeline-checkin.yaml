@@ -27,7 +27,6 @@ stages:
       inputs:
         command: 'fmt'
         workingDirectory: '$(System.DefaultWorkingDirectory)/2021-07-27-ADO/vnet'
-        commandOptions: '-check'
   
   # Validate code
   - job: validate
