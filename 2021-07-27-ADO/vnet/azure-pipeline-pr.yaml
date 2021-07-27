@@ -3,9 +3,9 @@
 variables:
 - group: terraform-tuesdays
 
-trigger:
+pr:
   branches:
-    include:
+    exclude:
     - main
   paths:
     include:
@@ -177,9 +177,3 @@ stages:
       inputs:
         targetPath: '$(System.DefaultWorkingDirectory)/2021-07-27-ADO/vnet/main.tfplan'
         artifactName: PlanFile
-
-
-
-
-
-
