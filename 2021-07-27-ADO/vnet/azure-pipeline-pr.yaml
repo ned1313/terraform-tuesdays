@@ -97,7 +97,6 @@ stages:
         publishRunAttachments: true
     
 - stage: Plan
-  condition: and(succeeded(), eq(variables['build.Reason'], 'PullRequest'))
   displayName: Plan
   jobs:
   - job: plan
