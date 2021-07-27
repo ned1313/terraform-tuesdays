@@ -3,7 +3,7 @@
 variables:
 - group: terraform-tuesdays
 
-pr:
+trigger:
   branches:
     include:
     - main
