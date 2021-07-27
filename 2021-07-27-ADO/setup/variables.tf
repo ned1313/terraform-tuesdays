@@ -25,6 +25,12 @@ variable "ado_github_pat" {
   sensitive   = true
 }
 
+variable "ado_terraform_version" {
+  type        = string
+  description = "Version of Terraform to use in the pipeline"
+  default     = "1.0.3"
+}
+
 variable "prefix" {
   type        = string
   description = "Naming prefix for resources"
