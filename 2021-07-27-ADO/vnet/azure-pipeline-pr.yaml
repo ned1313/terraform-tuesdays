@@ -3,12 +3,10 @@
 variables:
 - group: terraform-tuesdays
 
-pr:
+trigger:
   branches:
     include:
     - main
-    exclude:
-    - ci-test-2
   paths:
     include:
     - 2021-07-27-ADO/vnet
