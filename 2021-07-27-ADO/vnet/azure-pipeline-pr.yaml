@@ -3,7 +3,7 @@
 variables:
 - group: terraform-tuesdays
 
-trigger:
+pr:
   branches:
     include:
     - main
@@ -97,6 +97,7 @@ stages:
         publishRunAttachments: true
     
 - stage: Plan
+  condition: and(succeeded(), eq(variables['build.Reason'], 'PullRequest'))
   displayName: Plan
   jobs:
   - job: plan
@@ -177,9 +178,3 @@ stages:
       inputs:
         targetPath: '$(System.DefaultWorkingDirectory)/2021-07-27-ADO/vnet/main.tfplan'
         artifactName: PlanFile
-
-
-
-
-
-
