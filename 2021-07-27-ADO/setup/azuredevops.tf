@@ -65,7 +65,7 @@ resource "azuredevops_variable_group" "variablegroup" {
   }
 
   variable {
-    name = "terraform_version"
+    name  = "terraform_version"
     value = var.ado_terraform_version
   }
 

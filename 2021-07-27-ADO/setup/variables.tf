@@ -26,9 +26,9 @@ variable "ado_github_pat" {
 }
 
 variable "ado_terraform_version" {
-  type = string
+  type        = string
   description = "Version of Terraform to use in the pipeline"
-  default = "1.0.3"
+  default     = "1.0.3"
 }
 
 variable "prefix" {
