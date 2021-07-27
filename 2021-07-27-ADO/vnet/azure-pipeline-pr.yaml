@@ -20,6 +20,12 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+    # Install Terraform based on version variable
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: $(terraform_version)
+
     # Install Checkov
     - bash: pip3 install checkov
       displayName: 'Install checkov'
@@ -105,6 +111,12 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+    # Install Terraform based on version variable
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: $(terraform_version)
+        
     # Install Checkov
     - bash: pip3 install checkov
       displayName: 'Install checkov'
