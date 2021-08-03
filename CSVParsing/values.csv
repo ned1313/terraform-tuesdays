@@ -1,6 +1,0 @@
-Group,CPU,RAM,Disk1Size,Disk1Perf,Disk2Size,Disk2Perf,Disk3Size,Disk3Perf
-Web,2,8,40,gp3,10,gp3,0,0
-App1,4,16,60,standard,10,gp3,50,io1
-DB,6,32,80,standard,10,io1,100,io1
-App2,2,8,20,standard,10,gp3,0,0
-Proxy,1,4,15,standard,0,0,0,0
