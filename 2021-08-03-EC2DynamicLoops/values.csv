@@ -1,0 +1,6 @@
+Group,InstanceType,ImageId,Disk1Size,Disk1Perf,Disk2Size,Disk2Perf,Disk3Size,Disk3Perf
+Web,t2.medium,ami-0c2b8ca1dad447f8a,40,gp3,10,gp3,0,0
+App1,m4.large,ami-0c2b8ca1dad447f8a,60,standard,10,gp3,50,io1
+DB1,m4.2xlarge,ami-0c2b8ca1dad447f8a,80,standard,10,io1,100,io1
+App2,m4.large,ami-0c2b8ca1dad447f8a,20,standard,10,gp3,0,0
+Proxy,t2.micro,ami-0c2b8ca1dad447f8a,15,standard,0,0,0,0
