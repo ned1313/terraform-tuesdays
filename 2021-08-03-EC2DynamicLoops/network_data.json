@@ -1,0 +1,21 @@
+{
+    "VPC": {
+        "AddressSpace": "10.0.0.0/16",
+        "PublicSubnets": [
+            "10.0.0.0/24",
+            "10.0.1.0/24",
+            "10.0.2.0/24"
+        ],
+        "PrivateSubnets": [
+            "10.1.0.0/24",
+            "10.1.1.0/24",
+            "10.1.2.0/24"
+        ],
+        "NatGateway": false,
+        "Tags": {
+                "Company": "Tacotech",
+                "BusinessUnit": "Taconet",
+                "Name": "Taconet1"
+            }
+    }
+}

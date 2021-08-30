@@ -21,6 +21,12 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+    # Install Terraform based on version variable
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: $(terraform_version)
+        
     # Format check
     - task: TerraformCLI@0
       displayName: Check Formatting

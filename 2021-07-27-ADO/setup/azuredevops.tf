@@ -64,6 +64,11 @@ resource "azuredevops_variable_group" "variablegroup" {
     value = azuredevops_build_definition.pipelines["pr"].id
   }
 
+  variable {
+    name  = "terraform_version"
+    value = var.ado_terraform_version
+  }
+
 }
 
 resource "azuredevops_build_definition" "pipelines" {

@@ -4,7 +4,7 @@ This one was a viewer request about how you can use dynamic blocks with an EC2 l
 
 ## The CSV File
 
-Sometimes you get to control the format of your source files. And sometimes you don't. Excel still runs the world and often you'll get a CSV file with a bunch of garbage in it and you have to turn that into infrastructure. That's fine! We can import the CSV data and use various Terraform functions and syntax to transform the data into something usable.
+Sometimes you get to control the format of your source files. And sometimes you don't. Excel still runs the world and often you'll get a CSV file with a bunch of garbage in it and you have to turn that into infrastructure. That's fine! We can make it more consumable by converting it to JSON, a format Terraform can parse natively as a complex object.
 
-The CSV file is included in the repository. The format is simple. It defines several launch instance groups, each with some associated configuration info. 
+The CSV file is included in the repository. The format is simple.
 

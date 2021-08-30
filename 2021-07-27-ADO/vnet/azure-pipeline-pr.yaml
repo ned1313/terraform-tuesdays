@@ -5,7 +5,7 @@ variables:
 
 trigger:
   branches:
-    include:
+    exclude:
     - main
   paths:
     include:
@@ -13,12 +13,19 @@ trigger:
 
 stages:
 - stage: Validate
+  condition: ne(variables['Build.SourceBranch'],'refs/heads/main')
   displayName: Validate
   jobs:
   - job: validate
     pool:
       vmImage: ubuntu-latest
     steps:
+    # Install Terraform based on version variable
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: $(terraform_version)
+
     # Install Checkov
     - bash: pip3 install checkov
       displayName: 'Install checkov'
@@ -98,11 +105,18 @@ stages:
     
 - stage: Plan
   displayName: Plan
+  condition: ne(variables['Build.SourceBranch'],'refs/heads/main')
   jobs:
   - job: plan
     pool:
       vmImage: ubuntu-latest
     steps:
+    # Install Terraform based on version variable
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: $(terraform_version)
+        
     # Install Checkov
     - bash: pip3 install checkov
       displayName: 'Install checkov'
@@ -177,9 +191,3 @@ stages:
       inputs:
         targetPath: '$(System.DefaultWorkingDirectory)/2021-07-27-ADO/vnet/main.tfplan'
         artifactName: PlanFile
-
-
-
-
-
-
