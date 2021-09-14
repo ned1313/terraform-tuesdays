@@ -15,5 +15,6 @@ resource "libvirt_volume" "base_image" {
 resource "libvirt_volume" "vm_disks" {
   count          = var.vm_count
   name           = "vm-${count.index}-vol"
+  pool           = libvirt_pool.cluster.name
   base_volume_id = libvirt_volume.base_image.id
 }

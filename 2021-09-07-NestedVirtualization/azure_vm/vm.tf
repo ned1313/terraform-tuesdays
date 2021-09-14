@@ -94,7 +94,7 @@ resource "azurerm_linux_virtual_machine" "hypervisor" {
     version   = "latest"
   }
 
-  #custom_data = base64encode(data.template_file.hypervisor.rendered)
+  custom_data = filebase64("${path.module}/setup.tpl")
 }
 
 resource "azurerm_managed_disk" "hypervisor" {

@@ -9,7 +9,7 @@ variable "private_key_path" {
 }
 
 variable "known_hosts" {
-  type =string
+  type        = string
   description = "File path to the known hosts file"
 }
 
@@ -68,5 +68,5 @@ variable "base_image_uri" {
 }
 
 locals {
-  libvirt_uri = "qemu+ssh://azureuser@${var.remote_ip_address}/system/?keyfile=${var.private_key_path}&known_hosts_verify=auto&known_hosts=${var.known_hosts}"
+  libvirt_uri = "qemu+ssh://azureuser@${var.remote_ip_address}/system?keyfile=${var.private_key_path}&known_hosts_verify=auto&known_hosts=${var.known_hosts}"
 }
