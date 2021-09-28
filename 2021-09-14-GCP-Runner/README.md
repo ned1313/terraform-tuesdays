@@ -1,21 +1,19 @@
-# GCP Remote Runner
+# Self-hosted Runners for GitHub Actions on Google Cloud
 
-The goal behind this Terraform deployment is to create a set of GCP remote runners for GitHub actions. We are going to use Terraform to create a project and within that project we are going to create the following:
-
-1. A managed instance group that will function as self-hosted remote runners
-1. A service account with permissions to create new projects and resources in those project
-1. Associate the service account with the managed instance group
-1. Create a Google storage account in the current project to hold state
-1. Bootstrap the managed instance group with a GitHub organization instead of a repository
-1. Verify that the runner is ready to go
-
-## The big idea
-
-The big idea here is a way to have a remote runner in GCP create new projects and infrastructure in GCP by using the service account associated with the runner machines. When there is a new Terraform configuration that needs to be deployed, included in the configuration will be a project creation module and a GitHub actions file. The action file will use the remote runner to create a new workspace based on the release tag of the repository, then it will create the a new project and deploy the resources in the project. State will be stored in the runner project in the Google storage account.
+The big idea here is a way to have a self-hosted runner in GCP create new projects and infrastructure in GCP by using the service account associated with the runner machines. When there is a new Terraform configuration that needs to be deployed, included in the configuration will be a project creation module and a GitHub actions file. The action file will use the self-hosted runner to create a new workspace based on the release tag of the repository, then it will create a new project and deploy the resources in the project. State will be stored in the runner project in the Google storage account.
 
 The runner project will be handled separately from the projects it supports. We can store the state in a separate Google storage account or use Terraform Cloud to handle it for us.
 
-## Running this sucker
+## GCP Self-hosted Runner
+
+The goal behind this Terraform deployment is to create a set of GCP self-hosted runners for GitHub actions. We are going to use Terraform to create a project and within that project we are going to create the following:
+
+1. Google project for the self-hosted runners, storage bucket, and service account
+1. Managed instance group that will function as self-hosted runners
+1. Service account with permissions to create new projects
+1. Google storage bucket in the runner project to hold state
+
+## Prerequisites and commands
 
 You're going to need the following variable values to feed into the Terraform configuration:
 
@@ -47,11 +45,19 @@ The token can be generated from your GitHub profile under Developer settings -> 
 export TF_VAR_gh_token=TOKEN_VALUE
 ```
 
-Once you have all your variable values set, standard Terraform workflow applies:
+Once you have all your variable values set, standard Terraform workflow applies. You will need to authenticate to Google Cloud using the `gloud` CLI or with service account credentials. If you want to use your `gcloud` CLI creds, select the configuration you would like to use and then run the following:
+
+```bash
+gcloud auth application-default login
+```
+
+The credentials you use for Google Cloud should have rights at the organization level to create projects, assign roles, and query billing information.
+
+Now you can run the standard Terraform workflow.
 
 ```bash
 terraform init
 terraform apply -auto-approve
 ```
 
-Voila! Now you have GCP instances waiting to accept GitHub actions jobs. In the next installment, we are going to put those suckers to work!
+Voila! Now you have GCP instances waiting to accept GitHub actions jobs. If you go into the Runner settings in your GitHub organization, you should see two runner sitting idle. The output of the Terraform configuration will include the bucket name. In the next installment, we are going to put those self-hosted runners to work!
