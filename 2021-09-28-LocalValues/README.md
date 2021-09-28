@@ -37,13 +37,13 @@ Local values are only available within their module. They are not directly expos
 
 ## Local Value Usage
 
-Local values are used in the same way you might use variables in another programming language. They serve as a temporary placeholder for a value that can be reference throughout your code. A good example is setting default metadata tags for all resources in a configuration. You could set the tags on every single resources, but that would be arduous and difficult to change. By using a local value, you can make a change in a single place and update all resources that refer to the local value.
+Local values are used in the same way you might use variables in another programming language. They serve as a calculated temporary placeholder for a value that can be referenced throughout your code. A good example is setting default metadata tags for all resources in a configuration. You could set the tags on every single resources, but that would be arduous and difficult to change. By using a local value, you can make a change in a single place and update all resources that refer to the local value.
 
 If you have a value that is likely to change in the future and is referred to multiple times in your configuration, then local values are your friend. There is a downside to overusing local values. They can make your code more difficult to parse and analyze, especially when you're working in a large configuration with multiple files and local values blocks sprinkled throughout the config.
 
 ### Usage Strategy
 
-There are two approaches that I have seen when it comes to where to define local values in your configuration. The first is to group them together in a single file to make it easy to find and manipulate them. This is probably the most common and successful approach. I have also seen locals blocks included in the file where their value is used. For instance, you might define locals for your networking in the same file as your virtual network and subnets. You could even combine both approaches to have globally used locals defined in a dedicated file, and resource specific locals defined in the file that includes the target resource types.
+There are two approaches that I have seen when defining local values in your configuration. The first is to group them together in a single file to make it easy to find and manipulate them. This is probably the most common and successful approach. I have also seen locals blocks included in the file where their value is used. For instance, you might define locals for your networking in the same file as your virtual network and subnets. You could even combine both approaches to have globally used locals defined in a dedicated file, and resource specific locals defined in the file that includes the target resource types.
 
 Regardless of which strategy you plan to choose, I'd recommend adding a `README` or comment block in your Terraform configuration that explains how you plan to use local values. This will help not only other developers, but also yourself when you come back to it in six months and have no recollection of what you did.
 
