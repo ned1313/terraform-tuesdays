@@ -238,7 +238,7 @@ module "mig_template" {
     "secret-id" = google_secret_manager_secret_version.votr-secret-version.name
     }
   tags = [
-    "votr-runner-vm", "http-server"
+    "votr-runner-vm", "allow-http"
   ]
 }
 /*****************************************
