@@ -36,3 +36,16 @@ permissions = {
     }
 }
 ```
+
+Nope, terrible ideas. Here's the right way to do it. Create a complex object for workspaces that includes the necessary information and sane defaults:
+
+```terraform
+workspaces = {
+    workspace_name = {
+        read_access = [list of teams]
+        admin_access = [list of teams]
+    }
+}
+```
+
+Create a local value for each access level which is a list of maps including the workspace name and team name for each access level, if the list isn't empty.

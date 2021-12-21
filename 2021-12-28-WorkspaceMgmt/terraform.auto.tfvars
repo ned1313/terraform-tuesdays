@@ -1,33 +1,28 @@
 organization = "globomantics-test"
 
 workspaces = {
-  workspace1 = ["dev", "applications"]
-  workspace2 = ["dev", "infrastructure"]
-  workspace3 = ["prod", "applications"]
-  workspace4 = ["prod","infrastructure"]
+  workspace1 = {
+      read_access = ["auditors"]
+      write_access = []
+      admin_access = ["developers"]
+      tags = ["dev", "applications"]
+  }
+  workspace2 = {
+      read_access = ["auditors"]
+      write_access = []
+      admin_access = ["infrastructure"]
+      tags = ["dev", "infrastructure"]
+  }
+  workspace3 = {
+      read_access = ["auditors"]
+      write_access = ["developers"]
+      admin_access = []
+      tags = ["prod", "applications"]
+  }
 }
 
 teams = {
   developers = []
   opsadmins  = []
   auditors = []
-}
-
-tags = {
-  dev = {
-    developers = "read"
-    opsadmins  = "read"
-    auditors = "read"
-  }
-  applications = {
-    developers = "read"
-  }
-  prod = {
-    developers = "read"
-    opsadmins  = "admin"
-    auditors = "read"
-  }
-  infrastructure = {
-    opsadmins = "read"
-  }
 }
