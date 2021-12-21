@@ -1,6 +1,6 @@
 # Create an organization
 resource "tfe_organization" "org" {
-  name = tfe_organization.org.id
+  name  = tfe_organization.org.id
   email = var.org_email # Define in variables for workspace
 }
 
@@ -26,7 +26,7 @@ locals {
     for workspace, settings in var.workspaces : [
       for read_entry in settings["read_access"] : {
         workspace_name = workspace
-        team_name = read_entry
+        team_name      = read_entry
       } if length(settings["read_access"]) > 0
     ]
   ])
@@ -35,7 +35,7 @@ locals {
     for workspace, settings in var.workspaces : [
       for write_entry in settings["write_access"] : {
         workspace_name = workspace
-        team_name = write_entry
+        team_name      = write_entry
       } if length(settings["write_access"]) > 0
     ]
   ])
@@ -44,7 +44,7 @@ locals {
     for workspace, settings in var.workspaces : [
       for admin_entry in settings["admin_access"] : {
         workspace_name = workspace
-        team_name = admin_entry
+        team_name      = admin_entry
       } if length(settings["admin_access"]) > 0
     ]
   ])
