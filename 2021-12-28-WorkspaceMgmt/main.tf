@@ -1,6 +1,6 @@
 # Create an organization
 resource "tfe_organization" "org" {
-  name  = tfe_organization.org.id
+  name  = var.organization
   email = var.org_email # Define in variables for workspace
 }
 
