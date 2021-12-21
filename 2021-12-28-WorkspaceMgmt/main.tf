@@ -62,7 +62,7 @@ resource "tfe_team_access" "write_access" {
 
 resource "tfe_team_access" "admin_access" {
   count        = length(local.workspace_admin_access)
-  access       = "write"
+  access       = "admin"
   team_id      = tfe_team.teams[local.workspace_admin_access[count.index].team_name].id
   workspace_id = tfe_workspace.workspaces[local.workspace_admin_access[count.index].workspace_name].id
 }
