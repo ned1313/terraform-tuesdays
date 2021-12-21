@@ -1,8 +1,14 @@
+# Create an organization
+resource "tfe_organization" "org" {
+  name = tfe_organization.org.id
+  email = var.org_email # Define in variables for workspace
+}
+
 # Create workspaces
 resource "tfe_workspace" "workspaces" {
   for_each     = var.workspaces
   name         = each.key
-  organization = var.organization
+  organization = tfe_organization.org.id
   tag_names    = each.value["tags"]
 }
 
@@ -10,7 +16,7 @@ resource "tfe_workspace" "workspaces" {
 resource "tfe_team" "teams" {
   for_each     = toset(keys(var.teams))
   name         = each.value
-  organization = var.organization
+  organization = tfe_organization.org.id
   visibility   = "organization"
 }
 

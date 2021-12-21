@@ -1,4 +1,4 @@
-organization = "globomantics-test"
+organization = "taco-workspaces"
 
 workspaces = {
   workspace1 = {
