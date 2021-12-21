@@ -10,7 +10,7 @@ workspaces = {
   workspace2 = {
       read_access = ["auditors"]
       write_access = []
-      admin_access = ["infrastructure"]
+      admin_access = ["opsadmins"]
       tags = ["dev", "infrastructure"]
   }
   workspace3 = {
