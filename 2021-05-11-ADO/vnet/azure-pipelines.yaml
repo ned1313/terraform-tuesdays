@@ -89,7 +89,7 @@ stages:
     - task: ManualValidation@0
       timeoutInMinutes: 30
       inputs:
-        notifyUsers: 'test@gmail.com'
+        notifyUsers: 'ned@nedinthecloud.com'
         instructions: 'Review the plan in the next hour'
 
 - stage: Apply
@@ -102,7 +102,7 @@ stages:
     - task: TerraformInstaller@0
       displayName: Install Terraform
       inputs:
-        terraformVersion: 'latest'
+        terraformVersion: '0.15.5'
 
   # Init
     - task: TerraformCLI@0
