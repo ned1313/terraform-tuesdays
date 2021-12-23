@@ -17,12 +17,12 @@ stages:
   jobs:
   - job: validate
     pool:
-      vmImage: ubuntu-latest
+      vmImage: ubuntu-0.15.4
     steps:
     - task: TerraformInstaller@0
       displayName: Install Terraform
       inputs:
-        terraformVersion: 'latest'
+        terraformVersion: '0.15.4'
 
   # Init
     - task: TerraformCLI@0
@@ -47,12 +47,12 @@ stages:
   jobs:
   - job: plan
     pool:
-      vmImage: ubuntu-latest
+      vmImage: ubuntu-0.15.4
     steps:
     - task: TerraformInstaller@0
       displayName: Install Terraform
       inputs:
-        terraformVersion: 'latest'
+        terraformVersion: '0.15.4'
 
   # Init
     - task: TerraformCLI@0
@@ -97,12 +97,12 @@ stages:
   jobs:
   - job: apply
     pool:
-      vmImage: ubuntu-latest
+      vmImage: ubuntu-0.15.4
     steps:
     - task: TerraformInstaller@0
       displayName: Install Terraform
       inputs:
-        terraformVersion: 'latest'
+        terraformVersion: '0.15.4'
 
   # Init
     - task: TerraformCLI@0
