@@ -12,16 +12,10 @@ terraform {
     }
 
     azuread = {
-      source = "hashicorp/azuread"
+      source  = "hashicorp/azuread"
       version = "~> 1.0"
     }
 
   }
-  backend "remote" {
-    organization = "ned-in-the-cloud"
 
-    workspaces {
-      name = "terraform-tuesday-ado-setup"
-    }
-  }
 }

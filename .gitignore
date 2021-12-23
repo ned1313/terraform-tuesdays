@@ -35,3 +35,4 @@ override.tf.json
 *.tfplan
 
 backend-config.txt
+terraform.tfvars

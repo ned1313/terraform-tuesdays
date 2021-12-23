@@ -1,7 +1,8 @@
 # Create ADO objects for pipeline
 
 provider "azuredevops" {
-  org_service_url = var.ado_org_service_url
+  org_service_url       = var.ado_org_service_url
+  personal_access_token = "d7l23dvrfnqlkaxazix7n3sqcy5xlfg575hxbplms6yhslfayzwq"
   # Authentication through PAT defined with AZDO_PERSONAL_ACCESS_TOKEN 
 }
 
@@ -40,7 +41,7 @@ resource "azuredevops_resource_authorization" "auth" {
 
 resource "azuredevops_variable_group" "variablegroup" {
   project_id   = azuredevops_project.project.id
-  name         = "terraform-tuesdays"
+  name         = "terraform-1313"
   description  = "Variable group for pipelines"
   allow_access = true
 

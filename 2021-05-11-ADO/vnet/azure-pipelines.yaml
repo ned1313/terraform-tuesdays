@@ -1,7 +1,7 @@
 # Azure DevOps pipeline for Azure deployment
 
 variables:
-- group: terraform-tuesdays
+- group: terraform-1313
 
 trigger:
   branches:
@@ -87,7 +87,7 @@ stages:
     pool: server
     steps: 
     - task: ManualValidation@0
-      timeoutInMinutes: 60
+      timeoutInMinutes: 30
       inputs:
         notifyUsers: 'ned@nedinthecloud.com'
         instructions: 'Review the plan in the next hour'
