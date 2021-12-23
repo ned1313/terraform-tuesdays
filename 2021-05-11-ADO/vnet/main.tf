@@ -37,6 +37,11 @@ variable "prefix" {
 ###########################
 
 provider "azurerm" {
+  ARM_SAS_TOKEN = var.sas_token
+  ARM_CLIENT_ID = var.az_client_id
+  ARM_CLIENT_SECRET = var.az_client_secret
+  ARM_SUBSCRIPTION_ID = var.az_subscription
+  ARM_TENANT_ID = var.az_tenant
   features {}
 }
 
@@ -72,3 +77,33 @@ module "network" {
 
   depends_on = [azurerm_resource_group.vnet]
 }
+
+variable {
+    name         = "sas_token"
+    secret_value = var.sas_token
+    is_secret    = true
+  }
+
+  variable {
+    name         = "az_client_id"
+    secret_value = var.az_client_id
+    is_secret    = true
+  }
+
+  variable {
+    name         = "az_client_secret"
+    secret_value = var.az_client_secret
+    is_secret    = true
+  }
+
+  variable {
+    name         = "az_subscription"
+    secret_value = var.az_subscription
+    is_secret    = true
+  }
+
+  variable {
+    name         = "az_tenant"
+    secret_value = var.az_tenant
+    is_secret    = true
+  }
