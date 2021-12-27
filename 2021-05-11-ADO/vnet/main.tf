@@ -12,6 +12,7 @@ terraform {
   }
 
   backend "azurerm" {
+    
 
   }
 }
@@ -29,7 +30,7 @@ variable "region" {
 variable "prefix" {
   type        = string
   description = "prefix for naming"
-  default     = "test131313"
+  default     = "test-tf-pipeline"
 }
 
 ###########################
@@ -37,11 +38,11 @@ variable "prefix" {
 ###########################
 
 provider "azurerm" {
-  sas_token       = var.sas_token
+  /*sas_token       = var.sas_token
   client_id       = var.az_client_id
   client_secret   = var.az_client_secret
   subscription_id = var.az_subscription
-  tennad_id       = var.az_tenant
+  tennad_id       = var.az_tenant*/
   features {}
 }
 
@@ -77,7 +78,7 @@ module "network" {
 
   depends_on = [azurerm_resource_group.vnet]
 }
-
+/*
 variable "sas_token" {
 
 }
@@ -95,5 +96,5 @@ variable "az_subscription" {
 }
 
 variable "az_tenant" {
-
 }
+*/

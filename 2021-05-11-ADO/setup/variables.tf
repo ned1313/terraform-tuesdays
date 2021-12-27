@@ -3,6 +3,9 @@ variable "ado_org_service_url" {
   description = "Org service url for Azure DevOps"
 }
 
+variable "ado_personal_access_token" {
+  type = string
+}
 variable "ado_github_repo" {
   type        = string
   description = "Name of the repository in the format <GitHub Org>/<RepoName>"
@@ -24,7 +27,7 @@ variable "ado_github_pat" {
 variable "prefix" {
   type        = string
   description = "Naming prefix for resources"
-  default     = "test1313"
+  default     = "terraform"
 }
 
 variable "az_location" {
@@ -70,7 +73,7 @@ resource "random_integer" "suffix" {
 }
 
 locals {
-  ado_project_name        = "${var.prefix}-project-${random_integer.suffix.result}"
+  ado_project_name        = "${var.prefix}-project"
   ado_project_description = "Project for ${var.prefix}"
   ado_project_visibility  = "private"
   ado_pipeline_name_1     = "${var.prefix}-pipeline-1"
