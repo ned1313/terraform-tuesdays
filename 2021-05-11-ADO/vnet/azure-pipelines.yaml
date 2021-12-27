@@ -1,7 +1,7 @@
 # Azure DevOps pipeline for Azure deployment
 
 variables:
-- group: terraform-1313
+- group: terraform-test-vars
 
 trigger:
   branches:
