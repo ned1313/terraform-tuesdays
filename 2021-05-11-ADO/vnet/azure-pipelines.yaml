@@ -24,7 +24,7 @@ stages:
       inputs:
         terraformVersion: 'latest'
 
-  # Init
+  ## Init
     - task: TerraformCLI@0
       displayName: Initialize Terraform
       env:
@@ -35,7 +35,7 @@ stages:
         commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container_name) -backend-config=key=$(key)'
         backendType: 'selfConfigured'
 
-  # Validate
+  ## Validate
     - task: TerraformCLI@0
       displayName: Validate Config
       inputs:
@@ -54,7 +54,7 @@ stages:
       inputs:
         terraformVersion: 'latest'
 
-  # Init
+  ## Init
     - task: TerraformCLI@0
       displayName: Initialize Terraform
       env:
@@ -65,7 +65,7 @@ stages:
         commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container_name) -backend-config=key=$(key)'
         backendType: 'selfConfigured'
 
-  # Plan
+  ## Plan
     - task: TerraformCLI@0
       displayName: Plan Terraform Deployment
       env:
@@ -78,7 +78,7 @@ stages:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/2021-05-11-ADO/vnet'
 
-# Approve
+
 - stage: Approve
   displayName: Approve
   jobs:
@@ -89,7 +89,7 @@ stages:
     - task: ManualValidation@0
       timeoutInMinutes: 30
       inputs:
-        notifyUsers: 'ned@nedinthecloud.com'
+        notifyUsers: 'terraform_cicd_devop@outlook.com'
         instructions: 'Review the plan in the next hour'
 
 - stage: Apply
