@@ -1,7 +1,8 @@
 # Azure DevOps pipeline for Azure deployment
 
 variables:
-- group: terraform-tuesdays
+- group: terraform-test-vars
+
 
 trigger:
   branches:
