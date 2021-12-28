@@ -1,7 +1,7 @@
 # Create ADO objects for pipeline
 
 provider "azuredevops" {
-  org_service_url = var.ado_org_service_url
+  org_service_url       = var.ado_org_service_url
   personal_access_token = var.ado_personal_access_token
   # Authentication through PAT defined with AZDO_PERSONAL_ACCESS_TOKEN 
 }
