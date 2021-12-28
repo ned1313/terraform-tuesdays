@@ -94,6 +94,6 @@ locals {
     az-tenant        = data.azurerm_client_config.current.tenant_id
   }
 
-  azad_service_connection_sp_name = "${var.prefix}-service-connection-${random_integer.suffix.result}"
-  azad_resource_creation_sp_name  = "${var.prefix}-resource-creation-${random_integer.suffix.result}"
+  azad_service_connection_sp_name = "${var.prefix}-service-connection"
+  azad_resource_creation_sp_name  = "${var.prefix}-resource-creation"
 }
