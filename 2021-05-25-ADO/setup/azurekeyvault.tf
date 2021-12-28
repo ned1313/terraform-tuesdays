@@ -33,7 +33,7 @@ resource "azurerm_key_vault_access_policy" "you" {
   ]
 }
 
-# Grant the pipeline SP access to [get,list] secrets from the KV
+# Grant the pipeline SP access to secrets from the KV
 resource "azurerm_key_vault_access_policy" "pipeline" {
   key_vault_id = azurerm_key_vault.setup.id
 
@@ -41,7 +41,7 @@ resource "azurerm_key_vault_access_policy" "pipeline" {
   object_id = azuread_service_principal.service_connection.object_id
 
   secret_permissions = [
-    "get", "list",
+    "get", "list", "set", "delete", "purge", "recover"
   ]
 
 }

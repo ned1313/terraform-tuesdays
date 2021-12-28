@@ -29,8 +29,8 @@ stages:
     # Download Azure Key Vault secrets
     - task: AzureKeyVault@1
       inputs:
-        ConnectedServiceName: $(service_name)
-        keyVaultName: $(key_vault_name)
+        ConnectedServiceName: key_vault
+        keyVaultName: terraform99710
         secretsFilter: '*'
         runAsPreJob: false # Azure DevOps Services only
     

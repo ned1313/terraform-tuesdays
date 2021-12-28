@@ -45,6 +45,6 @@ resource "azuread_service_principal_password" "resource_creation" {
 
 resource "azurerm_role_assignment" "resource_creation" {
   scope                = data.azurerm_subscription.current.id
-  role_definition_name = "Owner"
+  role_definition_name = "Contributor"
   principal_id         = azuread_service_principal.resource_creation.object_id
 }
