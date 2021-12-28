@@ -41,7 +41,7 @@ resource "azuredevops_resource_authorization" "auth" {
 
 resource "azuredevops_variable_group" "variablegroup" {
   project_id   = azuredevops_project.project.id
-  name         = "terraform-tuesdays"
+  name         = "terraform-test-vars"
   description  = "Variable group for pipelines"
   allow_access = true
 
