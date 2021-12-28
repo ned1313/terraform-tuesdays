@@ -3,7 +3,6 @@
 variables:
 - group: terraform-test-vars
 
-
 trigger:
   branches:
     include:
@@ -29,8 +28,8 @@ stages:
     # Download Azure Key Vault secrets
     - task: AzureKeyVault@1
       inputs:
-        ConnectedServiceName: key_vault
-        keyVaultName: terraform99710
+        ConnectedServiceName: $(service_name)
+        keyVaultName: $(key_vault_name)
         secretsFilter: '*'
         runAsPreJob: false # Azure DevOps Services only
     
