@@ -1,7 +1,8 @@
 # Create ADO objects for pipeline
 
 provider "azuredevops" {
-  org_service_url = var.ado_org_service_url
+  org_service_url       = var.ado_org_service_url
+  personal_access_token = var.ado_personal_access_token
   # Authentication through PAT defined with AZDO_PERSONAL_ACCESS_TOKEN 
 }
 
@@ -25,7 +26,7 @@ resource "azuredevops_project" "project" {
 
 resource "azuredevops_serviceendpoint_github" "serviceendpoint_github" {
   project_id            = azuredevops_project.project.id
-  service_endpoint_name = "terraform-tuesdays"
+  service_endpoint_name = "terraform-test-github"
 
   auth_personal {
     personal_access_token = var.ado_github_pat
@@ -40,7 +41,7 @@ resource "azuredevops_resource_authorization" "auth" {
 
 resource "azuredevops_variable_group" "variablegroup" {
   project_id   = azuredevops_project.project.id
-  name         = "terraform-tuesdays"
+  name         = "terraform-test-vars"
   description  = "Variable group for pipelines"
   allow_access = true
 
@@ -50,7 +51,7 @@ resource "azuredevops_variable_group" "variablegroup" {
   }
 
   variable {
-    name = "key_vault_name"
+    name  = "key_vault_name"
     value = local.az_key_vault_name
   }
 
@@ -81,17 +82,17 @@ resource "azuredevops_build_definition" "pipeline_1" {
 ## https://registry.terraform.io/providers/microsoft/azuredevops/latest/docs/resources/serviceendpoint_azurerm
 
 resource "azuredevops_serviceendpoint_azurerm" "key_vault" {
-  project_id = azuredevops_project.project.id
+  project_id            = azuredevops_project.project.id
   service_endpoint_name = "key_vault"
-  description = "Azure Service Endpoint for Key Vault Access"
+  description           = "Azure Service Endpoint for Key Vault Access"
 
   credentials {
-    serviceprincipalid = azuread_application.service_connection.application_id
-    serviceprincipalkey = random_password.service_connection.result
+    serviceprincipalid  = azuread_application.service_connection.application_id
+    serviceprincipalkey = azuread_service_principal_password.service_connection.value
   }
 
-  azurerm_spn_tenantid = data.azurerm_client_config.current.tenant_id
-  azurerm_subscription_id = data.azurerm_client_config.current.subscription_id
+  azurerm_spn_tenantid      = data.azurerm_client_config.current.tenant_id
+  azurerm_subscription_id   = data.azurerm_client_config.current.subscription_id
   azurerm_subscription_name = data.azurerm_subscription.current.display_name
 }
 

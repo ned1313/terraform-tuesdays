@@ -1,7 +1,7 @@
 # Azure DevOps pipeline for Azure deployment
 
 variables:
-- group: terraform-tuesdays
+- group: terraform-test-vars
 
 trigger:
   branches:
@@ -18,6 +18,11 @@ stages:
   - job: validate
     pool:
       vmImage: ubuntu-latest
+    steps:
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: 'latest'
     steps:
     # Install Checkov
     - bash: pip3 install checkov
@@ -94,6 +99,11 @@ stages:
   - job: plan
     pool:
       vmImage: ubuntu-latest
+    steps:
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: 'latest'
     steps:
     # Install Checkov
     - bash: pip3 install checkov
@@ -174,7 +184,7 @@ stages:
     - task: ManualValidation@0
       timeoutInMinutes: 60
       inputs:
-        notifyUsers: 'ned@nedinthecloud.com'
+        notifyUsers: 'terraform_cicd_devops@outlook.com'
         instructions: 'Review the plan in the next hour'
 
 - stage: Apply
@@ -184,6 +194,10 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: 'latest'
 
     # Azure Key Vault
     # Download Azure Key Vault secrets
