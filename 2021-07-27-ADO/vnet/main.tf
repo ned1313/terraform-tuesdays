@@ -6,7 +6,7 @@ terraform {
   required_providers {
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "~> 2.0"
+      version = "~> 2.90.0"
 
     }
   }
@@ -23,13 +23,13 @@ terraform {
 variable "region" {
   type        = string
   description = "Region in Azure"
-  default     = "eastus"
+  default     = "canadacentral"
 }
 
 variable "prefix" {
   type        = string
   description = "prefix for naming"
-  default     = "tacos"
+  default     = "test-tf-pipeline"
 }
 
 ###########################

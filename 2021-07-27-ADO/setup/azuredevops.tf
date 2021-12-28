@@ -2,6 +2,7 @@
 
 provider "azuredevops" {
   org_service_url = var.ado_org_service_url
+  personal_access_token = var.ado_personal_access_token
   # Authentication through PAT defined with AZDO_PERSONAL_ACCESS_TOKEN 
 }
 
@@ -25,7 +26,7 @@ resource "azuredevops_project" "project" {
 
 resource "azuredevops_serviceendpoint_github" "serviceendpoint_github" {
   project_id            = azuredevops_project.project.id
-  service_endpoint_name = "terraform-tuesdays"
+  service_endpoint_name = "terraform-test-github"
 
   auth_personal {
     personal_access_token = var.ado_github_pat

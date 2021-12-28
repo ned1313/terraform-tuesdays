@@ -22,7 +22,6 @@ resource "random_password" "service_connection" {
 
 resource "azuread_service_principal_password" "service_connection" {
   service_principal_id = azuread_service_principal.service_connection.object_id
-  value                = random_password.service_connection.result
 }
 
 # Create SP for creation of Azure resources in selected subscription.
@@ -42,7 +41,6 @@ resource "random_password" "resource_creation" {
 
 resource "azuread_service_principal_password" "resource_creation" {
   service_principal_id = azuread_service_principal.resource_creation.object_id
-  value                = random_password.resource_creation.result
 }
 
 resource "azurerm_role_assignment" "resource_creation" {

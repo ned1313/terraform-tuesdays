@@ -1,7 +1,7 @@
 # Azure DevOps pipeline for PR on Terraform Code
 
 variables:
-- group: terraform-tuesdays
+- group: terraform-test-vars
 
 trigger:
   branches:
@@ -72,7 +72,6 @@ stages:
       name: 'checkov_module_check'
 
     # Publish test results for modules
-    # Shout out to Adin Ermie for this one! https://adinermie.com/publishing-checkov-terraform-quality-checks-to-azure-devops-pipelines/
     - task: PublishTestResults@2
       displayName: Publish Checkov Module Test Results
       condition: succeededOrFailed()
@@ -185,7 +184,7 @@ stages:
         failTaskOnFailedTests: false
         publishRunAttachments: true
 
-    # Push plan file to Azure Storage Account for Apply
+    # Push plan file for Apply
     - task: PublishPipelineArtifact@1
       displayName: Publish Plan File as an artifact
       inputs:
