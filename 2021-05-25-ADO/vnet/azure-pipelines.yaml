@@ -107,7 +107,7 @@ stages:
     - task: ManualValidation@0
       timeoutInMinutes: 60
       inputs:
-        notifyUsers: 'ned@nedinthecloud.com'
+        notifyUsers: 'terraform_cicd_devops@outlook.com'
         instructions: 'Review the plan in the next hour'
 
 - stage: Apply

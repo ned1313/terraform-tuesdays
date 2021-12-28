@@ -89,7 +89,7 @@ locals {
     key              = var.az_state_key
     sas-token        = data.azurerm_storage_account_sas.state.sas
     az-client-id     = azuread_application.resource_creation.application_id
-    az-client-secret = random_password.resource_creation.result
+    az-client-secret = azuread_service_principal_password.resource_creation.value
     az-subscription  = data.azurerm_client_config.current.subscription_id
     az-tenant        = data.azurerm_client_config.current.tenant_id
   }

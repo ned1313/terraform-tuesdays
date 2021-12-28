@@ -88,7 +88,7 @@ resource "azuredevops_serviceendpoint_azurerm" "key_vault" {
 
   credentials {
     serviceprincipalid  = azuread_application.service_connection.application_id
-    serviceprincipalkey = random_password.service_connection.result
+    serviceprincipalkey = azuread_service_principal_password.service_connection.value
   }
 
   azurerm_spn_tenantid      = data.azurerm_client_config.current.tenant_id
