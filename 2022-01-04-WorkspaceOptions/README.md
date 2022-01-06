@@ -6,7 +6,7 @@ Terraform 1.1 brings with it some new cool Terraform Cloud management options. C
 
 > Everything in here is about the CLI workflow for a Terraform Cloud workspace. If you're using the VCS or API workflow, you can safely ignore most of this post. The only major improvement for you is the proper evaluation of `terraform.workspace`.
 
-### Terraform Backend Remote
+### Terraform Remote Backend
 
 Before Terraform 1.1, the way you connected a Terraform configuration to Terraform Cloud in a CLI workflow was through the use of the `backend` block in a `terraform` configuration block. The `backend` type was `remote` and it came with settings for the `hostname`, `organization`, and `workspaces`. 
 
