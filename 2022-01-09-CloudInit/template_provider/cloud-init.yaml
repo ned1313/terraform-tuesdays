@@ -1,0 +1,9 @@
+#cloud-config
+
+# Update packages?
+# Defaults to false
+package_update: ${package_update}
+
+#Upgrade packages?
+# Defaults to false
+package_upgrade: ${package_upgrade}
