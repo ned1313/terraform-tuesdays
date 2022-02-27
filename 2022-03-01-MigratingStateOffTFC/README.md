@@ -30,7 +30,7 @@ When you run `terraform workspace list`, Terraform looks at the subdirectories i
 
 For the second question, Terraform knows which workspace is currently active by writing it to the file `.terraform/environment`. Terraform will create this file when you create your first non-default workspace. The file will have a single entry, the name of the currently active workspace. Running `terraform workspace select` simply changes the entry in this file.
 
-## Alright! So let's deploy to Terraform Cloud.
+## Alright! So let's deploy to Terraform Cloud
 
 Yes, I know this is all about migrating off Terraform Cloud, but first we have to get our data on Terraform Cloud to start with. The configuration I'm going to deploy has the following `terraform` configuration block:
 
@@ -93,7 +93,7 @@ The `environment` file serves the same function as before, it has a single entry
 
 ```
 
-The actual state data is securely stored in the Terraform Cloud workspace. We can grab that state data by going to the UI or by running `terraform state pull`. 
+The actual state data is securely stored in the Terraform Cloud workspace. We can grab that state data by going to the UI or by running `terraform state pull`.
 
 ## Migrating to the Local Backend
 
@@ -117,6 +117,7 @@ Migrating from Terraform Cloud to local state.
 │
 ╵
 ```
+
 *Ouch.*
 
 That's okay! We can figure this out with all the knowledge we've already gained. The first thing I want to point out is that Terraform Cloud is apparently magic? If you run `terraform workspace list`, you'll discover that there is no `default` workspace. That's... not supposed to be allowed.
@@ -134,7 +135,7 @@ But okay. So what do we need in place locally to support our `tfc-migration-test
 * Update the configuration to remove the `cloud` block
 * Run `terraform init` to prepare local files
 
-That should do it! 
+That should do it!
 
 ```bash
 > mkdir -p terraform.tfstate.d/tfc-migration-test
@@ -153,7 +154,7 @@ Sure enough, if we make a change to the configuration, a plan will run successfu
 
 ## Migrating to an AzureRM Storage Account
 
-Will the migration process be any easier if we're moving to another remote backend instead of the `local` backend? 
+Will the migration process be any easier if we're moving to another remote backend instead of the `local` backend?
 
 ```bash
 > terraform init -backend-config="backend.txt"
@@ -208,7 +209,7 @@ And I have the Azure Service Principal information stored in environment variabl
 
 ## Conclusion
 
-In this post we've seen how to migrate from Terraform Cloud to either the `local` or `azurerm` backend. The process for any other backend would be similar, except you'll need to know how it handles workspaces and the actual state file data. 
+In this post we've seen how to migrate from Terraform Cloud to either the `local` or `azurerm` backend. The process for any other backend would be similar, except you'll need to know how it handles workspaces and the actual state file data.
 
 As an alternative, you could perform a two stage migration from Terraform Cloud to `local` and then from `local` to your remote backend of choice. Either way, you'll still need to pull the state data down to an intermediary location before uploading to the new remote backend.
 
