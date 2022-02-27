@@ -1,0 +1,141 @@
+{
+    "workspaces": [
+        {
+            "name": "app1-aws-staging",
+            "description": "Staging workspace for App 1",
+            "teams": [
+                {
+                    "name": "org_admins",
+                    "access_level": "admin"
+                },
+                {
+                    "name": "app1-developers",
+                    "access_level": "plan"
+                },
+                {
+                    "name": "compliance",
+                    "access_level": "read"
+                },
+                {
+                    "name": "security",
+                    "access_level": "read"
+                }
+            ],
+            "tag_names": [
+                "app1",
+                "staging"
+            ],
+            "vcs_repo": {
+                "identifier": "ned1313/terraform-tuesdays",
+                "branch": "staging"
+            }
+        },
+        {
+            "name": "app1-aws-dev",
+            "description": "Development workspace for App 1",
+            "teams": [
+                {
+                    "name": "org_admins",
+                    "access_level": "admin"
+                },
+                {
+                    "name": "app1-developers",
+                    "access_level": "plan"
+                },
+                {
+                    "name": "security",
+                    "access_level": "read"
+                }
+            ],
+            "terraform_version": "1.1.0",
+            "vcs_repo": {
+                "identifier": "ned1313/terraform-tuesdays",
+                "branch": "development"
+            }
+        },
+        {
+            "name": "app1-aws-prod",
+            "teams": [
+                {
+                    "name": "org_admins",
+                    "access_level": "admin"
+                },
+                {
+                    "name": "app1-developers",
+                    "access_level": "plan"
+                },
+                {
+                    "name": "security",
+                    "access_level": "read"
+                }
+            ],
+            "terraform_version": "1.1.0",
+            "tag_names": [
+                "app1",
+                "prod"
+            ]
+        }
+    ],
+    "teams": [
+        {
+            "name": "org_admins",
+            "visibility": "secret",
+            "organization_access": {
+                "manage_policies": true,
+                "manage_policy_overrides": false,
+                "manage_workspaces": true,
+                "manage_vcs_settings": true
+            },
+            "members": [
+                "bob@example.com"
+            ]
+        },
+        {
+            "name": "app1-developers",
+            "visibility": "organization",
+            "organization_access": {
+                "manage_policies": false,
+                "manage_policy_overrides": false,
+                "manage_workspaces": false,
+                "manage_vcs_settings": false
+            },
+            "members": [
+                "sally@example.com",
+                "cho@example.com",
+                "bob@example.com"
+            ]
+        },
+        {
+            "name": "security",
+            "visibility": "organization",
+            "organization_access": {
+                "manage_policies": true,
+                "manage_policy_overrides": false,
+                "manage_workspaces": false,
+                "manage_vcs_settings": false
+            },
+            "members": [
+                "carlos@example.com",
+                "jenn@example.com"
+            ]
+        },
+        {
+            "name": "compliance",
+            "visibility": "organization",
+            "organization_access": {
+                "manage_policies": true,
+                "manage_policy_overrides": true,
+                "manage_workspaces": false,
+                "manage_vcs_settings": false
+            },
+            "members": []
+        }
+    ],
+    "vcs_connections": [
+        {
+            "service_provider": "github",
+            "api_url": "https://api.github.com",
+            "http_url": "https://github.com"
+        }
+    ]
+}
