@@ -1,213 +1,59 @@
 # Migrating Off Terraform Cloud
 
-Terraform Cloud is a pretty cool service with a bunch of excellent features. But what if you decide it's just not working out? *Sorry TFC. It's not you. It's me.* How do you migrate off of Terraform Cloud and onto another platform? In particular, how do you migrate your state data off TFC to another backend? That is what I'll address in this post.
+This demo is meant to accompany [this blog post](https://nedinthecloud.com/2022/03/03/migrating-state-data-off-terraform-cloud/) about how to migrate state off Terraform Cloud to either the `local` backend or `azurerm` backend. I'm not going to rehash all the details here, go [read the post](https://nedinthecloud.com/2022/03/03/migrating-state-data-off-terraform-cloud/! The files in this directory can help you follow along with the post and see how the whole thing works. 
 
-## State Data Storage
+## Prerequisites
 
-I want to start with a few Terraform basics, since this is going to factor heavily into how state data is managed and migrated. For starters, state data is the mapping between what exists in your Terraform config and what is deployed in the target environment. I've written about it extensively in [my post of what happens when changes occur outside of Terraform](https://nedinthecloud.com/2021/12/23/terraform-apply-when-external-change-happens/), so I won't rehash it here.
+You're going to need a few things to follow along:
 
-State data needs somewhere to live. The default location is the `local` backend, creating state files in the same directory as your configuration. There are two different scenarios to consider: working with the `default` workspace only and working with multiple workspaces. Terraform OSS workspaces allow you to use the same configuration to support multiple target environments. Each workspace has its own state data, which means Terraform needs to create multiple state data files when using the `local` backend.
+* Azure subscription with Admin level access
+* Access to create a service principal on the Azure AD tenant associated with your subscription
+* Terraform Cloud account and organization
+* Azure CLI installed locally with a profile
 
-When you first spin up a Terraform configuration using the `local` backend, you have a single `default` workspace. You cannot remove the `default` workspace, you don't have to deploy anything to it. Simply create a new workspace and then run your `terraform apply`. A few key questions come to mind:
+## Remote State Setup
 
-1. Where does Terraform store the workspace listing?
-1. Where does Terraform put the data for each workspace?
-1. How does Terraform know which workspace is currently active?
+The `remote_state_setup` directory contains a terraform configuration that will generate the following resources:
 
-Starting with the first question, assuming you're using the `local` backend, when you create a the first non-default workspace, Terraform creates the directory `terraform.tfstate.d`. Each non-default workspace gets a subdirectory inside the `terraform.tfstate.d` directory. For instance, if I have the following workspaces: default, development, and production, then I will have the following file tree.
+* Azure service principal and application for managing state and deploying infrastructure
+* Azure storage account and container for remote state data storage
+* `backend.txt` file containing the additional configuration info for the `azurerm` backend
 
-```bash
-> tree terraform.tfstate.d
+You'll need an Azure service principal to deploy infrastructure to Azure using Terraform Cloud. The output of the configuration includes the environment variables you will need to set in the Terraform Cloud workspace you'll be doing the initial deployment from.
 
-terraform.tfstate.d/
-├── development
-└── production
-```
+## Main Configuration
 
-The state data for each workspace will be stored in a `terraform.tfstate` file inside each workspace directory. You might notice the `default` workspace doesn't have a directory. It will store state data in the file `terraform.tfstate` in the configuration directory.
+The `main_config` directory contains a Terraform configuration that will deploy an Azure App Service instance, using Terraform Cloud as the state data backend. You will need to update the `cloud` block in the `terraform.tf` file to be your Terraform Cloud organization. You could also choose to change the workspace name or leave it as is.
 
-When you run `terraform workspace list`, Terraform looks at the subdirectories inside `terraform.tfstate.d` and compiles a list from there, adding the `default` workspace since it won't have a directory.
+To perform the initial deployment, update the `terraform.tf` file and run a `terraform init`. That will create the workspace in Terraform Cloud if it doesn't already exist. Then go into the workspace and set the follow environment variables with the output from the remote state setup config:
 
-Terraform knows which workspace is currently active by writing it to the file `.terraform/environment`. Terraform will create this file when you create your first non-default workspace. The file will have a single entry, the name of the currently active workspace. Running `terraform workspace select` simply changes the entry in this file.
+* ARM_CLIENT_ID
+* ARM_CLIENT_SECRET
+* ARM_SUBSCRIPTION_ID
+* ARM_TENANT_ID
 
-The way that Terraform organizes and writes state data for workspaces differs based on the backend being used. The information above is specific to the `local` backend. The `azurerm` backend we'll use later takes a different approach, adding `env:workspace_name` to the end of each state data blob and storing all the blobs in the same storage account container.
+Terraform Cloud will use those credentials with its remote runner to deploy the infrastructure to Azure.
 
-One thing all the backends have in common is the local `.terraform/environment` file that tells the Terraform CLI which workspace is currently selected.
-
-## Alright! So let's deploy to Terraform Cloud
-
-Yes, I know this is all about migrating **off** Terraform Cloud, but first we have to get our data **on** Terraform Cloud to begin with. The configuration I'm going to deploy has the following `terraform` configuration block:
-
-```terraform
-terraform {
-  required_providers {
-    azurerm = {
-      source  = "hashicorp/azurerm"
-      version = "~> 2.0"
-    }
-  }
-  #backend "azurerm" {
-  #  key = "webapp"
-  #}
-
-  cloud {
-      organization = "ned-in-the-cloud"
-      workspaces {
-          name = "tfc-migration-test"
-      }
-  }
-}
-```
-
-You might notice the `azurerm` backend config commented out. We'll eventually try and get our config migrated to an Azure Storage Account, but first we'll look into how to migrate to a `local` backend.
-
-After we've run a `terraform init` and `terraform apply` our local directory does not have a `terraform.tfstate` file or `terraform.tfstate.d` directory. That's because we're using the `cloud` backend.  However, in the `.terraform` directory we have an environment file and a `terraform.tfstate` file. What's in those files?
-
-The `environment` file serves the same function as before, it has a single entry identifying the currently selected workspace. The `terraform.tfstate` file holds information about the `cloud` backend:
-
-```json
-{
-    "version": 3,
-    "serial": 1,
-    "lineage": "8e0c46e8-ef07-a6f3-1558-08d5bba7d574",
-    "backend": {
-        "type": "cloud",
-        "config": {
-            "hostname": null,
-            "organization": "ned-in-the-cloud",
-            "token": null,
-            "workspaces": {
-                "name": "tfc-migration-test",
-                "tags": null
-            }
-        },
-        "hash": 4214871454
-    },
-    "modules": [
-        {
-            "path": [
-                "root"
-            ],
-            "outputs": {},
-            "resources": {},
-            "depends_on": []
-        }
-    ]
-}
-
-```
-
-The actual state data is securely stored in the Terraform Cloud workspace. We can grab that state data by going to the UI or by running `terraform state pull`.
+After setting the environment variables, run a `terraform apply` from the command line to deploy the infrastructure.
 
 ## Migrating to the Local Backend
 
-If you were going to migrate your state between any other two backends, the process would generally be:
+To migrate your state data to a local backend, simply follow the process outlined in [the blog post](https://nedinthecloud.com/2022/03/03/migrating-state-data-off-terraform-cloud/):
 
-1. Update the Terraform configuration with the new backend
-1. Run `terraform init` to update the backend and migrate state data
 
-But, as of right now, Terraform Cloud doesn't work that way. If we comment out the `cloud` block from our configuration and run `terraform init` we will get the following error:
+1. In the `main_config` directory, create a `terraform.tfstate.d` directory with a `tfc-migration-test` subdirectory
+   - `mkdir -p terraform.tfstate.d/tfc-migration-test`
+1. Make a copy of the TFC state data, saving it to a `terraform.tfstate` file in the `tfc-migration-test` directory
+   - `terraform state pull > terraform.tfstate.d/tfc-migration-test/terraform.tfstate`
+1. Rename the `terraform.tfstate` file in the `.terraform` directory
+   - `mv .terraform/terraform.tfstate .terraform/terraform.tfstate.old`
+1. Comment out the `cloud` block in the `terraform.tf` file
+1. Run `terraform init` to prepare the `local` backend
+   - `terraform init`
 
-```bash
-> terraform init
+That's it! You should be able to make an update to the config and run `terraform apply` successfully.
 
-Initializing the backend...
-Migrating from Terraform Cloud to local state.
-╷
-│ Error: Migrating state from Terraform Cloud to another backend is not yet implemented.
-│
-│ Please use the API to do this: https://www.terraform.io/docs/cloud/api/state-versions.html
-│
-│
-╵
-```
+## Migrating to the AzureRM Backed
 
-*Ouch.*
+Again, just follow the process [I outlined in the blog post](https://nedinthecloud.com/2022/03/03/migrating-state-data-off-terraform-cloud/). It's very similar to migrating to a `local` backend, except now you are moving the state data to an Azure Storage Account. You will need the additional backend config data, which is produced as the file `backend.txt` during the `remote_state_setup` deployment.
 
-That's okay! We can figure this out with all the knowledge we've already gained. So what do we need in place locally to support our `tfc-migration-test` workspace with the `local` backend?
-
-* Create a `terraform.tfstate.d` directory with a `tfc-migration-test` subdirectory
-* Put our state data in a `terraform.tfstate` file in the `tfc-migration-test` directory
-* Remove the `terraform.tfstate` file in the `.terraform` directory that points at the cloud config
-* Update the configuration to remove the `cloud` block
-* Run `terraform init` to prepare local files
-
-That should do it!
-
-```bash
-> mkdir -p terraform.tfstate.d/tfc-migration-test
-
-> terraform state pull > terraform.tfstate.d/tfc-migration-test/terraform.tfstate
-
-> mv .terraform/terraform.tfstate .terraform/terraform.tfstate.old
-
-# Remove the cloud block in the config
-
-> terraform init
-
-```
-
-Sure enough, if we make a change to the configuration, a plan will run successfully. This works well enough for a single workspace. If you have multiple workspaces, you'll need to create a directory for each workspace and pull the state data for that workspace.
-
-## Migrating to an AzureRM Storage Account
-
-Will the migration process be any easier if we're moving to another remote backend instead of the `local` backend?
-
-```bash
-> terraform init -backend-config="backend.txt"
-
-Initializing the backend...
-Migrating from Terraform Cloud to backend "azurerm".
-╷
-│ Error: Migrating state from Terraform Cloud to another backend is not yet implemented.
-│
-│ Please use the API to do this: https://www.terraform.io/docs/cloud/api/state-versions.html
-│
-│
-╵
-```
-
-*No. No, it will not.*
-
-We should be able to follow the same basic process, only this time we need to create the necessary files in the target storage account. The container being used in Azure is `terraform-state`. The `key` value is `webapp`. The `azurerm` backend will add `env:` and the workspace name to the end of the `key` value. So our state file will be `webappenv:tfc-migration-test`. The migration process will be similar to the `local` migration:
-
-* Copy our state data to `webappenv:tfc-migration-test` in the storage account container
-* Remove the `terraform.tfstate` file in the `.terraform` directory that points at the cloud config
-* Update the configuration to remove the `cloud` block and add the `azurerm` block
-* Run `terraform init` to download files and validate config
-
-We can grab the state data with the same `terraform state pull` command we used before. And then use the Azure CLI to copy it to our storage account.
-
-```bash
-> terraform state pull > statedata
-
-> az storage copy -s statedata --destination-account-name tfc40300 --destination-container terraform-state --destination-blob "webappenv:tfc-migration-test"
-```
-
-Now we'll update the backend configuration, rename the `terraform.tfstate` file, and run a `terraform init`.
-
-```bash
-> mv .terraform/terraform.tfstate .terraform/terraform.tfstate.old
-
-# Remove the cloud block in the config
-
-> terraform init -backend-config="backend.txt"
-```
-
-In case you're wondering, the `backend.txt` file has the following in it:
-
-```text
-storage_account_name="tfc40300"
-resource_group_name="tfc-40300"
-container_name="terraform-state"
-```
-
-And I have the Azure Service Principal information stored in environment variables for authentication and access.
-
-## Conclusion
-
-In this post we've seen how to migrate from Terraform Cloud to either the `local` or `azurerm` backend. The process for any other backend would be similar, except you'll need to know how it handles workspaces and the actual state data.
-
-As an alternative, you could perform a two stage migration from Terraform Cloud to `local` and then from `local` to your remote backend of choice. Either way, you'll still need to pull the state data down to an intermediary location before uploading to the new remote backend.
-
-In all likelihood, HashiCorp will update the `cloud` backend to support direct migration in the not too distant future, making this entire post moot. But until then, I hope this has helped you migrate off Terraform Cloud or at least learn a bit more about how state data and workspaces are managed by Terraform.

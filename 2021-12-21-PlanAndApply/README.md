@@ -86,7 +86,7 @@ Another admin comes along and uses the AWS CLI to add second subnet to the VPC:
 vpc_id=$(aws ec2 describe-vpcs --filters Name="tag:Name",Values="Taconet" \
   --query 'Vpcs[0].VpcId' --output text)
 
-aws ec2 ec2 create-subnet --cidr-block "10.0.10.0/24" --vpc-id $vpc_id
+aws ec2 create-subnet --cidr-block "10.0.10.0/24" --vpc-id $vpc_id
 ```
 
 **Bad admin!**
