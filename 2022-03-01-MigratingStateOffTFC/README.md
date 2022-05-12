@@ -1,6 +1,6 @@
 # Migrating Off Terraform Cloud
 
-This demo is meant to accompany [this blog post](https://nedinthecloud.com/2022/03/03/migrating-state-data-off-terraform-cloud/) about how to migrate state off Terraform Cloud to either the `local` backend or `azurerm` backend. I'm not going to rehash all the details here, go [read the post](https://nedinthecloud.com/2022/03/03/migrating-state-data-off-terraform-cloud/! The files in this directory can help you follow along with the post and see how the whole thing works. 
+This demo is meant to accompany [this blog post](https://nedinthecloud.com/2022/03/03/migrating-state-data-off-terraform-cloud/) about how to migrate state off Terraform Cloud to either the `local` backend or `azurerm` backend. I'm not going to rehash all the details here, go [read the post](https://nedinthecloud.com/2022/03/03/migrating-state-data-off-terraform-cloud/)! The files in this directory can help you follow along with the post and see how the whole thing works. 
 
 ## Prerequisites
 
