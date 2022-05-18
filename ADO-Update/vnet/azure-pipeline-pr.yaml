@@ -6,9 +6,6 @@ variables:
 trigger: none
 
 pr:
-  branches:
-    include:
-    - main
   paths:
     include:
     - ADO-Update/vnet
