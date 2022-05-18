@@ -12,7 +12,6 @@ pr:
 
 stages:
 - stage: Validate
-  condition: ne(variables['Build.SourceBranch'],'refs/heads/main')
   displayName: Validate
   jobs:
   - job: validate
@@ -104,7 +103,6 @@ stages:
     
 - stage: Plan
   displayName: Plan
-  condition: ne(variables['Build.SourceBranch'],'refs/heads/main')
   jobs:
   - job: plan
     pool:

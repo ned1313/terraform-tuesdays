@@ -74,7 +74,7 @@ resource "azurerm_virtual_network" "vnet" {
 }
 
 resource "azurerm_network_security_group" "allow_ssh" {
-  name                = "allow_ssh"
+  name                = "allow_shh"
   location            = var.region
   resource_group_name = azurerm_resource_group.vnet.name
 
