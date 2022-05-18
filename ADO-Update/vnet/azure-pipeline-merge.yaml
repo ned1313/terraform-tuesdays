@@ -1,0 +1,75 @@
+# Azure DevOps pipeline for Azure deployment
+
+variables:
+- group: terraform-tuesdays
+
+pr: none
+
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - ADO-Update/vnet
+
+stages:
+- stage: Apply
+  displayName: Apply
+  jobs:
+  - job: apply
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    # Install Terraform based on version variable
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: $(terraform_version)
+        
+    # Download Plan file artifact
+    - task: DownloadPipelineArtifact@2
+      inputs:
+        source: 'specific'
+        project: $(project_id)
+        pipeline: $(pr_pipeline_id)
+        artifact: PlanFile
+    # Azure Key Vault
+    # Download Azure Key Vault secrets
+    - task: AzureKeyVault@1
+      inputs:
+        ConnectedServiceName: $(service_name)
+        keyVaultName: $(key_vault_name)
+        secretsFilter: '*'
+        runAsPreJob: false # Azure DevOps Services only
+
+  # Init
+    - task: TerraformCLI@0
+      displayName: Initialize Terraform
+      env:
+        ARM_SAS_TOKEN: $(sas-token)
+      inputs:
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container-name) -backend-config=key=$(key)'
+        backendType: 'selfConfigured'
+
+  # Apply
+    - task: TerraformCLI@0
+      displayName: Apply Terraform Deployment
+      env:
+        ARM_SAS_TOKEN: $(sas-token)
+        ARM_CLIENT_ID: $(az-client-id)
+        ARM_CLIENT_SECRET: $(az-client-secret)
+        ARM_SUBSCRIPTION_ID: $(az-subscription)
+        ARM_TENANT_ID: $(az-tenant)
+      inputs:
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        commandOptions: '$(Pipeline.Workspace)/main.tfplan'
+
+
+
+
+
+

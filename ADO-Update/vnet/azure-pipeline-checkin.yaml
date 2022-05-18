@@ -1,0 +1,69 @@
+# Azure DevOps pipeline for CI of Terraform code
+
+variables:
+- group: terraform-tuesdays
+
+pr: none
+
+trigger:
+  branches:
+    exclude:
+    - main
+  paths:
+    include:
+    - ADO-Update/vnet
+
+# We want to check the formatting of the code
+stages:
+- stage: CheckIn
+  displayName: Check-In Testing
+  jobs:
+  # Check Formatting only
+  - job: formatting
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    # Install Terraform based on version variable
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: $(terraform_version)
+        
+    # Format check
+    - task: TerraformCLI@0
+      displayName: Check Formatting
+      inputs:
+        command: 'fmt'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+  
+  # Validate code
+  - job: validate
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    # Azure Key Vault
+    # Download Azure Key Vault secrets
+    - task: AzureKeyVault@1
+      inputs:
+        ConnectedServiceName: $(service_name)
+        keyVaultName: $(key_vault_name)
+        secretsFilter: '*'
+        runAsPreJob: false # Azure DevOps Services only
+    
+    # Init
+    - task: TerraformCLI@0
+      displayName: Initialize Terraform
+      env:
+        ARM_SAS_TOKEN: $(sas-token)
+      inputs:
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container-name) -backend-config=key=$(key)'
+        backendType: 'selfConfigured'
+    
+    # Validate
+    - task: TerraformCLI@0
+      displayName: Validate Config
+      inputs:
+        command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'

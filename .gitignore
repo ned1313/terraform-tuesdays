@@ -35,3 +35,5 @@ override.tf.json
 *.tfplan
 
 backend-config.txt
+
+nocommit.tfvars

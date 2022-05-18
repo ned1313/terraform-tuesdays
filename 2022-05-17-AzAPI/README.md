@@ -164,3 +164,15 @@ resource "azapi_resource" "image_templates" {
 Since this is Terraform, I can dynamically create the template based on things like the custom role and identity created for the Image Template, and the source image properties I can define as locals or as variables for user input.
 
 I've included the full example in the `image-builder` directory, so you can try it out. 
+
+## Updating an existing resource
+
+I haven't actually come across a use case organically for this one just yet, but I can imagine it would apply heavily to preview properties on resources that aren't supported by the stable API. These properties are not going to be available as arguments in the `azurerm` provider until they go GA, but you might want to use them now.
+
+To find a property that is in preview, I hit up the GitHub issues for the `azurerm` provider and filtered on issues labeled *enhancement*. Sure enough, [I found this issue](https://github.com/hashicorp/terraform-provider-azurerm/issues/15846) that talked about a preview feature coming to Azure storage accounts to allow for DNS zone based endpoints.
+
+[Looking through the JSON docs](https://docs.microsoft.com/en-us/azure/templates/microsoft.storage/storageaccounts?tabs=json#property-values) for the `Microsoft.Storage/storageAccounts` resource type, I found the property in question is called `dnsEndpointType` and it can be set to either `Standard` or `AzureDnsZone`.
+
+That means I can create a regular storage account with the `azurerm` provider, and then enable this preview feature using the `azapi_update_resource` resource. And that is exactly what you'll find in the `storage_account` directory.
+
+Note that since this is a preview feature, it might not work for you. I got it to work with my Azure subscription and the East US region.
