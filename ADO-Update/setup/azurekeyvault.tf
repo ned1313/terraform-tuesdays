@@ -21,15 +21,15 @@ resource "azurerm_key_vault_access_policy" "you" {
   object_id = data.azurerm_client_config.current.object_id
 
   key_permissions = [
-    "get", "list", "update", "create", "decrypt", "encrypt", "unwrapKey", "wrapKey", "verify", "sign",
+    "Get", "List", "Update", "Create", "Decrypt", "Encrypt", "UnwrapKey", "WrapKey", "Verify", "Sign",
   ]
 
   secret_permissions = [
-    "get", "list", "set", "delete", "purge", "recover", "backup"
+    "Get", "List", "Set", "Delete", "Purge", "Recover", "Backup"
   ]
 
   certificate_permissions = [
-    "get", "list", "create", "import", "delete", "update",
+    "Get", "List", "Create", "Import", "Delete", "Update",
   ]
 }
 
@@ -41,7 +41,7 @@ resource "azurerm_key_vault_access_policy" "pipeline" {
   object_id = azuread_service_principal.service_connection.object_id
 
   secret_permissions = [
-    "get", "list",
+    "Get", "List",
   ]
 
 }
