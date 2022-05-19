@@ -5,7 +5,10 @@ variables:
 
 trigger: none
 
-pr:   
+pr:
+  branches:
+    include:
+    - '*'   
   paths:
     include:
     - ADO-Update/vnet
