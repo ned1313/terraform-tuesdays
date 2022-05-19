@@ -6,6 +6,9 @@ variables:
 trigger: none
 
 pr:
+  branches:
+    include:
+    - main    
   paths:
     include:
     - ADO-Update/vnet
@@ -151,7 +154,6 @@ stages:
       inputs:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
-        commandOptions: '-out=$(System.DefaultWorkingDirectory)/ADO-Update/vnet/main.tfplan'
         publishPlanResults: 'Terraform Plan'
 
   # Verify plan with Checkov
@@ -181,10 +183,3 @@ stages:
         testRunTitle: Checkov Plan Scan
         failTaskOnFailedTests: false
         publishRunAttachments: true
-
-    # Push plan file to Azure Storage Account for Apply
-    - task: PublishPipelineArtifact@1
-      displayName: Publish Plan File as an artifact
-      inputs:
-        targetPath: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet/main.tfplan'
-        artifactName: PlanFile
