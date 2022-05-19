@@ -15,6 +15,7 @@ pr:
 
 stages:
 - stage: Validate
+  condition: eq(variables['Build.Reason'], 'PullRequest')
   displayName: Validate
   jobs:
   - job: validate
@@ -154,6 +155,7 @@ stages:
       inputs:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        commandOptions: '-out=$(System.DefaultWorkingDirectory)/ADO-Update/vnet/main.tfplan'
         publishPlanResults: 'Terraform Plan'
 
   # Verify plan with Checkov
