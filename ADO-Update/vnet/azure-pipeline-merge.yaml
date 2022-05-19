@@ -82,6 +82,8 @@ stages:
         onTimeout: 'reject'
 
   - job: apply
+    dependsOn: plan
+    displayName: Apply Approved Plan
     pool:
       vmImage: ubuntu-latest
     steps:
