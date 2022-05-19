@@ -154,6 +154,7 @@ stages:
       inputs:
         command: 'plan'
         workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        commandOptions: '-out=$(System.DefaultWorkingDirectory)/ADO-Update/vnet/main.tfplan'
         publishPlanResults: 'Terraform Plan'
 
   # Verify plan with Checkov

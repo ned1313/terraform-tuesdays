@@ -67,9 +67,9 @@ stages:
         workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
         publishPlanResults: 'Terraform Plan'
 
-  - job: tf_plan_approval
+  - job: plan_approval
     displayName: Review and Approve TF Plan
-    dependsOn: tf_plan
+    dependsOn: plan
     pool: server
     timeoutInMinutes: 1450
     steps:
