@@ -22,6 +22,12 @@ func TestEndToEndDeploymentScenario(t *testing.T) {
 		t.Fatalf("TEST_SSH_KEY_PATH environment variable cannot be empty.")
 	}
 
+	// When the test is completed, teardown the infrastructure by calling terraform destroy
+	defer test_structure.RunTestStage(t, "teardown", func() {
+		terraformOptions := test_structure.LoadTerraformOptions(t, fixtureFolder)
+		terraform.Destroy(t, terraformOptions)
+	})
+
 	// User Terratest to deploy the infrastructure
 	test_structure.RunTestStage(t, "setup", func() {
 		terraformOptions := &terraform.Options{
@@ -93,9 +99,4 @@ func TestEndToEndDeploymentScenario(t *testing.T) {
 		}
 	})
 
-	// When the test is completed, teardown the infrastructure by calling terraform destroy
-	test_structure.RunTestStage(t, "teardown", func() {
-		terraformOptions := test_structure.LoadTerraformOptions(t, fixtureFolder)
-		terraform.Destroy(t, terraformOptions)
-	})
 }
