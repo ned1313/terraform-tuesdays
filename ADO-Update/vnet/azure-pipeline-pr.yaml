@@ -5,17 +5,13 @@ variables:
 
 trigger: none
 
-pr:
-  branches:
-    include:
-    - main    
+pr:   
   paths:
     include:
     - ADO-Update/vnet
 
 stages:
 - stage: Validate
-  condition: eq(variables['Build.Reason'], 'PullRequest')
   displayName: Validate
   jobs:
   - job: validate
