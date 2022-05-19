@@ -82,7 +82,7 @@ stages:
         onTimeout: 'reject'
 
   - job: apply
-    dependsOn: plan
+    dependsOn: plan_approval
     displayName: Apply Approved Plan
     pool:
       vmImage: ubuntu-latest
