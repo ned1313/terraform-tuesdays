@@ -1,0 +1,134 @@
+# Azure DevOps pipeline for Azure deployment
+
+variables:
+- group: terraform-tuesdays
+
+pr: none
+
+trigger:
+  branches:
+    include:
+    - main
+  paths:
+    include:
+    - ADO-Update/vnet
+
+stages:
+- stage: Apply
+  displayName: Plan and Apply
+  jobs:
+  - job: plan
+    displayName: Develop Terraform Plan
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    # Install Terraform based on version variable
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: $(terraform_version)
+        
+    # Install Checkov
+    - bash: pip3 install checkov
+      displayName: 'Install checkov'
+      name: 'install_checkov'
+
+    # Azure Key Vault
+    # Download Azure Key Vault secrets
+    - task: AzureKeyVault@1
+      inputs:
+        ConnectedServiceName: $(service_name)
+        keyVaultName: $(key_vault_name)
+        secretsFilter: '*'
+        runAsPreJob: false # Azure DevOps Services only
+  
+    # Init
+    - task: TerraformCLI@0
+      displayName: Initialize Terraform
+      env:
+        ARM_SAS_TOKEN: $(sas-token)
+      inputs:
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container-name) -backend-config=key=$(key)'
+        backendType: 'selfConfigured'
+
+  # Plan
+    - task: TerraformCLI@0
+      displayName: Plan Terraform Deployment
+      env:
+        ARM_SAS_TOKEN: $(sas-token)
+        ARM_CLIENT_ID: $(az-client-id)
+        ARM_CLIENT_SECRET: $(az-client-secret)
+        ARM_SUBSCRIPTION_ID: $(az-subscription)
+        ARM_TENANT_ID: $(az-tenant)
+      inputs:
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        publishPlanResults: 'Terraform Plan'
+
+  - job: plan_approval
+    displayName: Review and Approve TF Plan
+    dependsOn: plan
+    pool: server
+    timeoutInMinutes: 1450
+    steps:
+    - task: ManualValidation@0
+      timeoutInMinutes: 1440
+      inputs:
+        notifyUsers: | 
+          approvers@test.com
+        instructions: 'Please review and approve the Terraform plan for Production'
+        onTimeout: 'reject'
+
+  - job: apply
+    dependsOn: plan_approval
+    displayName: Apply Approved Plan
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    # Install Terraform based on version variable
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: $(terraform_version)
+        
+    # Azure Key Vault
+    # Download Azure Key Vault secrets
+    - task: AzureKeyVault@1
+      inputs:
+        ConnectedServiceName: $(service_name)
+        keyVaultName: $(key_vault_name)
+        secretsFilter: '*'
+        runAsPreJob: false # Azure DevOps Services only
+
+  # Init
+    - task: TerraformCLI@0
+      displayName: Initialize Terraform
+      env:
+        ARM_SAS_TOKEN: $(sas-token)
+      inputs:
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container-name) -backend-config=key=$(key)'
+        backendType: 'selfConfigured'
+
+  # Apply
+    - task: TerraformCLI@0
+      displayName: Apply Terraform Deployment
+      env:
+        ARM_SAS_TOKEN: $(sas-token)
+        ARM_CLIENT_ID: $(az-client-id)
+        ARM_CLIENT_SECRET: $(az-client-secret)
+        ARM_SUBSCRIPTION_ID: $(az-subscription)
+        ARM_TENANT_ID: $(az-tenant)
+      inputs:
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        commandOptions: '-auto-approve'
+
+
+
+
+
+

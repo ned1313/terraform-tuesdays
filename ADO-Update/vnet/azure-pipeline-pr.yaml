@@ -1,0 +1,186 @@
+# Azure DevOps pipeline for PR on Terraform Code
+
+variables:
+- group: terraform-tuesdays
+
+trigger: none
+
+pr:
+  branches:
+    include:
+    - '*'   
+  paths:
+    include:
+    - ADO-Update/vnet
+
+stages:
+- stage: Validate
+  displayName: Validate
+  jobs:
+  - job: validate
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    # Install Terraform based on version variable
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: $(terraform_version)
+
+    # Install Checkov
+    - bash: pip3 install checkov
+      displayName: 'Install checkov'
+      name: 'install_checkov'
+
+    # Azure Key Vault
+    # Download Azure Key Vault secrets
+    - task: AzureKeyVault@1
+      inputs:
+        ConnectedServiceName: $(service_name)
+        keyVaultName: $(key_vault_name)
+        secretsFilter: '*'
+        runAsPreJob: false # Azure DevOps Services only
+    
+    # Init
+    - task: TerraformCLI@0
+      displayName: Initialize Terraform
+      env:
+        ARM_SAS_TOKEN: $(sas-token)
+      inputs:
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container-name) -backend-config=key=$(key)'
+        backendType: 'selfConfigured'
+
+    # Format check
+    - task: TerraformCLI@0
+      displayName: Check Formatting
+      inputs:
+        command: 'fmt'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        commandOptions: '-check'
+
+    # Validate
+    - task: TerraformCLI@0
+      displayName: Validate Config
+      inputs:
+        command: 'validate'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+
+    # Verify module files with Checkov
+    - bash: checkov --directory $(System.DefaultWorkingDirectory)/ADO-Update/vnet/.terraform --skip-check CKV_DOCKER_* -o junitxml > $(System.DefaultWorkingDirectory)/Checkov-Module-Report.xml
+      displayName: 'Verify modules with Checkov'
+      name: 'checkov_module_check'
+
+    # Publish test results for modules
+    # Shout out to Adin Ermie for this one! https://adinermie.com/publishing-checkov-terraform-quality-checks-to-azure-devops-pipelines/
+    - task: PublishTestResults@2
+      displayName: Publish Checkov Module Test Results
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/*Checkov-Module-Report.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+        mergeTestResults: false
+        testRunTitle: Checkov Module Scan
+        failTaskOnFailedTests: false
+        publishRunAttachments: true
+
+    # Verify main files with Checkov
+    - bash: checkov --directory $(System.DefaultWorkingDirectory)/ADO-Update/vnet -o junitxml > $(System.DefaultWorkingDirectory)/Checkov-Root-Report.xml
+      displayName: 'Verify root module with Checkov'
+      name: 'checkov_root_check'
+
+    # Publish test results for root module
+    - task: PublishTestResults@2
+      displayName: Publish Checkov Root Test Results
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/*Checkov-Root-Report.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+        mergeTestResults: false
+        testRunTitle: Checkov Root Scan
+        failTaskOnFailedTests: false
+        publishRunAttachments: true
+    
+- stage: Plan
+  displayName: Plan
+  jobs:
+  - job: plan
+    pool:
+      vmImage: ubuntu-latest
+    steps:
+    # Install Terraform based on version variable
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: $(terraform_version)
+        
+    # Install Checkov
+    - bash: pip3 install checkov
+      displayName: 'Install checkov'
+      name: 'install_checkov'
+
+    # Azure Key Vault
+    # Download Azure Key Vault secrets
+    - task: AzureKeyVault@1
+      inputs:
+        ConnectedServiceName: $(service_name)
+        keyVaultName: $(key_vault_name)
+        secretsFilter: '*'
+        runAsPreJob: false # Azure DevOps Services only
+  
+    # Init
+    - task: TerraformCLI@0
+      displayName: Initialize Terraform
+      env:
+        ARM_SAS_TOKEN: $(sas-token)
+      inputs:
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        commandOptions: '-backend-config=storage_account_name=$(storageaccount) -backend-config=container_name=$(container-name) -backend-config=key=$(key)'
+        backendType: 'selfConfigured'
+
+  # Plan
+    - task: TerraformCLI@0
+      displayName: Plan Terraform Deployment
+      env:
+        ARM_SAS_TOKEN: $(sas-token)
+        ARM_CLIENT_ID: $(az-client-id)
+        ARM_CLIENT_SECRET: $(az-client-secret)
+        ARM_SUBSCRIPTION_ID: $(az-subscription)
+        ARM_TENANT_ID: $(az-tenant)
+      inputs:
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)/ADO-Update/vnet'
+        commandOptions: '-out=$(System.DefaultWorkingDirectory)/ADO-Update/vnet/main.tfplan'
+        publishPlanResults: 'Terraform Plan'
+
+  # Verify plan with Checkov
+    - bash: |
+        cd $(System.DefaultWorkingDirectory)/ADO-Update/vnet
+        ls
+        terraform show -json main.tfplan > $(System.DefaultWorkingDirectory)/main.json
+        checkov -f $(System.DefaultWorkingDirectory)/main.json -o junitxml > $(System.DefaultWorkingDirectory)/Checkov-Plan-Report.xml
+      displayName: 'Verify plan with Checkov'
+      name: 'checkov_plan_check'
+      env:
+        ARM_SAS_TOKEN: $(sas-token)
+        ARM_CLIENT_ID: $(az-client-id)
+        ARM_CLIENT_SECRET: $(az-client-secret)
+        ARM_SUBSCRIPTION_ID: $(az-subscription)
+        ARM_TENANT_ID: $(az-tenant)
+
+  # Publish test results for plan
+    - task: PublishTestResults@2
+      displayName: Publish Checkov Plan Test Results
+      condition: succeededOrFailed()
+      inputs:
+        testResultsFormat: 'JUnit'
+        testResultsFiles: '**/*Checkov-Plan-Report.xml'
+        searchFolder: '$(System.DefaultWorkingDirectory)'
+        mergeTestResults: false
+        testRunTitle: Checkov Plan Scan
+        failTaskOnFailedTests: false
+        publishRunAttachments: true
