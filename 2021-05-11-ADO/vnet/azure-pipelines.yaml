@@ -19,10 +19,10 @@ stages:
     pool:
       vmImage: ubuntu-latest
     steps:
-    #- task: TerraformInstaller@0
-      #displayName: Install Terraform
-      #inputs:
-        #terraformVersion: 'latest'
+    - task: TerraformInstaller@0
+      displayName: Install Terraform
+      inputs:
+        terraformVersion: 'latest'
 
   # Init
     - task: TerraformCLI@0
