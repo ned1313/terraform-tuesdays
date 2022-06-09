@@ -6,7 +6,7 @@ variable "ado_org_service_url" {
 variable "ado_github_repo" {
   type        = string
   description = "Name of the repository in the format <GitHub Org>/<RepoName>"
-  default     = "ned1313/terraform-tuesdays"
+  default     = "johnylima/terraform-tuesdays"
 }
 
 variable "ado_pipeline_yaml_path_1" {
