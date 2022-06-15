@@ -39,7 +39,7 @@ variable "prefix" {
 
 variable "az_location" {
   type    = string
-  default = "eastus"
+  default = "westeurope"
 }
 
 variable "az_container_name" {
