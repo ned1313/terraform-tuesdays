@@ -23,7 +23,7 @@ terraform {
 variable "region" {
   type        = string
   description = "Region in Azure"
-  default     = "eastus"
+  default     = "westeurope"
 }
 
 variable "prefix" {
