@@ -9,7 +9,7 @@ trigger:
     - main
   paths:
     include:
-    - 2021-06-22-ADO/vnet
+    - ADO-Update/vnet
 
 stages:
 - stage: Validate
