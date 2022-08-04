@@ -21,14 +21,10 @@ local.list1_data[0]
 local.map1_data.MapKey1
 
 # How about a for loop on a list?
-[ for i in local.all_json_data.List1 : i ]
+[ for i in local.all_json_data.List1 : upper(i) ]
 
 # What about transposing keys and values?
 { for k, v in local.map1_data : v => k }
 
 # How about we get a list for only Tacos?
 [ for i in local.all_json_data.List3 : i if i.Food == "Taco"]
-
-
-
-
