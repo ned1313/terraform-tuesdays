@@ -7,10 +7,9 @@ pr: none
 
 trigger:
   branches:
-    include:
-    - ci-test-*
     exclude:
     - main
+    - ci-test*
 
 # We want to check the formatting of the code
 stages:
