@@ -11,9 +11,6 @@ trigger:
     - ci-test-*
     exclude:
     - main
-  paths:
-    include:
-    - ADO-Update/vnet
 
 # We want to check the formatting of the code
 stages:
