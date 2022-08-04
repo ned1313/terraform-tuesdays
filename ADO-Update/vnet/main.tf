@@ -65,11 +65,11 @@ resource "azurerm_virtual_network" "vnet" {
   resource_group_name = azurerm_resource_group.vnet.name
   location            = azurerm_resource_group.vnet.location
   name                = "ado-network"
-  address_space       = ["10.33.0.0/24"]
+  address_space       = ["10.34.0.0/24"]
 
   subnet {
     name           = "web"
-    address_prefix = "10.33.0.0/24"
+    address_prefix = "10.34.0.0/24"
   }
 }
 
