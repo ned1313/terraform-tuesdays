@@ -1,5 +1,5 @@
 locals {
-    toppings = ["lettuce","tomatoes","onions","jalapenos"]
+    toppings = ["lettuce","tomatoes","jalapenos","onions"]
 }
 
 resource "local_file" "count_loop" {
