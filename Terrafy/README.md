@@ -37,6 +37,16 @@ aztfy RG-aztfy
 
 Azure Terrafy will look for all resources in the resource group `RG-aztfy` and catalog them. Then it will prompt you to review and potentially import them. If you like what you see, press `w` and it will generate your Terraform configuration and state file.
 
+But hold on a second there pardner. Terrafy doesn't always know exactly which mapping to use for a resource. Taking a look at the listing, our Azure VM is being skipped. Why? Well, that's because there are three different resources in the `azurerm` provider you can use to create an Azure VM: `azurerm_virtual_machine`, `azurerm_linux_virtual_machine`, and `azurerm_windows_virtual_machine`. The oldest of these options, and one that is being deprecated is the `azurerm_virtual_machine`. Terrafy should be able to tell which operating system is in play, `osType` is one of the properties of the Virtual Machine resource, but it still doesn't know whether to use the linux specific resource or the more general one. It's up to you to tell it.
+
+There is the option to hit `r` to show recommendations from the list. Unfortunately, the version of `aztfy` I am using has no suggestions:
+
+```bash
+     RG-aztfy   No resource type recommendation is avaialble...
+```
+
+It's up to me to create the proper 
+
 ## Check the import
 
 Azure Terrafy created a very literal Terraform configuration with all hardcoded values. Take a look at the files generated for the resources and provider.
