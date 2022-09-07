@@ -84,6 +84,18 @@ resource "github_branch" "oidc" {
   branch = each.value
 }
 
+# Branch protection rules
+resource "github_branch_protection" "oidc" {
+  for_each = toset(keys(var.env_sub_ids))
+  repository_id = data.github_repository.oidc.node_id
+
+  pattern = each.value
+  required_pull_request_reviews {
+    dismiss_stale_reviews  = true
+    required_approving_review_count = 1
+  }
+}
+
 # Grant contributor role in each Azure subscription
 provider "azurerm" {
   features {}
