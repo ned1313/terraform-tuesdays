@@ -170,7 +170,18 @@ The other thing I couldn't do using the `azurerm` provider was kick off an actua
 Looking at the Image Builder documentation, there is an action for the Image Builder called `Run`. At least there appears to be based on the Azure CLI and PowerShell commands. To that end, I added the following block to make the creation of the image optional:
 
 ```terraform
+resource "azapi_resource_action" "run_build" {
+  type                   = "Microsoft.VirtualMachineImages/imageTemplates@2022-02-14"
+  resource_id            = azapi_resource.image_templates.id
+  action                 = "run"
+  response_export_values = ["*"]
 
+  count = var.build_image ? 1 : 0
+
+  timeouts {
+    create = "60m"
+  }
+}
 ```
 
 I've included the full example in the `image-builder` directory, so you can try it out.
