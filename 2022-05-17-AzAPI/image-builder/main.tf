@@ -156,4 +156,21 @@ resource "azapi_resource" "image_templates" {
       ]
     }
   })
+
+  lifecycle {
+    ignore_changes = [body]
+  }
+}
+
+resource "azapi_resource_action" "run_build" {
+  type                   = "Microsoft.VirtualMachineImages/imageTemplates@2022-02-14"
+  resource_id            = azapi_resource.image_templates.id
+  action                 = "run"
+  response_export_values = ["*"]
+
+  count = var.build_image ? 1 : 0
+
+  timeouts {
+    create = "60m"
+  }
 }

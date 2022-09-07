@@ -12,13 +12,13 @@ Focusing in on Azure for the moment, there were basically three ways to handle t
 
 As we've already discussed, the first option is a non-starter for most folks. I've updated a provider or two in my time and it isn't something I would expect a casual user of Terraform to do.
 
-If you don't mind breaking out of the declarative, state driven model of Terraform, you can always use the Azure CLI or Azure PowerShell modules. Of course, they also suffer from feature/service lag as well. 
+If you don't mind breaking out of the declarative, state driven model of Terraform, you can always use the Azure CLI or Azure PowerShell modules. Of course, they also suffer from feature/service lag as well.
 
 The final answer is to use ARM templates, which are always at feature parity since they interact directly with the ARM APIs. Basically, if it's supported by the API, it's supported by an ARM template. You can manage an ARM deployment with Terraform using the Template resources of the `azurerm` provider. But there are some caveats to be aware of with using an ARM template.
 
 ## ARM Template Problems
 
-When you deploy an ARM template using Terraform, what is being tracked by Terraform is the state of the deployment itself not the resources it creates in Azure. Terraform is aware of the arguments used for the template and the outputs of the template, but that's all it know about. The actual resources are not stored in state or managed by Terraform.
+When you deploy an ARM template using Terraform, what is being tracked by Terraform is the state of the deployment itself not the resources it creates in Azure. Terraform is aware of the arguments used for the template and the outputs of the template, but that's all it knows about. The actual resources are not stored in state or managed by Terraform.
 
 The solution works in a pinch, but it's definitely a kludge, since it breaks the management model of Terraform. It kind of reminds me of using a remote exec provider, but slightly better.
 
@@ -32,15 +32,17 @@ So what does it look like to use the provider? Let's step through some real exam
 
 ## The Basics
 
-The `azapi` provider only has two resources and one data source:
+The `azapi` provider only has three resources and two data sources:
 
 * **Resources**
   * `azapi_resource` - used to create and manage an Azure resource
   * `azapi_update_resource` - used to manage attributes of an existing Azure resource
+  * `azapi_resource_action` - used to execute modify actions on a resource through the Azure resource manager
 * **Data Sources**
   * `azapi_resource` - used to poll any existing Azure resource
+  * `azapi_resource_action` - used to execute read-only actions on a resource through the Azure resource manager
 
-The beauty is in its simplicity. If you want to create a resource that isn't supported by the `azurerm` provider, you can use the `azapi_resource`. If you have an existing resource you're configuring with the `azurerm` provider, but it's missing an argument you want to set, you can use the `azapi_update_resource`. 
+The beauty is in its simplicity. If you want to create a resource that isn't supported by the `azurerm` provider, you can use the `azapi_resource`. If you have an existing resource you're configuring with the `azurerm` provider, but it's missing an argument you want to set, you can use the `azapi_update_resource`. Some resources have an action associated with them, list `listKeys` from Azure Automation, that may not have a parallel in the `azurerm` provider. The `azapi_resource_action` resource and data source help you with those cases.
 
 Now that we know why we'd use each resource type, let's dig into a couple of actual examples.
 
@@ -163,7 +165,15 @@ resource "azapi_resource" "image_templates" {
 
 Since this is Terraform, I can dynamically create the template based on things like the custom role and identity created for the Image Template, and the source image properties I can define as locals or as variables for user input.
 
-I've included the full example in the `image-builder` directory, so you can try it out. 
+The other thing I couldn't do using the `azurerm` provider was kick off an actual image build, which might be nice! Good thing there's the `azapi_resource_action` resource to the rescue.
+
+Looking at the Image Builder documentation, there is an action for the Image Builder called `Run`. At least there appears to be based on the Azure CLI and PowerShell commands. To that end, I added the following block to make the creation of the image optional:
+
+```terraform
+
+```
+
+I've included the full example in the `image-builder` directory, so you can try it out.
 
 ## Updating an existing resource
 

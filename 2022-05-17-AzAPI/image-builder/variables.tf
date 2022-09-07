@@ -9,3 +9,9 @@ variable "prefix" {
   description = "(Optional) The prefix for the name of the resources."
   default     = "avd"
 }
+
+variable "build_image" {
+  type        = bool
+  description = "(Optional) Whether to run a build of the image template. Defaults to false"
+  default     = false
+}
