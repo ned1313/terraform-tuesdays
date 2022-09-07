@@ -13,18 +13,34 @@ aztfy -v
 ```
 
 ```bash
-dev
+aztfy version v0.6.0(18b614b)
 ```
 
-Wow, `dev`. That's um, not really all that helpful. But okay, moving on!
+The current version when I wrote this was `0.6.0`, but you can always find the latest version on the [releases page](https://github.com/Azure/aztfy/releases).
 
-## Deploy the target environment
+## Deploy the target environment - WITH TERRAFORM
 
-We need a base environment to import using `aztfy`, and why not use Terraform to do that. In the `setup` directory is a basic configuration that deploys a virtual network and a virtual machine. Make sure you have Azure credentials and a subscription selected either through the Azure CLI or environment variables. From the `setup` directory, run the following:
+We need a base environment to import using `aztfy`, and why not use Terraform to do that? In the `setup` directory is a basic configuration that deploys a virtual network and a virtual machine. Make sure you have Azure credentials and a subscription selected either through the Azure CLI or environment variables. From the `setup` directory, run the following:
 
 ```bash
 terraform init
 terraform apply -auto-approve
+```
+
+## Deploy the target environment - WITHOUT TERRAFORM
+
+We need a base environment, but maybe using Terraform to do that is a little to convenient for you? After all, you'd probably use an ARM template or the Azure CLI to deploy things in the first place. So, let's do that. Here's the commands to deploy an Azure VM in a virtual network:
+
+```bash
+# Set the resource group name and location
+rgname="RG-aztfy"
+location="eastus"
+
+# Create the resource group
+az group create --name $rgname --location $location
+
+# Create the virtual machine with an implicit virtual network
+az vm create --resource-group $rgname --name tacoVM --image UbuntuLTS --admin-username tacoadmin --generate-ssh-keys
 ```
 
 ## Import the environment
@@ -32,7 +48,7 @@ terraform apply -auto-approve
 Time for `aztfy` to do it's magic! Move to the `import` directory and run the following:
 
 ```bash
-aztfy RG-aztfy
+aztfy resource-group RG-aztfy
 ```
 
 Azure Terrafy will look for all resources in the resource group `RG-aztfy` and catalog them. Then it will prompt you to review and potentially import them. If you like what you see, press `w` and it will generate your Terraform configuration and state file.

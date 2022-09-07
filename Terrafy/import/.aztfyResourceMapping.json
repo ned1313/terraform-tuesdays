@@ -1,0 +1,10 @@
+{
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/RG-aztfy": "azurerm_resource_group.res-0",
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/RG-aztfy/providers/Microsoft.Compute/virtualMachines/tacoVM": "azurerm_linux_virtual_machine.res-1",
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/RG-aztfy/providers/Microsoft.Network/networkInterfaces/tacoVMVMNic": "azurerm_network_interface.res-2",
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/RG-aztfy/providers/Microsoft.Network/networkSecurityGroups/tacoVMNSG": "azurerm_network_security_group.res-3",
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/RG-aztfy/providers/Microsoft.Network/networkSecurityGroups/tacoVMNSG/securityRules/default-allow-ssh": "azurerm_network_security_rule.res-4",
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/RG-aztfy/providers/Microsoft.Network/publicIPAddresses/tacoVMPublicIP": "azurerm_public_ip.res-5",
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/RG-aztfy/providers/Microsoft.Network/virtualNetworks/tacoVMVNET": "azurerm_virtual_network.res-6",
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/RG-aztfy/providers/Microsoft.Network/virtualNetworks/tacoVMVNET/subnets/tacoVMSubnet": "azurerm_subnet.res-7"
+}
