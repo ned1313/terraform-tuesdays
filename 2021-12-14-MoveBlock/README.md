@@ -1,4 +1,4 @@
-# Using the Move Block in Terraform 1.1
+# Using the Moved Block in Terraform 1.1
 
 The release of Terraform 1.1 has brought with it a new block type called `moved`. This is a super-cool new block that helps with when you want to refactor your Terraform code **without** breaking production.
 
@@ -24,7 +24,7 @@ resource "aws_route" "default_route" {}
 resource "aws_internet_gateway" "igw" {}
 ```
 
-I take the code and deploy it to my AWS account, and Terraform creates the infrastructure and saves the environment information in state data. The address for my VPC will be `aws_vpc.vpc` and it will map to the id of the VPC in my AWS account `vpc-12345`. 
+I take the code and deploy it to my AWS account, and Terraform creates the infrastructure and saves the environment information in state data. The address for my VPC will be `aws_vpc.vpc` and it will map to the id of the VPC in my AWS account `vpc-12345`.
 
 Now let's say I want to create a VPC module to handle the networking for this and other configurations. I can update my code to this:
 
@@ -132,7 +132,7 @@ aws_subnet.subnet
 aws_vpc.vpc
 ```
 
-Terraform is simply letting us know what changes it will make on `apply`. 
+Terraform is simply letting us know what changes it will make on `apply`.
 
 Running the `apply` will result in the following:
 
