@@ -26,5 +26,7 @@ local.map1_data.MapKey1
 # What about transposing keys and values?
 { for k, v in local.map1_data : v => k }
 
+[ for k, v in local.map1_data : "${v}-${k}" ]
+
 # How about we get a list for only Tacos?
 [ for i in local.all_json_data.List3 : i if i.Food == "Taco"]

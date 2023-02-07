@@ -101,3 +101,56 @@ moved {
   to   = module.main.aws_route_table_association.public[0]
 }
 */
+
+locals {
+  long_string = <<EOF
+This is a long string with ${local.other_value}
+that spans multiple lines
+EOF
+
+other_value = "ned"
+some_number = 42
+some_bool   = true
+
+some_list = [
+  "a",
+  "b",
+  "c",
+]
+
+list_item = local.some_list[1]
+
+some_map = {
+  a = "b"
+  c = "d"
+}
+
+map_item = local.some_map["a"]
+
+some_object = object({
+  a = "b"
+  c = "d"
+  e = [
+    "f",
+    "g",
+    "h",]
+ })
+
+ some_tuple = tuple([
+   "a",
+   "b",
+   "c",
+ ])
+}
+
+variable "resource_group" {
+  type = object({
+    name = string
+    location = string
+  })
+}
+
+locals {
+  mynum = 42
+  cond = local.mynum > 0 ? "positive" : local.mynum == 0 ? "zero" : "negative"
+}

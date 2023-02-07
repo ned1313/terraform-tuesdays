@@ -1,5 +1,5 @@
 output "template" {
-  value = templatefile("test.tmpl",
+  value = templatefile("${path.module}/test.tmpl",
   {
     "mystring" = local.mystring
     "mylist"  = local.mylist
