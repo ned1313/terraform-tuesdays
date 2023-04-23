@@ -7,7 +7,7 @@ variable "location" {
 variable "prefix" {
   type        = string
   description = "(Optional) The prefix for the name of the resources."
-  default     = "avd"
+  default     = "tacos"
 }
 
 variable "build_image" {

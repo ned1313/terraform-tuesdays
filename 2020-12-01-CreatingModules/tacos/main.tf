@@ -39,6 +39,11 @@ module "my_salsa" {
     meat = var.meat
 }
 
+module "vpc" {
+  source  = "terraform-aws-modules/vpc/aws"
+  version = "~> 3.1.0"
+}
+
 locals {
   taco = {
       meat = var.meat

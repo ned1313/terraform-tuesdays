@@ -1,31 +1,3 @@
-resource "azurerm_public_ip" "res-5" {
-  allocation_method   = "Dynamic"
-  location            = "eastus"
-  name                = "tacoVMPublicIP"
-  resource_group_name = "RG-aztfy"
-  depends_on = [
-    azurerm_resource_group.res-0,
-  ]
-}
-resource "azurerm_virtual_network" "res-6" {
-  address_space       = ["10.0.0.0/16"]
-  location            = "eastus"
-  name                = "tacoVMVNET"
-  resource_group_name = "RG-aztfy"
-  depends_on = [
-    azurerm_resource_group.res-0,
-  ]
-}
-resource "azurerm_subnet" "res-7" {
-  address_prefixes                               = ["10.0.0.0/24"]
-  enforce_private_link_endpoint_network_policies = true
-  name                                           = "tacoVMSubnet"
-  resource_group_name                            = "RG-aztfy"
-  virtual_network_name                           = "tacoVMVNET"
-  depends_on = [
-    azurerm_virtual_network.res-6,
-  ]
-}
 resource "azurerm_resource_group" "res-0" {
   location = "eastus"
   name     = "RG-aztfy"
@@ -93,5 +65,33 @@ resource "azurerm_network_security_rule" "res-4" {
   source_port_range           = "*"
   depends_on = [
     azurerm_network_security_group.res-3,
+  ]
+}
+resource "azurerm_public_ip" "res-5" {
+  allocation_method   = "Dynamic"
+  location            = "eastus"
+  name                = "tacoVMPublicIP"
+  resource_group_name = "RG-aztfy"
+  depends_on = [
+    azurerm_resource_group.res-0,
+  ]
+}
+resource "azurerm_virtual_network" "res-6" {
+  address_space       = ["10.0.0.0/16"]
+  location            = "eastus"
+  name                = "tacoVMVNET"
+  resource_group_name = "RG-aztfy"
+  depends_on = [
+    azurerm_resource_group.res-0,
+  ]
+}
+resource "azurerm_subnet" "res-7" {
+  address_prefixes                               = ["10.0.0.0/24"]
+  enforce_private_link_endpoint_network_policies = true
+  name                                           = "tacoVMSubnet"
+  resource_group_name                            = "RG-aztfy"
+  virtual_network_name                           = "tacoVMVNET"
+  depends_on = [
+    azurerm_virtual_network.res-6,
   ]
 }
