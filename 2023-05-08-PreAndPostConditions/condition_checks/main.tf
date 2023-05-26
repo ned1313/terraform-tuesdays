@@ -27,7 +27,6 @@ variable "app_config_store_id" {
 variable "environment_tag" {
   type        = string
   description = "Tag to use for Environment"
-  default     = "Staging"
 }
 
 data "azurerm_resource_group" "main" {
