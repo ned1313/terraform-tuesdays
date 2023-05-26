@@ -68,4 +68,8 @@ resource "azurerm_virtual_network" "main" {
       error_message = "The address space ${var.vnet_address_space} is not in the list of allowed address spaces"
     }
   }
+
+  tags = {
+    Environment = var.environment_tag
+  }
 }
