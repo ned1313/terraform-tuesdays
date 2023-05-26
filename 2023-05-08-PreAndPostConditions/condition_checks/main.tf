@@ -24,8 +24,26 @@ variable "app_config_store_id" {
   description = "ID of the App Configuration store."
 }
 
+variable "environment_tag" {
+  type        = string
+  description = "Tag to use for Environment"
+  default     = "Staging"
+}
+
 data "azurerm_resource_group" "main" {
   name = var.resource_group_name
+
+  lifecycle {
+    postcondition {
+      condition     = length(self.tags) > 0 && contains(keys(self.tags), "Environment")
+      error_message = "The resource group ${var.resource_group_name} does not have an Environment tag."
+    }
+
+    postcondition {
+      condition     = self.tags["Environment"] == var.environment_tag
+      error_message = "The resource group ${var.resource_group_name} does not have the correct Environment tag."
+    }
+  }
 }
 
 data "azurerm_app_configuration_key" "cidr_list" {
