@@ -1,0 +1,1 @@
+app_config_store_id = "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tapas-eastus/providers/Microsoft.AppConfiguration/configurationStores/tapas-appConf"

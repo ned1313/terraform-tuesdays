@@ -6,15 +6,15 @@ When it comes to developing good code, you need to sanitize your input, check yo
 
 ## Validation
 
-The name of the game when it comes to verifying assertions and guarantees is validation. It all starts with the humble input variable, where you can use both the `type` and `validation` arguments to ensure that the input is of the correct type and value. I actually covered the validation argument in a previous video, so I won't into it now. Link is in the description and in the whosawasit thinger that appears above my noggin.
+The name of the game when it comes to verifying assertions and making guarantees is validation. It all starts with the humble input variable, where you can use both the `type` and `validation` arguments to ensure that the input is of the correct type and value. I actually covered the validation argument in a previous video, so I won't into it now. Link is in the description and in the whosawasit thinger that appears above my noggin.
 
 The upside is that you can catch validation issues early on, way before Terraform even has to load state data or draw its resource graph. When you're trying to iterate quickly, this is a huge benefit.
 
 The downside of the validation block is that it is limited to only the variable value itself and anything you hardcode into the `condition` argument. You can check to see if a VM size is in a list of values, but that list needs to be hardcoded into the config. You can make sure a CIDR address is valid, but you can't grab a list of CIDR ranges from a data source to make sure it isn't being used.
 
-The reason is because of when Terraform does the validation process in its workflow. The validation happens before the resource graph is drawn or the data sources are refreshed, so you can't reference anything in state or data sources within the validation block.
+The reason is because of when Terraform does the variable validation process in its workflow. The validation happens before the resource graph is drawn or the data sources are refreshed, so you can't reference anything in state or data sources within the validation block.
 
-The answer to this is to use pre and post conditions.
+The answer to this is to use pre and post conditions in your resources and data sources.
 
 ## Pre and Post Conditions
 
@@ -36,6 +36,8 @@ lifecycle {
 
 Just like the `validation` block for input variables, the pre and post condition blocks take a `condition` argument that resolves to `true` or `false` and an error message to display if the condition is not met. When Terraform encounters an error, it will stop processing. The point at which it stops processing depends on whether its a pre or post condition.
 
+Let's look at preconditions first.
+
 ### Pre-conditions
 
 Pre-conditions run before the object its associated with is evaluated. You can use a pre-condition on a resource, data source or output. Since the pre-condition is running before the object is evaluated that means two important things:
@@ -43,11 +45,11 @@ Pre-conditions run before the object its associated with is evaluated. You can u
 * You can't reference the object itself or its attributes in the pre-condition
 * Terraform will fail on a pre-condition before it fails on an invalid object argument or value
 
-The first point means you can't use the `self` expression to refer to attributes of the object you're running the pre-condition check on. The second point means that if you have a bad value for the object, but the pre-condition fails, Terraform will only error on the pre-condition. It won't tell you about the bad value until you fix the pre-condition.
+The first point means you can't use the `self` expression to refer to attributes of the object you're running the pre-condition check on. The second point means that if you have an invalid value for an object argument, but the pre-condition fails, Terraform will only error on the pre-condition. It won't tell you about the invalid value until you fix the pre-condition. That's not necessarily a bad thing, but it's something to be aware of.
 
-Pre-conditions can be thought of as assumptions that you're making about the state of the world before the object is evaluated. If the assumption is wrong, then the object can't be evaluated correctly. They also fail faster than the object itself, which can be a good thing if you're trying to iterate quickly.
+Pre-conditions can be thought of as assumptions that you're making about the state of the world before the object is evaluated. If the assumption is wrong, then the object can't be evaluated correctly. They also fail faster than the object instantiation itself - since it doesn't need to talk to the provider API and wait for a failure. That can be a good thing if you're trying to speed up your development process. I know that I waste a lot of time waiting for resource creation to fail because of bad input values. It'd be nice to know that the input values are bad before I even try to create the resource.
 
-Terraform will do its best to run pre-conditions during the execution plan generation, but if you're referring to attributes in the pre-condition that are not know until the apply phase, then the pre-condition will be run during the apply phase. For instance, if you're referring to the public IP address of an Azure VM in the pre-condition, that value isn't know until the public IP address is actually created, which happens during the apply phase.
+Terraform will do its best to run pre-conditions during the execution plan generation, but if you're referring to attributes of other objects in the pre-condition that are not know until the apply phase, then the pre-condition will be run during the apply phase. For instance, if you're referring to the value of a public IP address in the pre-condition for an Azure VM, that value isn't know until the public IP address resource is actually created, which happens during the apply phase.
 
 Why don't we dig into some pre-condition examples, and then we'll cover post-conditions.
 

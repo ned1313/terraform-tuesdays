@@ -14,13 +14,13 @@ variable "resource_group_name" {
 }
 
 variable "vnet_address_space" {
-  type = string
-    description = "Address space for the virtual network."
-    default = "10.0.0.0/16"
+  type        = string
+  description = "Address space for the virtual network."
+  default     = "10.0.0.0/16"
 }
 
 variable "app_config_store_id" {
-  type = string
+  type        = string
   description = "ID of the App Configuration store."
 }
 
@@ -30,8 +30,8 @@ data "azurerm_resource_group" "main" {
 
 data "azurerm_app_configuration_key" "cidr_list" {
   configuration_store_id = var.app_config_store_id
-  key = "cidr_lists"
-  label = var.region
+  key                    = "cidr_lists"
+  label                  = var.region
 }
 
 resource "azurerm_virtual_network" "main" {
@@ -47,7 +47,8 @@ resource "azurerm_virtual_network" "main" {
     }
 
     precondition {
-      condition = contains(split(",",data.azurerm_app_configuration_key.cidr_list.value), var.vnet_address_space)
+      condition     = contains(split(",", data.azurerm_app_configuration_key.cidr_list.value), var.vnet_address_space)
+      error_message = "The address space ${var.vnet_address_space} is not in the list of allowed address spaces"
     }
   }
 }
