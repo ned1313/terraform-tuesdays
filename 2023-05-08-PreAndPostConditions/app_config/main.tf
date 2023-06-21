@@ -12,7 +12,7 @@ variable "naming_prefix" {
 
 provider "azurerm" {
   features {
-    
+
   }
 }
 
@@ -41,5 +41,9 @@ resource "azurerm_app_configuration_key" "cidr_list" {
   label                  = "eastus"
   value                  = "10.0.0.0/16,10.1.0.0/16,10.2.0.0/16,10.3.0.0/16"
 
-  depends_on = [ azurerm_role_assignment.appconf_dataowner ]
+  depends_on = [azurerm_role_assignment.appconf_dataowner]
+}
+
+output "app_config_store_id" {
+  value = azurerm_app_configuration.main.id
 }
