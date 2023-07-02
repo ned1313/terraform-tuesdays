@@ -1,44 +1,41 @@
-/*
 # Virtual network
 import {
     to = azurerm_virtual_network.main
-    id = "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacoTruck/providers/Microsoft.Network/virtualNetworks/tacoNet"
+    id = "VPC"
 }
 
 # Subnet
 import {
     to = azurerm_subnet.main
-    id = "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacoTruck/providers/Microsoft.Network/virtualNetworks/tacoNet/subnets/Subnet"
+    id = "SUBNET"
 }
 
 # Public IP
 import {
     to = azurerm_public_ip.main
-    id = "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacoTruck/providers/Microsoft.Network/publicIPAddresses/tacoVMPublicIP"
+    id = "PublicIP"
 }
 
 # Network Interface
 import {
     to = azurerm_network_interface.main
-    id = "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacoTruck/providers/Microsoft.Network/networkInterfaces/tacoVMNetInt"
+    id = "NIC"
 }
 
 # NSG
 import {
     to = azurerm_network_security_group.main
-    id = "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacoTruck/providers/Microsoft.Network/networkSecurityGroups/SecGroupNet"
+    id = "NSG"
 }
 
 # NSG Association uses NICID|NSGID format
 import {
     to = azurerm_network_interface_security_group_association.main
-    id = "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacoTruck/providers/Microsoft.Network/networkInterfaces/tacoVMNetInt|/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacoTruck/providers/Microsoft.Network/networkSecurityGroups/SecGroupNet"
+    id = "NICID|NSGID"
 }
 
 # VM
 import {
     to = azurerm_linux_virtual_machine.main
-    id = "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacoTruck/providers/Microsoft.Compute/virtualMachines/tacoVM"
+    id = "VM
 }
-
-*/
