@@ -1,92 +1,73 @@
 provider "azurerm" {
-  features {}
+  features {
+
+  }
 }
 
 locals {
-  base_name = "aztfy"
+  # base naming convention for resources
+  base_name = "tacotruck"
 }
 
-resource "azurerm_resource_group" "training" {
-  name     = "RG-${local.base_name}"
-  location = "East US"
+# Create a resource group for the network
+resource "azurerm_resource_group" "network" {
+  name     = "${local.base_name}-network"
+  location = var.location
 }
 
-resource "azurerm_virtual_network" "training" {
-  name                = "${local.base_name}vn"
-  address_space       = ["10.0.0.0/16"]
-  location            = azurerm_resource_group.training.location
-  resource_group_name = azurerm_resource_group.training.name
+# Create a virtual network using the VNET module
+module "vnet" {
+  source  = "Azure/vnet/azurerm"
+  version = "4.1.0"
+
+  resource_group_name = azurerm_resource_group.network.name
+  vnet_location       = azurerm_resource_group.network.location
+  use_for_each        = true
+  vnet_name           = local.base_name
+  address_space       = ["10.42.0.0/16"]
+  subnet_names        = ["web", "app", "data"]
+  subnet_prefixes     = ["10.42.0.0/24", "10.42.1.0/24", "10.42.2.0/24"]
 }
 
-resource "azurerm_subnet" "training" {
-  name                 = "${local.base_name}sub"
-  resource_group_name  = azurerm_resource_group.training.name
-  virtual_network_name = azurerm_virtual_network.training.name
-  address_prefixes     = ["10.0.2.0/24"]
+# Create a resource group for the VMs
+resource "azurerm_resource_group" "vm" {
+  name     = "${local.base_name}-vms"
+  location = var.location
 }
 
-resource "azurerm_public_ip" "training" {
-  name                    = "${local.base_name}ip"
-  location                = azurerm_resource_group.training.location
-  resource_group_name     = azurerm_resource_group.training.name
-  allocation_method       = "Dynamic"
-  idle_timeout_in_minutes = 30
-  domain_name_label       = "${local.base_name}domain"
+resource "random_id" "ip_dns" {
+  byte_length = 4
 }
 
-resource "azurerm_network_interface" "training" {
-  name                = "${local.base_name}ni"
-  location            = azurerm_resource_group.training.location
-  resource_group_name = azurerm_resource_group.training.name
+# Create two virtual machines using the VM module
+module "web_vms" {
+  source  = "Azure/compute/azurerm"
+  version = "5.3.0"
 
-  ip_configuration {
-    name                          = "${local.base_name}ip"
-    subnet_id                     = azurerm_subnet.training.id
-    private_ip_address_allocation = "Static"
-    private_ip_address            = "10.0.2.5"
-    public_ip_address_id          = azurerm_public_ip.training.id
-  }
+  resource_group_name           = azurerm_resource_group.vm.name
+  vnet_subnet_id                = module.vnet.vnet_subnets_name_id["web"]
+  vm_hostname                   = "${local.base_name}-web"
+  location                      = azurerm_resource_group.vm.location
+  admin_username                = "tacoadmin"
+  admin_password                = "tacopassword123!"
+  enable_ssh_key                = false
+  vm_os_simple                  = "UbuntuServer"
+  public_ip_dns                 = ["tacotruck-${random_id.ip_dns.hex}"]
+  allocation_method             = "Static"
+  public_ip_sku                 = "Standard"
+  enable_accelerated_networking = true
+  delete_os_disk_on_termination = true
+  vm_size                       = "Standard_DS2_V2"
 }
 
-resource "azurerm_virtual_machine" "training" {
-  name                  = "${local.base_name}vm"
-  location              = azurerm_resource_group.training.location
-  resource_group_name   = azurerm_resource_group.training.name
-  network_interface_ids = [azurerm_network_interface.training.id]
-  vm_size               = "Standard_D2s_v4"
-
-  delete_os_disk_on_termination    = true
-  delete_data_disks_on_termination = true
-
-  storage_image_reference {
-    publisher = "Canonical"
-    offer     = "UbuntuServer"
-    sku       = "16.04-LTS"
-    version   = "latest"
-
-  }
-  storage_os_disk {
-    name              = "${local.base_name}disk"
-    caching           = "ReadWrite"
-    create_option     = "FromImage"
-    managed_disk_type = "Standard_LRS"
-  }
-
-  os_profile {
-    computer_name  = "myserver"
-    admin_username = "testadmin"
-    admin_password = "Password1234!"
-  }
-
-  os_profile_linux_config {
-    disable_password_authentication = false
-  }
-
-  tags = {
-    environment = "staging"
-  }
+resource "azurerm_storage_account" "main" {
+  resource_group_name      = azurerm_resource_group.vm.name
+  location                 = azurerm_resource_group.vm.location
+  name                     = "tacotruck${random_id.ip_dns.hex}"
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 }
 
-output "resource_group_name" {
-  value = azurerm_resource_group.training.name
+output "storage_account_id" {
+  value = azurerm_storage_account.main.id
 }
