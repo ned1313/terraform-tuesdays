@@ -1,0 +1,6 @@
+Following resources are marked to be skipped:
+
+- /subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Storage/storageAccounts/tacotruckc997e06f/blobServices/default
+- /subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Storage/storageAccounts/tacotruckc997e06f/fileServices/default
+- /subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Storage/storageAccounts/tacotruckc997e06f/queueServices/default
+- /subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Storage/storageAccounts/tacotruckc997e06f/tableServices/default

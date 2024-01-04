@@ -1,0 +1,47 @@
+{
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/TACOTRUCK-VMS/providers/Microsoft.Compute/virtualMachines/TACOTRUCK-WEB-VMLINUX-0": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/TACOTRUCK-VMS/providers/Microsoft.Compute/virtualMachines/TACOTRUCK-WEB-VMLINUX-0",
+		"resource_type": "azurerm_linux_virtual_machine",
+		"resource_name": "res-0"
+	},
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms",
+		"resource_type": "azurerm_resource_group",
+		"resource_name": "res-1"
+	},
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Compute/availabilitySets/tacotruck-web-avset": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Compute/availabilitySets/tacotruck-web-avset",
+		"resource_type": "azurerm_availability_set",
+		"resource_name": "res-2"
+	},
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Compute/virtualMachines/tacotruck-web-vmLinux-0/providers/Microsoft.Authorization/roleAssignments/95d53145-0d3b-4c15-9c9f-e102ca9dd935": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Compute/virtualMachines/tacotruck-web-vmLinux-0/providers/Microsoft.Authorization/roleAssignments/95d53145-0d3b-4c15-9c9f-e102ca9dd935",
+		"resource_type": "azurerm_role_assignment",
+		"resource_name": "res-3"
+	},
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Network/networkInterfaces/tacotruck-web-nic-0": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Network/networkInterfaces/tacotruck-web-nic-0",
+		"resource_type": "azurerm_network_interface",
+		"resource_name": "res-4"
+	},
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Network/networkInterfaces/tacotruck-web-nic-0/networkSecurityGroups/L3N1YnNjcmlwdGlvbnMvNGQ4ZTU3MmEtMzIxNC00MGU5LWEyNmYtOGY3MWVjZDI0ZTBkL3Jlc291cmNlR3JvdXBzL3RhY290cnVjay12bXMvcHJvdmlkZXJzL01pY3Jvc29mdC5OZXR3b3JrL25ldHdvcmtTZWN1cml0eUdyb3Vwcy90YWNvdHJ1Y2std2ViLW5zZw==": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Network/networkInterfaces/tacotruck-web-nic-0|/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Network/networkSecurityGroups/tacotruck-web-nsg",
+		"resource_type": "azurerm_network_interface_security_group_association",
+		"resource_name": "res-5"
+	},
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Network/networkSecurityGroups/tacotruck-web-nsg": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Network/networkSecurityGroups/tacotruck-web-nsg",
+		"resource_type": "azurerm_network_security_group",
+		"resource_name": "res-6"
+	},
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Network/publicIPAddresses/tacotruck-web-pip-0": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Network/publicIPAddresses/tacotruck-web-pip-0",
+		"resource_type": "azurerm_public_ip",
+		"resource_name": "res-7"
+	},
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Storage/storageAccounts/tacotruckc997e06f": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-vms/providers/Microsoft.Storage/storageAccounts/tacotruckc997e06f",
+		"resource_type": "azurerm_storage_account",
+		"resource_name": "res-8"
+	}
+}

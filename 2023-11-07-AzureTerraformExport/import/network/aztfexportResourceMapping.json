@@ -1,0 +1,22 @@
+{
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-network/providers/Microsoft.Network/virtualNetworks/tacotruck": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-network/providers/Microsoft.Network/virtualNetworks/tacotruck",
+		"resource_type": "azurerm_virtual_network",
+		"resource_name": "res-0"
+	},
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-network/providers/Microsoft.Network/virtualNetworks/tacotruck/subnets/app": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-network/providers/Microsoft.Network/virtualNetworks/tacotruck/subnets/app",
+		"resource_type": "azurerm_subnet",
+		"resource_name": "res-1"
+	},
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-network/providers/Microsoft.Network/virtualNetworks/tacotruck/subnets/data": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-network/providers/Microsoft.Network/virtualNetworks/tacotruck/subnets/data",
+		"resource_type": "azurerm_subnet",
+		"resource_name": "res-2"
+	},
+	"/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-network/providers/Microsoft.Network/virtualNetworks/tacotruck/subnets/web": {
+		"resource_id": "/subscriptions/4d8e572a-3214-40e9-a26f-8f71ecd24e0d/resourceGroups/tacotruck-network/providers/Microsoft.Network/virtualNetworks/tacotruck/subnets/web",
+		"resource_type": "azurerm_subnet",
+		"resource_name": "res-3"
+	}
+}
