@@ -130,6 +130,8 @@ resource "azurerm_role_assignment" "main" {
 
   condition_version                = "2.0"
   skip_service_principal_aad_check = true
+
+  depends_on = [ azurerm_role_definition.main ]
 }
 
 # Output should include storage account name and role name
