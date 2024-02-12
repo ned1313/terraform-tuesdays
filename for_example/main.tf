@@ -2,8 +2,8 @@ provider "azurerm" {
   features {}
 }
 
-resource "azurerm_resource_group" "example" {
-  name     = "for-example"
+resource "azurerm_resource_group" "training" {
+  name     = "for-expression"
   location = "East US"
 }
 
@@ -28,50 +28,48 @@ locals {
 
   subnet_by_name = { for subnet in local.subnets : subnet.name => subnet }
 
-  nat_subnets = { for name, subnet in local.subnet_by_name : name => subnet if subnet.nat }
-
-  nat_subnet_ids = [for k, v in local.nat_subnets : azurerm_subnet.example["${k}"].id]
+  nat_subnets = [ for name, subnet in local.subnet_by_name : name if subnet.nat ]
 
 }
 
-resource "azurerm_virtual_network" "example" {
-  name                = "for-example-network"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+resource "azurerm_virtual_network" "training" {
+  name                = "for-expression-network"
+  location            = azurerm_resource_group.training.location
+  resource_group_name = azurerm_resource_group.training.name
   address_space       = ["10.0.0.0/16"]
 }
 
-resource "azurerm_subnet" "example" {
+resource "azurerm_subnet" "training" {
   for_each             = local.subnet_by_name
   name                 = each.key
-  resource_group_name  = azurerm_resource_group.example.name
-  virtual_network_name = azurerm_virtual_network.example.name
+  resource_group_name  = azurerm_resource_group.training.name
+  virtual_network_name = azurerm_virtual_network.training.name
   address_prefixes     = [each.value.address_prefix]
 }
 
-resource "azurerm_public_ip" "example" {
+resource "azurerm_public_ip" "training" {
   name                = "natgw-public-ip"
-  location            = azurerm_resource_group.example.location
-  resource_group_name = azurerm_resource_group.example.name
+  location            = azurerm_resource_group.training.location
+  resource_group_name = azurerm_resource_group.training.name
   allocation_method   = "Static"
   sku                 = "Standard"
 }
 
-resource "azurerm_nat_gateway" "example" {
-  name                = "natgw-example"
-  resource_group_name = azurerm_resource_group.example.name
-  location            = azurerm_resource_group.example.location
+resource "azurerm_nat_gateway" "training" {
+  name                = "natgw-training"
+  resource_group_name = azurerm_resource_group.training.name
+  location            = azurerm_resource_group.training.location
   sku_name            = "Standard"
 
 }
 
-resource "azurerm_nat_gateway_public_ip_association" "example" {
-  nat_gateway_id       = azurerm_nat_gateway.example.id
-  public_ip_address_id = azurerm_public_ip.example.id
+resource "azurerm_nat_gateway_public_ip_association" "training" {
+  nat_gateway_id       = azurerm_nat_gateway.training.id
+  public_ip_address_id = azurerm_public_ip.training.id
 }
 
-resource "azurerm_subnet_nat_gateway_association" "example" {
-  for_each       = toset(local.nat_subnet_ids)
-  subnet_id      = each.key
-  nat_gateway_id = azurerm_nat_gateway.example.id
+resource "azurerm_subnet_nat_gateway_association" "training" {
+  for_each       = toset(local.nat_subnets)
+  subnet_id      = azurerm_subnet.training[each.key].id
+  nat_gateway_id = azurerm_nat_gateway.training.id
 }
