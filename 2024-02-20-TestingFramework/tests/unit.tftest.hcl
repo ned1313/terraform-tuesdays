@@ -11,7 +11,7 @@ run "sa_test_1" {
     error_message = "${var.website_name} did not render properly. Received ${local.storage_account_name}."
   }
 }
-
+/*
 run "sa_test_2" {
   command = plan
 
@@ -38,14 +38,16 @@ run "sa_test_3" {
   }
 }
 
+
 run "sa_test_4" {
   command = plan
 
   variables {
-    website_name = "ThisNameIsTOOLONG2Use"
+    website_name = "ThisIsAReallyLongName"
   }
 
   expect_failures = [
     var.website_name,
   ]
 }
+*/

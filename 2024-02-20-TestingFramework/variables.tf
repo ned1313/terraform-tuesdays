@@ -5,11 +5,11 @@ variable "location" {
 
 variable "website_name" {
   description = "The website name to use to create related resources in Azure."
-  default     = "catmandu"
+  default     = "tacocat"
 
   validation {
-    condition = length(var.website_name) <= 16
-    error_message = "Website name must be 16 or less characters. Submitted value was ${length(var.website_name)}"
+    condition = length(var.website_name) <= 17
+    error_message = "The website name must be 17 characters or fewer."
   }
 }
 
