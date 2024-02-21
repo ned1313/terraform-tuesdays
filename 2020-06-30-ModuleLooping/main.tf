@@ -30,3 +30,20 @@ module "files_foreach" {
   filename = "${each.key}.txt"
 
 }
+
+provider "local" {
+  alias = "alt"
+}
+
+resource "local_file" "test" {
+  for_each = toset(["a", "b", "c"])
+  provider = local.alt
+
+  content = each.key
+  filename = "${each.key}.txt"
+}
+
+output "names" {
+  value = module.files[*].stuff
+  
+}
