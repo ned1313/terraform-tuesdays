@@ -7,11 +7,6 @@ resource "azurerm_resource_group" "main" {
   location = var.location
 }
 
-resource "random_integer" "main" {
-  max = 999
-  min = 001
-}
-
 locals {
   storage_account_name = "${lower(replace(var.website_name, "/[[:^alnum:]]/", ""))}data001"
 }
