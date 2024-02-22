@@ -1,5 +1,5 @@
 # Create a random integer for website naming
-/*
+
 run "random_int_apply" {
     module {
         source = "./tests/setup"
@@ -29,4 +29,3 @@ run "check_site" {
     error_message = "Website ${run.execute.homepage_url} returned the status code ${data.http.main.status_code}. Expected 200."
   }
 }
-*/
