@@ -54,4 +54,4 @@ jobs:
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@v2
         with:
-          sarif_file: /home/runner/work/terraform-tuesdays/terraform-tuesdays/snyk.sarif
+          sarif_file: (/home/runner/work/_actions/github/codeql-action/v2/lib/snyk.sarif
