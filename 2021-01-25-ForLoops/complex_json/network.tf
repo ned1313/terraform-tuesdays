@@ -12,10 +12,3 @@ locals {
       ]
   if network_key != "hub-vnet" ])
 }
-
-aws_bucket.my_buckets[0].name # bucket1
-aws_bucket.my_buckets[*].name # ["bucket1", "bucket2","bucket3"]
-
-    aws_subnet.main-subnet["subnet-1"].cidr_block
-
-    [ for subnet in aws_subnet.main-subnet : subnet.cidr_block ]
