@@ -1,15 +1,11 @@
 # Create a random integer for website naming
 
-run "random_int_apply" {
-    module {
-        source = "./tests/setup"
-    }
-}
-
 # Verify website works
 run "execute" {
+  command = apply
+
   variables {
-    website_name = "Test${run.random_int_apply.integer}"
+    website_name = "Test${substr(uuid(),0,5)}"
   }
 }
 

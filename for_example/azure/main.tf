@@ -73,3 +73,7 @@ resource "azurerm_subnet_nat_gateway_association" "training" {
   subnet_id      = azurerm_subnet.training[each.key].id
   nat_gateway_id = azurerm_nat_gateway.training.id
 }
+
+output "subnet_ids" {
+  value = [ for subnet in azurerm_subnet.training : subnet.id ]
+}

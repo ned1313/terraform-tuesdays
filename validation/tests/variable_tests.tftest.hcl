@@ -1,4 +1,4 @@
-run "vm_size_e_series" {
+run "test_e_series" {
     command = plan
 
     variables {

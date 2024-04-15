@@ -14,7 +14,7 @@ variable "azp_token" {
 }
 
 variable "azp_pool" {
-  description = "Name of the agent pool you created in Azure DevOps."
+  description = "Name of the agent pool you created in Azure DevOps. If not set, a new pool named aci-agents will be created."
   type        = string
   default     = ""
 }

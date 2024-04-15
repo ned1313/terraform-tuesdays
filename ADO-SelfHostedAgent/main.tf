@@ -43,7 +43,8 @@ resource "azurerm_container_group" "main" {
 }
 
 resource "azuredevops_agent_pool" "main" {
-  count          = var.azp_pool != "" ? 1 : 0
+  # If azp_pool is not set, create a pool for the agent
+  count          = var.azp_pool == "" ? 1 : 0
   name           = local.agent_pool
   auto_provision = true
   auto_update    = false
