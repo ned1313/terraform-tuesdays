@@ -24,7 +24,7 @@ local.map1_data.MapKey1
 [ for i in local.all_json_data.List1 : upper(i) ]
 
 # What about transposing keys and values?
-{ for k, v in local.map1_data : v => k }
+{ for key, val in local.map1_data : val => key }
 
 [ for k, v in local.map1_data : "${v}-${k}" ]
 
