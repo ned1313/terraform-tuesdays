@@ -2,6 +2,10 @@ provider "aws" {
   region = "us-west-2"
 }
 
+resource "random_integer" "bucket_suffix" {
+  min = 10000
+  max = 99999
+}
 
 data "aws_caller_identity" "current" {}
 
@@ -38,7 +42,7 @@ module "terraform_state_backend" {
   force_destroy = true
   bucket_enabled = true
   dynamodb_enabled = true
-  name = "encrypted"
+  name = "encrypted${random_integer.bucket_suffix.result}"
   environment = "test"
   namespace = "tofu"
 
