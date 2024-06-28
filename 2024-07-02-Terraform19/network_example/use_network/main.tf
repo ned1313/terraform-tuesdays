@@ -12,6 +12,12 @@ provider "azurerm" {
   features {}
 }
 
+
+data "azurerm_virtual_network" "main" {
+  name                = var.vnet_name
+  resource_group_name = var.resource_group_name
+}
+
 variable "vnet_name" {
   type        = string
   description = "Name of the virtual network"
@@ -31,9 +37,4 @@ variable "subnet_name" {
     error_message = "Subnet name must be in the list of subnets from the virtual network."
   }
 
-}
-
-data "azurerm_virtual_network" "main" {
-  name                = var.vnet_name
-  resource_group_name = var.resource_group_name
 }
