@@ -17,13 +17,13 @@ variable "primary_location" {
   description = "Primary location for the resource group"
 }
 
-variable "secondary_location" {
+variable "partner_resource_group_id" {
   type = string
-  description = "Partner location to use for deployment"
+  description = "Partner resource group to use for deployment"
 
   validation {
-    condition = var.secondary_location != var.primary_location
-    error_message = "Secondary location must be different from the primary location"
+    condition = azurerm_resource_group.main.id == var.partner_resource_group_id
+    error_message = "Secondary resource group must be different from the primary resource group"
   }
 }
 
@@ -34,5 +34,5 @@ resource "azurerm_resource_group" "main" {
 
 resource "azurerm_resource_group" "partner" {
   name     = "partner-resources"
-  location = var.secondary_location
+  location = var.partner_resource_group_id
 }
