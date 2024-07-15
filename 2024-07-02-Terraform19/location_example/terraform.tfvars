@@ -1,2 +1,2 @@
-location = "eastus"
-partner_location = "westus"
+primary_location = "eastus"
+secondary_location = "eastus"
