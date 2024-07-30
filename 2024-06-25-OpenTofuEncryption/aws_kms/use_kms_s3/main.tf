@@ -1,5 +1,5 @@
 resource "local_file" "main" {
-  content  = "Encrypt state and plan again!"
+  content  = "Change contents!"
   filename = "${path.module}/testplan2.txt"
 }
 

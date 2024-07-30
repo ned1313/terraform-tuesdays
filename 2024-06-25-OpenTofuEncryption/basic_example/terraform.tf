@@ -13,18 +13,12 @@ terraform {
       keys = key_provider.pbkdf2.passphrase
     }
 
-    method "unencrypted" "main" {}
-
     state {
-      method = method.unencrypted.main
-
-      fallback {
-        method = method.aes_gcm.passphrase_gcm
-      }
+      method = method.aes_gcm.passphrase_gcm
     }
 
     plan {
-      method = method.aes_gcm.gcm
+      method = method.aes_gcm.passphrase_gcm
     }
   }
 }
