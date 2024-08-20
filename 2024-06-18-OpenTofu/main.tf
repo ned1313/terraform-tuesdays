@@ -7,7 +7,7 @@ resource "azurerm_resource_group" "test" {
   name = "opentofu-test"
   location = "East US"
   tags = {
-    managed_by = "OpenTofu"
+    managed_by = "Terraform"
   }
 }
 
