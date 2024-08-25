@@ -4,7 +4,7 @@ module "session" {
 
   session_name = "modules-best-practices"
   speaker_name = "Ned"
-  shirt        = "tacos"
+  shirt        = "burritos"
   mug          = true
   dog          = false
 }
