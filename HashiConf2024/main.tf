@@ -1,10 +1,9 @@
 module "session" {
-  source  = "HashiConf2024/sessions/template"
-  version = "0.1.0"
+  source = "./HashiConf2024/sessions"
 
   session_name = "modules-best-practices"
-  speaker_name = "Ned"
-  shirt        = "burritos"
+  speaker_name = "Ned Bellavance"
+  shirt        = "tacos"
   mug          = true
   dog          = false
 }
