@@ -33,40 +33,33 @@ resource "aws_route_table_association" "main" {
   route_table_id = aws_route_table.main.id
 }
 
-resource "aws_security_group" "allow_http" {
-  vpc_id = aws_vpc.main.id
 
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
 
 data "aws_ssm_parameter" "amazon_linux_2_ami" {
   name = "/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2"
 }
 
-resource "aws_instance" "web" {
-  ami                    = data.aws_ssm_parameter.amazon_linux_2_ami.value
-  instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.main.id
-  vpc_security_group_ids = [aws_security_group.allow_http.id]
+module "web_instance" {
+  source = "./modules/instance"
 
-  user_data = file("${path.module}/startup.tpl")
-  user_data_replace_on_change = true
+  ami_id       = data.aws_ssm_parameter.amazon_linux_2_ami.value
+  ingress_port = 80
+  instance_type = "t2.micro"
+  instance_name = "WebServer"
+  subnet_id    = aws_subnet.main.id
+  vpc_id       = aws_vpc.main.id
+  user_data    = file("${path.module}/startup.tpl")
 
-  tags = {
-    Name = "WebServer"
-  }
+}
+
+moved {
+  from = aws_instance.web
+  to   = module.web_instance.aws_instance.web
+}
+
+moved {
+  from = aws_security_group.allow_http
+  to   = module.web_instance.aws_security_group.allow_http
 }
 
 resource "random_string" "bucket_name" {
@@ -74,32 +67,29 @@ resource "random_string" "bucket_name" {
   special = false
 }
 
-resource "aws_s3_bucket" "bucket" {
-  bucket        = "my-bucket-${lower(random_string.bucket_name.result)}"
+module "web_bucket" {
+  source  = "terraform-aws-modules/s3-bucket/aws"
+  version = "4.2.2"
+
+  bucket = "my-bucket-${lower(random_string.bucket_name.result)}"
+  control_object_ownership = true
+  object_ownership = "BucketOwnerPreferred"
+  acl = "private"
   force_destroy = true
 
 }
 
-resource "aws_s3_bucket_ownership_controls" "bucket" {
-  bucket = aws_s3_bucket.bucket.id
-  rule {
-    object_ownership = "BucketOwnerPreferred"
-  }
-}
-
-resource "aws_s3_bucket_acl" "bucket_acl" {
-  bucket = aws_s3_bucket.bucket.id
-  acl    = "private"
-
-  depends_on = [aws_s3_bucket_ownership_controls.bucket]
+moved {
+  from = aws_s3_bucket.bucket
+  to   = module.web_bucket.aws_s3_bucket.bucket
 }
 
 output "public_dns" {
-  value = "http://${aws_instance.web.public_dns}"
+  value = "http://${module.web_instance.public_dns}"
 
 }
 
 output "bucket_name" {
-  value = aws_s3_bucket.bucket.bucket
+  value = module.web_bucket.s3_bucket_id
   
 }

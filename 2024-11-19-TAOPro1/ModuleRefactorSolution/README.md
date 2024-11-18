@@ -29,7 +29,7 @@ You will need to create input variables to pass information from the root module
 * Name of the instance
 * Port to allow for security group
 * Instance type
-* Path to userdata file
+* User data contents
 
 Your module also needs to pass back the public DNS of the instance as an output.
 
