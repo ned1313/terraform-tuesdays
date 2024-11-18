@@ -45,6 +45,7 @@ resource "azurerm_subnet" "training" {
   resource_group_name  = azurerm_resource_group.training.name
   virtual_network_name = azurerm_virtual_network.training.name
   address_prefixes     = [each.value.address_prefix]
+
 }
 
 resource "azurerm_public_ip" "training" {

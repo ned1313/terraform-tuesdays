@@ -1,50 +1,49 @@
-locals {
-  mymap = {
-    one = "1"
-    two = "2"
+variable "resource_group_count" {
+  type = number
+  default = 2
+}
+
+variable "subscription_id" {
+  type = string
+}
+
+provider "azurerm" {
+  features {}
+  subscription_id = var.subscription_id
+}
+
+resource "azurerm_resource_group" "main" {
+  count = var.resource_group_count
+  name     = "myResourceGroup-${count.index + 1}"
+  location = "East US"
+}
+
+
+resource "azurerm_resource_group" "main2" {
+  for_each = toset(["foreach-1", "foreach-2"])
+  name     = each.key
+  location = "East US"
+}
+
+resource "aws_security_group" "hashi-server" {
+  vpc_id = aws_vpc.vpc.id
+  name   = "hashi-server"
+
+  dynamic "ingress" {
+    for_each = var.ingress_ports
+    content {
+      from_port   = ingress.value["from"]
+      to_port     = ingress.value["to"]
+      protocol    = "tcp"
+      cidr_blocks = [ingress.value["cidr"]]
+    }
+    
   }
 
-  my_value = lookup(local.mymap, "three", "unknown")
-  my_value2 = local.mymap["one"] # returns 1
-
-  mystring = "a string of characters"
-  my_int = 8
-  my_double = 6.788
-  my_bool = true
-
-  ## Collections
-  my_list = [0,5,9,9]
-  my_element = local.my_list[0]
-  my_map = {
-    book = "read"
-    floor = "table"
+  egress {
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
-  my_value3 = local.my_map["book"]
-  all_values = values(local.my_map)
-
-  ## Structural
-  my_tuple = [0,"one",true]
-  my_obj = {
-    book = [1,2,3]
-    floor = true
-  }
-}
-
-variable "subnet_list" {
-  type = list(string)
-}
-
-variable "subnet_details" {
-  type = object({
-    address_prefix = list(string)
-    subnet_delegation = string 
-  })
-}
-
-variable "my_weird_variable" {
-  type = map(any)
-}
-
-resource "azurerm_resource_group" "maybe" {
-  count = var.resource_group_name != "" ? 1 : 0
 }
