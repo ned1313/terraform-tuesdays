@@ -22,7 +22,7 @@ resource "aws_instance" "web" {
   subnet_id              = var.subnet_id
   vpc_security_group_ids = [aws_security_group.allow_http.id]
 
-  user_data = var.user_data
+  user_data                   = var.user_data
   user_data_replace_on_change = true
 
   tags = {

@@ -42,13 +42,13 @@ data "aws_ssm_parameter" "amazon_linux_2_ami" {
 module "web_instance" {
   source = "./modules/instance"
 
-  ami_id       = data.aws_ssm_parameter.amazon_linux_2_ami.value
-  ingress_port = 80
+  ami_id        = data.aws_ssm_parameter.amazon_linux_2_ami.value
+  ingress_port  = 80
   instance_type = "t2.micro"
   instance_name = "WebServer"
-  subnet_id    = aws_subnet.main.id
-  vpc_id       = aws_vpc.main.id
-  user_data    = file("${path.module}/startup.tpl")
+  subnet_id     = aws_subnet.main.id
+  vpc_id        = aws_vpc.main.id
+  user_data     = file("${path.module}/startup.tpl")
 
 }
 
@@ -71,17 +71,17 @@ module "web_bucket" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "4.2.2"
 
-  bucket = "my-bucket-${lower(random_string.bucket_name.result)}"
+  bucket                   = "my-bucket-${lower(random_string.bucket_name.result)}"
   control_object_ownership = true
-  object_ownership = "BucketOwnerPreferred"
-  acl = "private"
-  force_destroy = true
+  object_ownership         = "BucketOwnerPreferred"
+  acl                      = "private"
+  force_destroy            = true
 
 }
 
 moved {
   from = aws_s3_bucket.bucket
-  to   = module.web_bucket.aws_s3_bucket.bucket
+  to   = module.web_bucket.aws_s3_bucket.this[0]
 }
 
 output "public_dns" {
@@ -91,5 +91,5 @@ output "public_dns" {
 
 output "bucket_name" {
   value = module.web_bucket.s3_bucket_id
-  
+
 }

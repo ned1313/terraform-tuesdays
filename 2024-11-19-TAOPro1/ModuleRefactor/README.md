@@ -60,3 +60,13 @@ Before checking the solution in the solution folder, try to make the modificatio
 Here are some helpful hints:
 
 * Use the `moved` block or `terraform state mv` commands to avoid replacing resources
+* Consider what input variables your module should have, are there any safe defaults?
+* Try to keep your module generalized, don't make too many assumptions!
+* The instance module will need at least one output defined
+* The S3 bucket module uses a count meta-argument, what does that do to the address?
+
+Please note that the actual solution is not the only possible solution. As long as you have met the requirements, you have a valid solution.
+
+## Cleanup
+
+Be sure to use `terraform destroy` after you're done to avoid incurring charges in AWS.
