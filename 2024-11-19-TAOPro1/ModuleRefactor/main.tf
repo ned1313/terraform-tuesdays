@@ -43,7 +43,7 @@ resource "aws_instance" "web" {
   subnet_id              = aws_subnet.main.id
   vpc_security_group_ids = [aws_security_group.allow_http.id]
 
-  user_data = file("${path.module}/startup.tpl")
+  user_data                   = file("${path.module}/startup.tpl")
   user_data_replace_on_change = true
 
   tags = {
@@ -101,5 +101,5 @@ output "public_dns" {
 
 output "bucket_name" {
   value = aws_s3_bucket.bucket.bucket
-  
+
 }
