@@ -4,12 +4,6 @@ variable "location" {
 
 }
 
-variable "subscription_id" {
-  description = "The subscription ID to use for the network"
-  type        = string
-
-}
-
 variable "prefix" {
   description = "The prefix to use for the network"
   type        = string
@@ -29,6 +23,12 @@ variable "cidr_block" {
 }
 
 variable "subnets" {
-  type        = map(string)
+  type = map(object({
+    address_prefixes           = string
+    delegation_name            = optional(string)
+    service_delegation_name    = optional(string)
+    service_delegation_actions = optional(list(string))
+    service_endpoints          = optional(list(string))
+  }))
   description = "Map of subnets to create"
 }
