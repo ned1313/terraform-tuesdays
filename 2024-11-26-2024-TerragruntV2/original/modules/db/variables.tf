@@ -13,17 +13,7 @@ variable "prefix" {
   type        = string
 }
 
-variable "subnet_address_prefixes" {
-  description = "Address prefixes for the subnet"
-  type        = list(string)
-}
-
-variable "vnet_id" {
-  description = "The ID of the virtual network"
-  type        = string
-}
-
-variable "vnet_name" {
-  description = "The name of the virtual network"
+variable "subnet_id" {
+  description = "The ID of the subnet"
   type        = string
 }

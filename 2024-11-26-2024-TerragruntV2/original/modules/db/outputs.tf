@@ -1,4 +1,4 @@
-output "mysql_fqdn" {
-  value = azurerm_mysql_flexible_server.mysql.fqdn
+output "postgres_fqdn" {
+  value = azurerm_postgresql_server.postgres.fqdn
   
 }

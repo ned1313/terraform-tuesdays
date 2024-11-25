@@ -10,12 +10,11 @@ resource "azurerm_container_group" "backend" {
   os_type             = "Linux"
   ip_address_type     = "Private"
   subnet_ids          = [var.subnet_id]
-  dns_name_label      = "${var.prefix}-backend-dns"
 
 
   container {
     name   = "backend-container"
-    image  = "nginx:latest"
+    image  = "mcr.microsoft.com/azuredocs/aci-helloworld:latest"
     cpu    = "0.5"
     memory = "1.5"
 

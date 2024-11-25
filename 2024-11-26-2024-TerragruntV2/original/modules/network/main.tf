@@ -18,5 +18,18 @@ resource "azurerm_subnet" "subnets" {
   name                 = each.key
   resource_group_name  = azurerm_resource_group.network.name
   virtual_network_name = azurerm_virtual_network.network.name
-  address_prefixes     = [each.value]
+  address_prefixes     = [each.value.address_prefixes]
+  service_endpoints = each.value.service_endpoints
+
+  dynamic "delegation" {
+    for_each = each.value.delegation_name != null ? [each.value] : []
+
+    content {
+    name = delegation.value.delegation_name
+    service_delegation {
+      name    = delegation.value.service_delegation_name
+      actions = delegation.value.service_delegation_actions
+    }
+    }
+  }
 }
