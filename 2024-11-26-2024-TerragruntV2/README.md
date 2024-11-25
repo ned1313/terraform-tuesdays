@@ -2,7 +2,7 @@
 
 Four years ago, almost to the date, I did a review of Terragrunt. You can watch that video here through the doobly-doo (thank you Technology Connections for infesting my brain with that bit of terminology).
 
-But good news! I watched it so you don't have to. And I thought it might be time to reassess my initial impressions of Terragrunt. It's four year later. Terraform has gone from version 0.14 to 1.9. OpenTofu happened. I switched my desk around and got a better camera.
+But good news! I watched it so you don't have to. And I thought it might be time to reassess my initial impressions of Terragrunt. It's four years later. Terraform has gone from version 0.14 to 1.9. OpenTofu happened. I switched my desk around and got a better camera.
 
 So like I said, a lot has changed. Has my opinion of Terragrunt? Mostly no. Video over, we did it!
 
@@ -71,3 +71,25 @@ This application has three environments, dev, qa, and prod. Let's take a look at
 
 * Start by adding a terragrunt.hcl file to the dev enivronment
 * Move the inputs to the terragrunt.hcl file
+
+## Philosophy Time
+
+Listen, you got this far in the video. I'm gonna drop some opinions. Some thoughts on IaC and automation. Feel free to disagree in the comments.
+
+Terraform has to make design choices. What's in scope and what's out. Many of the things that Terragrunt is trying to address are things that Terraform has decided are out of scope. Things like configuring the backend dynamically, stitching together disparate configurations, deployment to multiple environments.
+
+Terraform has some features that could help, there's the remote state data source to pull info from one config to another. You've got the Terraform Community Edition workspaces to help with multiple environments. And if you're willing to jump over to OpenTofu land, you can define the backend with variables now.
+
+But basically, HashiCorp looked at those features, along with managing remote state, having a hierarchy variable values, and fully automating deployments and said, "That belongs in something else."
+
+The direct result is that we have a plethora of Terrraform Automation platforms and solutions out there to fill in the gaps. Terragrunt is one of those solutions. HCP Terraform is another. Want to deal with multiple environment declaratively, have value inheritance, and not have to worry about the state backend, Terraform Stack will do that. And so will env0 and Spacelift and Atmos.
+
+Terragrunt is fairly opinionated on how you should be managing your components and environments, namely with a complex folder structure. That's not necessarily bad, but it does lock you into their way of doing things and extracting yourself could be pretty difficult. I've talked to more that one person who doesn't really want to use Terragrunt anymore, but they also don't want to spend months refactoring everything and doing extensive state surgery. And make no mistake, splitting what would be a root module into 4 or more separate modules with their own state data does introduce its own set of problems.
+
+For any reasonably sized configuration, you don't have split the root module up. And Terraform works better when you don't Remember the weird mock data thing we had to do? You don't have to do that when everything is part of the same root module. Eventually, it might make sense to break up the configuration, but I think the reasons to do that have more to do with blast radius, access permissions, and change rate.
+
+With the introduction of moved, import, and removed blocks, actually moving stuff from one configuration to another (if necessary) is far less painful than it was in the past. Keeping things together makes it a lot easier to reference attributes of one resource in another.
+
+When it comes to dealing with multiple environment, my mindset has been changing. I used to like branch-based management, but lately I think trunk based development with logic bundled into your root module is probably the way to go. You can add environment by adding tfvars file and having your automation take care of the rest. I plan to do a video demonstrating what that looks like, so keep an eye out.
+
+

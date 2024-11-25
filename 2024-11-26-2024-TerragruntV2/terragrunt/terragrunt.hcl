@@ -33,8 +33,24 @@ remote_state {
     resource_group_name  = local.backend_resource_group_name
     storage_account_name = local.backend_storage_account_name
     container_name       = local.backend_container_name
-    key                  = "${path_relative_to_include("environment")}/terraform.tfstate"
+    key                  = "${path_relative_to_include()}/terraform.tfstate"
   }
+}
+
+# Generate a Terraform required providers file
+generate "terraform" {
+  path      = "required_providers.tf"
+  if_exists = "overwrite_terragrunt"
+  contents  = <<EOF
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "${local.env_vars.locals.azurerm_version}"
+    }
+  }
+}
+EOF
 }
 
 inputs = local.env_vars.locals

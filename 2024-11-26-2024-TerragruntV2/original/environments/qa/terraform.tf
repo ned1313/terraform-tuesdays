@@ -5,4 +5,8 @@ terraform {
       version = "~> 4.0"
     }
   }
+
+  backend "azurerm" {
+    key = "qa/terraform.tfstate"
+  }
 }

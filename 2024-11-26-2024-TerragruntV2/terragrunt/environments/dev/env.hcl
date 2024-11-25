@@ -5,5 +5,6 @@ locals {
   common_tags = {
     environment = "dev"
   }
-  prefix = "tgdev"
+  prefix          = "tgdev"
+  azurerm_version = "4.11.0"
 }
