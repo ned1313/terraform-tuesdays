@@ -10,7 +10,7 @@ terraform {
     organization = "ned-in-the-cloud"
     workspaces {
       project = "terraform-tuesdays-demos"
-      name = "ephemeral-resources-data-source"
+      name    = "ephemeral-resources-data-source"
     }
   }
 }
