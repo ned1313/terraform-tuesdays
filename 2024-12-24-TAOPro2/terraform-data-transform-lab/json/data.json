@@ -1,0 +1,12 @@
+{
+    "servers": [
+        {
+            "name": "web1",
+            "type": "t2.micro"
+        },
+        {
+            "name": "db1",
+            "type": "t3.medium"
+        }
+    ]
+}

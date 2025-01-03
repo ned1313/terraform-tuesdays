@@ -32,9 +32,9 @@ resource "azurerm_container_group" "example" {
     cpu    = "0.5"
     memory = "1.5"
 
-    #secure_environment_variables = {
-    #  KEY_VAULT_SECRET = ephemeral.azurerm_key_vault_secret.example.value
-    #}
+    secure_environment_variables = {
+      KEY_VAULT_SECRET = ephemeral.azurerm_key_vault_secret.example.value
+    }
 
     ports {
       port     = 443

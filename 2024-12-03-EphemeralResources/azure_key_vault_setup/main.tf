@@ -29,36 +29,6 @@ resource "azurerm_key_vault" "example" {
   sku_name            = "standard"
 
 
-  access_policy {
-    tenant_id = data.azurerm_client_config.example.tenant_id
-    object_id = data.azurerm_client_config.example.object_id
-
-    secret_permissions = [
-      "Backup",
-      "Delete",
-      "Get",
-      "List",
-      "Purge",
-      "Recover",
-      "Restore",
-      "Set",
-    ]
-
-    certificate_permissions = [
-      "Create",
-      "Delete",
-      "DeleteIssuers",
-      "Get",
-      "GetIssuers",
-      "Import",
-      "List",
-      "ListIssuers",
-      "ManageContacts",
-      "ManageIssuers",
-      "SetIssuers",
-      "Update",
-    ]
-  }
 }
 
 resource "azurerm_key_vault_secret" "example" {

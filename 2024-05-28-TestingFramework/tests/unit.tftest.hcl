@@ -18,7 +18,7 @@ run "sa_test_2" {
   command = plan
 
   variables {
-    website_name = "ALLCAPSAREGREAT"
+    website_name = "ALLCAPS"
   }
 
   assert {
@@ -45,7 +45,7 @@ run "sa_test_4" {
   command = plan
 
   variables {
-    website_name = "ThisIsAReallyLongName"
+    website_name = "ThisIsAReallyLong"
   }
 
   expect_failures = [

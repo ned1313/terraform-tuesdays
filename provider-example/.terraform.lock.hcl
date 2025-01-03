@@ -1,0 +1,44 @@
+# This file is maintained automatically by "terraform init".
+# Manual edits may be lost in future updates.
+
+provider "registry.terraform.io/abbeylabs/abbey" {
+  version     = "0.2.9"
+  constraints = ">= 0.2.0, < 1.0.0"
+  hashes = [
+    "h1:bacctRpYIAKTt0GsSCfv8AMYO7smboERDOKkyJbCHeQ=",
+    "zh:030663098b9f693c4eb9933d9e82373ceebdf07547356b4768fe02827eb0f846",
+    "zh:0f55c7313413a947c95e22a7a483106913f9564023da6ec5ffa4cb1ef44799bf",
+    "zh:2bb9a0364cbf2036de261188d90538193c3052799cce4bbf4c998ca0ae7d6154",
+    "zh:3c28c22569b4b33cd3c4514039bbada5627a6f96278bb52fd89a1219591e05b8",
+    "zh:401e1f5d68d8f33b5dabddf4196788f35a86f7f682d93b396a2a683012bbb2f3",
+    "zh:44c65d2203575e3c3c09ac72151c58b53aaea22446b6fce866a63ed93f4bec29",
+    "zh:4ac05211cf95a623e7a68c2c5485537128f979e2512c7ed902f4b7437c113904",
+    "zh:6c02d77f796e797a1fed80e9a92bcc1ad1da2cb779a0aaed5e649b2fd206365e",
+    "zh:82722836e753b80d6313827cf0a373c284dbfac59bfbe8949e9d07e455275c5e",
+    "zh:8671cf8c0215392883feb9d863dbbb081bb4cb3ad7d983b5170162ed47021a8e",
+    "zh:95f5e40814fcfad8e7cf91ebf20412f3a0e3b42422bcdb05096a6dca505cefe9",
+    "zh:f4a052a8fb7761f8455573fb32e4f9e09f6ba6e72dbf50744f706cf601ad497c",
+    "zh:f809ab383cca0a5f83072981c64208cbd7fa67e986a86ee02dd2c82333221e32",
+    "zh:f969bef359b467356cc6f0b96f2383f988994c068da6e3160f58119fca2edc30",
+    "zh:fc31811a6e9ecbf300f7476475d58b6b13cb0a2ca427cf68b4bb7e237cbe2c9d",
+  ]
+}
+
+provider "registry.terraform.io/hashicorp/random" {
+  version = "3.6.3"
+  hashes = [
+    "h1:+UItZOLue/moJfnI3tqZBQbXUYR4ZnqPYfJDJPgLZy0=",
+    "zh:04ceb65210251339f07cd4611885d242cd4d0c7306e86dda9785396807c00451",
+    "zh:448f56199f3e99ff75d5c0afacae867ee795e4dfda6cb5f8e3b2a72ec3583dd8",
+    "zh:4b4c11ccfba7319e901df2dac836b1ae8f12185e37249e8d870ee10bb87a13fe",
+    "zh:4fa45c44c0de582c2edb8a2e054f55124520c16a39b2dfc0355929063b6395b1",
+    "zh:588508280501a06259e023b0695f6a18149a3816d259655c424d068982cbdd36",
+    "zh:737c4d99a87d2a4d1ac0a54a73d2cb62974ccb2edbd234f333abd079a32ebc9e",
+    "zh:78d5eefdd9e494defcb3c68d282b8f96630502cac21d1ea161f53cfe9bb483b3",
+    "zh:a357ab512e5ebc6d1fda1382503109766e21bbfdfaa9ccda43d313c122069b30",
+    "zh:c51bfb15e7d52cc1a2eaec2a903ac2aff15d162c172b1b4c17675190e8147615",
+    "zh:e0951ee6fa9df90433728b96381fb867e3db98f66f735e0c3e24f8f16903f0ad",
+    "zh:e3cdcb4e73740621dabd82ee6a37d6cfce7fee2a03d8074df65086760f5cf556",
+    "zh:eff58323099f1bd9a0bec7cb04f717e7f1b2774c7d612bf7581797e1622613a0",
+  ]
+}
