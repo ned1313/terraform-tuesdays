@@ -3,11 +3,13 @@ locals {
 }
 
 output "csv_parsed" {
-  value = local.csv_data
+  
 }
 
+# Create an output that is a map of the server names to the type
+
 output "server_types" {
-  value = { for entry in local.csv_data : entry.name => entry.type }
+  
 }
 
 locals {
@@ -24,32 +26,18 @@ resource "aws_vpc" "main" {
 }
 
 # Using for_each, create security groups and security group rules using the contents of the firewall_rules.csv file.
-
 locals {
-  systems = distinct([for rule in local.firewall_rules : rule.system])
-  rules_by_id = { for rule in local.firewall_rules : rule["Rule ID"] => rule }
+  
 }
 
 resource "aws_security_group" "main" {
-  for_each    = toset(local.systems)
-  name_prefix = "each.key"
-  vpc_id      = aws_vpc.main.id
+
 }
 
 resource "aws_vpc_security_group_ingress_rule" "main" {
-  for_each = { for rule in local.firewall_rules : rule["Rule ID"] => rule if rule.direction == "Inbound" }
-  security_group_id = aws_security_group.main[each.value.system].id
-  cidr_ipv4 = each.value["source IP"]
-  from_port = split("-",each.value["port range"])[0]
-  to_port = can(split("-",each.value["port range"])[1]) ? split("-",each.value["port range"])[1] : split("-",each.value["port range"])[0]
-  ip_protocol = lower(each.value["protocol"])
+
 }
 
 resource "aws_vpc_security_group_egress_rule" "main" {
-  for_each = { for rule in local.firewall_rules : rule["Rule ID"] => rule if rule.direction == "Outbound" }
-  security_group_id = aws_security_group.main[each.value.system].id
-  cidr_ipv4 = each.value["destination IP"]
-  from_port = split("-",each.value["port range"])[0]
-  to_port = can(split("-",each.value["port range"])[1]) ? split("-",each.value["port range"])[1] : split("-",each.value["port range"])[0]
-  ip_protocol = each.value["protocol"]
+
 }

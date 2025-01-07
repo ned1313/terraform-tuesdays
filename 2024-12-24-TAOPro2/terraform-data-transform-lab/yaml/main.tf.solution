@@ -1,0 +1,26 @@
+locals {
+  yaml_data = yamldecode(file("${path.module}/data.yaml"))
+}
+
+output "yaml_users" {
+  value = local.yaml_data.users
+}
+
+output "admin_users" {
+  value = [for user in local.yaml_data.users : user.name if user.role == "admin"]
+}
+
+
+locals {
+  org = yamldecode(file("${path.module}/employees.yaml"))
+
+  over_50k = [for employee in local.org.employees : employee.name if employee.salary > 50000]
+
+  departments = distinct([for employee in local.org.employees : employee.department])
+
+  employees_by_department = { for department in local.departments : department => [
+    for employee in local.org.employees : employee.name if employee.department == department]
+  }
+
+  department_count = { for department in local.departments : department => length(local.employees_by_department[department]) }
+}
