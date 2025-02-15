@@ -1,0 +1,29 @@
+locals {
+  json_data = jsondecode(file("${path.module}/data.json"))
+
+  server_regions = distinct([for server in local.json_data.servers : server.region])
+
+  server_name_by_region = { for region in local.server_regions : region => [
+    for server in local.json_data.servers : server.name if server.region == region]
+  }
+
+  disks = flatten([ for server in local.json_data.servers : 
+    [ for disk in server.disks : merge(disk, {server = server.name}) ]
+  ])
+}
+
+output "server_names" {
+  value = [for server in local.json_data.servers : server.name]
+}
+
+output "server_regions" {
+  value = local.server_regions  
+}
+
+output "us_west_servers" {
+  value = local.server_name_by_region["us-west-2"]
+}
+
+output "ssd_disks" {
+  value = [ for disk in local.disks : disk if disk.type == "ssd" ]
+}

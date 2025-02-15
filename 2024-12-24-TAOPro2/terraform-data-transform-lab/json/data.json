@@ -1,0 +1,79 @@
+{
+    "servers": [
+        {
+            "name": "web1",
+            "type": "t2.micro",
+            "region": "us-west-2",
+            "disks": [
+                {
+                    "name": "disk1",
+                    "size": 10,
+                    "type": "ssd"
+                },
+                {
+                    "name": "disk2",
+                    "size": 20,
+                    "type": "hdd"
+                }
+            ]
+        },
+        {
+            "name": "db1",
+            "type": "t3.medium",
+            "region": "us-east-1",
+            "disks": [
+                {
+                    "name": "disk1",
+                    "size": 200,
+                    "type": "ssd"
+                },
+                {
+                    "name": "disk2",
+                    "size": 100,
+                    "type": "ssd"
+                }
+            ]
+        },
+        {
+            "name": "app1",
+            "type": "t2.medium",
+            "region": "us-west-2",
+            "disks": [
+                {
+                    "name": "disk1",
+                    "size": 50,
+                    "type": "ssd"
+                }
+            ]
+        },
+        {
+            "name": "app2",
+            "type": "t2.medium",
+            "region": "us-west-2",
+            "disks": [
+                {
+                    "name": "disk1",
+                    "size": 50,
+                    "type": "ssd"
+                }
+            ]
+        },
+        {
+            "name": "db2",
+            "type": "t3.medium",
+            "region": "us-east-1",
+            "disks": [
+                {
+                    "name": "disk1",
+                    "size": 200,
+                    "type": "ssd"
+                },
+                {
+                    "name": "disk2",
+                    "size": 100,
+                    "type": "ssd"
+                }
+            ]
+        }
+    ]
+}

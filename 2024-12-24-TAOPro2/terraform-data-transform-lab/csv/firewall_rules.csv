@@ -1,0 +1,11 @@
+Rule ID,source IP,destination IP,protocol,port range,action,direction,system
+NSG-Rule-1,192.168.1.1/32,192.168.2.1/32,TCP,80-443,Allow,Inbound,System A
+NSG-Rule-2,10.0.0.0/24,10.0.1.1/32,UDP,53,Allow,Inbound,System A
+NSG-Rule-3,172.16.0.5/32,172.16.1.10/32,TCP,22,Deny,Inbound,System B
+NSG-Rule-4,192.168.2.0/24,192.168.2.2/32,UDP,3389,Allow,Outbound,System B
+NSG-Rule-5,0.0.0.0/0,192.168.10.0/24,ICMP,8-0,Allow,Inbound,System C
+NSG-Rule-6,192.168.3.10/32,10.1.1.5/32,TCP,8000-8080,Deny,Outbound,System C
+NSG-Rule-7,10.1.1.1/32,172.16.2.0/24,UDP,53,Allow,Inbound,System A
+NSG-Rule-8,172.16.1.0/24,192.168.3.1/32,TCP,22,Deny,Outbound,System B
+NSG-Rule-9,192.168.100.1/32,10.0.0.1/32,UDP,3389,Allow,Inbound,System C
+NSG-Rule-10,0.0.0.0/0,192.168.100.100/32,TCP,443,Allow,Outbound,System A

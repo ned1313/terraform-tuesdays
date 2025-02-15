@@ -1,0 +1,19 @@
+employees:
+  - name: Alice
+    department: Engineering
+    salary: 60000
+  - name: Bob
+    department: HR
+    salary: 45000
+  - name: Charlie
+    department: Engineering
+    salary: 70000
+  - name: David
+    department: HR
+    salary: 50000
+  - name: Eve
+    department: Engineering
+    salary: 80000
+  - name: Frank
+    department: Sales
+    salary: 55000
