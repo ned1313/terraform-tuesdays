@@ -18,9 +18,9 @@ EOF
   my_number = 42
   my_boolean = true
 
-  my_list_variable  = ["I'm", "a", "list", "variable!"]
+  my_list_variable  = ["I'm", "a", "list", "variable!"] # local.my_list_variable[1]
   
-  my_map_variable = {
+  my_map_variable = { # local.my_map_variable["key1"]
     key1 = "I'm a map variable!"
     key2 = "I'm another map variable!"
     key3 = ["I'm a list inside a map!"]
@@ -43,6 +43,3 @@ variable "create_nat_gw" {
   description = "Whether to create a NAT gateway for the network"
 }
 
-resource "aws_nat_gateway" "main" {
-  count = var.create_nat_gw ? length(var.public_subnets) : 0
-}
