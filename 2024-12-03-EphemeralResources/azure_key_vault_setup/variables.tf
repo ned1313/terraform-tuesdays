@@ -7,5 +7,4 @@ variable "location" {
 variable "prefix" {
   description = "A prefix to apply to all resources in this example."
   default     = "tacos"
-
 }
