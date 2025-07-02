@@ -29,22 +29,22 @@ resource "azurerm_key_vault" "example" {
   tenant_id           = data.azurerm_client_config.example.tenant_id
   sku_name            = "standard"
 
-access_policy {
+  access_policy {
     tenant_id = data.azurerm_client_config.example.tenant_id
     object_id = data.azurerm_client_config.example.object_id
 
     key_permissions = [
-        "Get", "List", "Create", "Delete", "Update", "Import", "Backup", "Restore", "Recover", "Purge"
+      "Get", "List", "Create", "Delete", "Update", "Import", "Backup", "Restore", "Recover", "Purge"
     ]
 
     secret_permissions = [
-        "Get", "List", "Set", "Delete", "Backup", "Restore", "Recover", "Purge"
+      "Get", "List", "Set", "Delete", "Backup", "Restore", "Recover", "Purge"
     ]
 
     certificate_permissions = [
-        "Get", "List", "Create", "Delete", "Update", "Import", "Backup", "Restore", "Recover", "Purge"
+      "Get", "List", "Create", "Delete", "Update", "Import", "Backup", "Restore", "Recover", "Purge"
     ]
-}
+  }
 
 }
 
@@ -55,8 +55,8 @@ resource "azurerm_key_vault_secret" "normal" {
 }
 
 resource "azurerm_key_vault_secret" "write_only" {
-  name         = "db-password-wo"
-  value_wo        = var.db_password_ephemeral.value
-  value_wo_version = var.db_password_ephemeral.version
-  key_vault_id = azurerm_key_vault.example.id
+  name             = "db-password-wo"
+  value_wo         = var.db_password_ephemeral
+  value_wo_version = var.db_password_version
+  key_vault_id     = azurerm_key_vault.example.id
 }
