@@ -60,8 +60,8 @@ ephemeral "vault_kv_secret_v2" "burrito_recipe" {
 # Write the secret to Azure Key Vault
 resource "azurerm_key_vault_secret" "write_only" {
   name             = "burrito-recipe"
-  #value_wo         = jsonencode(ephemeral.vault_kv_secret_v2.burrito_recipe.data)
-  value_wo = ephemeral.vault_kv_secret_v2.burrito_recipe.data_json
-  value_wo_version = 2
+  value_wo         = jsonencode(ephemeral.vault_kv_secret_v2.burrito_recipe.data)
+  #value_wo = ephemeral.vault_kv_secret_v2.burrito_recipe.data_json
+  value_wo_version = var.secret_version
   key_vault_id     = azurerm_key_vault.example.id
 }

@@ -23,39 +23,3 @@ resource "vault_kv_secret_v2" "burrito_recipe" {
   data_json_wo         = jsonencode(var.burrito_recipe)
   data_json_wo_version = var.burrito_recipe_version
 }
-
-# Create policy for accessing the burrito recipe
-resource "vault_policy" "burrito_recipe_policy" {
-  name = "burrito-recipe-policy"
-
-  policy = <<EOT
-# Allow listing secrets in the path
-path "${var.secret_mount_path}/metadata/burrito-recipe" {
-  capabilities = ["read", "list"]
-}
-
-# Allow reading the actual secret content
-path "${var.secret_mount_path}/data/burrito-recipe" {
-  capabilities = ["read", "list"]
-}
-EOT
-}
-
-# Enable the userpass auth method
-resource "vault_auth_backend" "userpass" {
-  type = "userpass"
-}
-
-# Create a user named Terraform with the burrito recipe policy
-resource "vault_generic_endpoint" "terraform_user" {
-  depends_on           = [vault_auth_backend.userpass]
-  path                 = "auth/userpass/users/terraform"
-  ignore_absent_fields = true
-
-  data_json = <<EOT
-{
-  "policies": ["${vault_policy.burrito_recipe_policy.name}"],
-  "password": "tacosarebetter"
-}
-EOT
-}
