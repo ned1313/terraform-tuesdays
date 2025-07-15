@@ -1,5 +1,6 @@
 provider "vault" {
-  # Use environment variables for Vault address and token
+  address = "http://localhost:8200"
+  token   = "root"
 }
 
 resource "vault_mount" "kvv2" {
@@ -7,6 +8,8 @@ resource "vault_mount" "kvv2" {
   type        = "kv"
   options     = { version = "2" }
   description = "KV Version 2 secret engine mount"
+
+  depends_on = [ docker_container.vault ]
 }
 
 # Create a KV v2 secret backend
