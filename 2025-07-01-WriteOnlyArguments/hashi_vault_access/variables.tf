@@ -18,3 +18,17 @@ variable "secret_version" {
     }
   
 }
+
+variable "vault_address" {
+  description = "Address of the Vault server"
+  type        = string
+  default     = "http://localhost:8200"
+}
+
+variable "vault_token" {
+  description = "Token for authenticating with Vault"
+  type        = string
+  default     = "root"
+  sensitive = true
+
+}

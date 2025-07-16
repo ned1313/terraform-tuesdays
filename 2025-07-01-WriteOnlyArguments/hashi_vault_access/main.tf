@@ -1,6 +1,6 @@
 provider "vault" {
-  address = "http://localhost:8200"
-  token   = "root"
+  address = var.vault_address
+  token   = var.vault_token
 }
 
 provider "azurerm" {
