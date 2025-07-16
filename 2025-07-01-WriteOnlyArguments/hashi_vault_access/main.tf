@@ -1,5 +1,6 @@
 provider "vault" {
-  # Use environment variables for Vault address and token
+  address = "http://localhost:8200"
+  token   = "root"
 }
 
 provider "azurerm" {
